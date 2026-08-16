@@ -1,5 +1,9 @@
 # Initial D Arcade Stage 3 — Native SH-4 Recompilation (WIP)
 
+<p align="center">
+  <img src="docs/media/project-logo.png" alt="Initial D Arcade Stage Ver. 3 — Recompiled" width="900">
+</p>
+
 An experimental static ahead-of-time recompilation project for the NAOMI 2 release of *Initial D Arcade Stage 3* (GDS-0033).
 
 > **Research status:** this is not an emulator, not a finished port, and not a playable game distribution. The public repository contains original clean-room infrastructure and progress evidence only. It contains no game image, BIOS, PIC/CHD data, extracted assets, memory snapshots, or generated game-code translation.
