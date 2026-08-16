@@ -7,4 +7,4 @@ add_executable(native_elan_bridge_test tests/native_elan_bridge_test.cpp)
 target_compile_features(native_elan_bridge_test PRIVATE cxx_std_17)
 target_include_directories(native_elan_bridge_test PRIVATE src/runtime)
 
-add_test(NAME native_elan_bridge_classifier COMMAND native_elan_bridge_test)
+add_test(NAME native_elan_bridge_classifier_walker COMMAND native_elan_bridge_test)

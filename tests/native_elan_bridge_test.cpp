@@ -3,12 +3,20 @@
 #include <array>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <vector>
 
 static void expect(bool value, const char* message) {
     if (!value) {
         std::fprintf(stderr, "FAIL: %s\n", message);
         std::exit(1);
     }
+}
+
+static void writeCommand(std::vector<uint8_t>& ram, uint32_t offset,
+                         const std::array<uint32_t, 8>& words) {
+    expect(offset + sizeof(words) <= ram.size(), "synthetic command range");
+    std::memcpy(ram.data() + offset, words.data(), sizeof(words));
 }
 
 int main() {
@@ -48,5 +56,48 @@ int main() {
     command.w[3] = 1u;
     expect(command.kind() == NativeElanKind::Unknown, "unknown wait rejected");
 
-    std::puts("native ELAN command classifier: PASS");
+    std::vector<uint8_t> ram(0x1000u, 0u);
+    const std::array<uint32_t, 8> wait{
+        0x08000E00u, 0x005F6903u, 0u, 0x80u, 0u, 0u, 0u, 0u,
+    };
+    const std::array<uint32_t, 8> link{
+        0x08000F00u, 0x00000200u, 0u, 0x20u, 0u, 0u, 0u, 0u,
+    };
+    writeCommand(ram, 0x100u, link);
+    writeCommand(ram, 0x200u, wait);
+
+    const NativeElanControlWalkResult nested =
+        NativeElanControlWalker::walk(ram.data(), ram.size(), 0x100u, 0x20u);
+    expect(nested.ok, "nested Link walk accepted");
+    expect(nested.streams == 2u, "nested Link stream count");
+    expect(nested.records == 2u, "nested Link record count");
+    expect(nested.recursiveLinks == 1u, "nested Link recursion count");
+    expect(nested.events.size() == 1u, "nested wait event count");
+    expect(nested.events[0].command.kind() ==
+               NativeElanKind::RegisterWaitPunchthrough,
+           "nested wait event kind");
+
+    const std::array<uint32_t, 8> selfLink{
+        0x08000F00u, 0x00000400u, 0u, 0x20u, 0u, 0u, 0u, 0u,
+    };
+    writeCommand(ram, 0x400u, selfLink);
+    const NativeElanControlWalkResult cycle =
+        NativeElanControlWalker::walk(ram.data(), ram.size(), 0x400u, 0x20u);
+    expect(!cycle.ok, "recursive cycle rejected");
+    expect(cycle.failure == NativeElanWalkFailure::StreamCycle,
+           "recursive cycle failure kind");
+    expect(cycle.events.empty(), "cycle emits no side effects");
+
+    const std::array<uint32_t, 8> badWait{
+        0x08000E00u, 0x005F6903u, 0u, 1u, 0u, 0u, 0u, 0u,
+    };
+    writeCommand(ram, 0x600u, badWait);
+    const NativeElanControlWalkResult invalid =
+        NativeElanControlWalker::walk(ram.data(), ram.size(), 0x600u, 0x20u);
+    expect(!invalid.ok, "unsupported active wait rejected");
+    expect(invalid.failure == NativeElanWalkFailure::InvalidRegisterWait,
+           "unsupported wait failure kind");
+    expect(invalid.events.empty(), "unsupported wait emits no side effects");
+
+    std::puts("native ELAN command classifier/walker: PASS");
 }

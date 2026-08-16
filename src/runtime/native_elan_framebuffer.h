@@ -198,11 +198,20 @@ public:
         float minY = 0.0f;
         float maxX = 1.0f;
         float maxY = 1.0f;
+        const float fitTrimPercent = diagnosticFitTrimPercent();
+        std::vector<float> fitX;
+        std::vector<float> fitY;
         if (!useCapturedProjection) {
             minX = std::numeric_limits<float>::infinity();
             minY = std::numeric_limits<float>::infinity();
             maxX = -std::numeric_limits<float>::infinity();
             maxY = -std::numeric_limits<float>::infinity();
+            if (fitTrimPercent > 0.0f) {
+                size_t fitVertices = 0u;
+                for (const auto* batch : batches) fitVertices += batch->vertices.size();
+                fitX.reserve(fitVertices);
+                fitY.reserve(fitVertices);
+            }
         }
         for (const auto* batch : batches) {
             result.vertices += batch->vertexCount;
@@ -212,8 +221,27 @@ public:
                     minY = std::min(minY, v.y);
                     maxX = std::max(maxX, v.x);
                     maxY = std::max(maxY, v.y);
+                    if (fitTrimPercent > 0.0f) {
+                        fitX.push_back(v.x);
+                        fitY.push_back(v.y);
+                    }
                 }
             }
+        }
+        if (!useCapturedProjection && fitTrimPercent > 0.0f && fitX.size() >= 8u) {
+            std::sort(fitX.begin(), fitX.end());
+            std::sort(fitY.begin(), fitY.end());
+            const size_t trim = std::min<size_t>(
+                static_cast<size_t>(static_cast<double>(fitX.size()) *
+                                    fitTrimPercent / 100.0),
+                (fitX.size() - 2u) / 2u);
+            minX = fitX[trim];
+            maxX = fitX[fitX.size() - 1u - trim];
+            minY = fitY[trim];
+            maxY = fitY[fitY.size() - 1u - trim];
+            std::fprintf(stderr,
+                "[NATIVE-ELAN-FIT] trim_percent=%.3f vertices=%zu bounds=%.9g,%.9g,%.9g,%.9g\n",
+                fitTrimPercent, fitX.size(), minX, minY, maxX, maxY);
         }
         const float spanX = std::max(maxX - minX, 1.0e-6f);
         const float spanY = std::max(maxY - minY, 1.0e-6f);
@@ -381,7 +409,7 @@ public:
                     useCapturedProjection ? &depth : nullptr, triangleTexture,
                     rasterState, tracePixelOwners ? &pixelOwners : nullptr,
                     static_cast<uint32_t>(bi));
-                if (!useCapturedProjection) {
+                if (!useCapturedProjection && diagnosticOutlinesEnabled()) {
                     const uint8_t outline[3] = {235u, 235u, 238u};
                     drawLine(rgb, width, height, points[a], points[b], outline);
                     drawLine(rgb, width, height, points[b], points[c], outline);
@@ -653,6 +681,20 @@ public:
     }
 
 private:
+    static bool diagnosticOutlinesEnabled() {
+        const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_OUTLINES");
+        return !value || !*value || std::strcmp(value, "0") != 0;
+    }
+
+    static float diagnosticFitTrimPercent() {
+        const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_TRIM_PERCENT");
+        if (!value || !*value) return 0.0f;
+        char* end = nullptr;
+        const float parsed = std::strtof(value, &end);
+        if (end == value || !std::isfinite(parsed)) return 0.0f;
+        return std::clamp(parsed, 0.0f, 45.0f);
+    }
+
     struct Point {
         float x = 0.0f;
         float y = 0.0f;
@@ -1468,8 +1510,9 @@ private:
     static bool writeTextureAtlas(const std::string& path,
                                   const std::vector<TextureCacheEntry>& entries) {
         if (path.empty() || entries.empty()) return false;
-        constexpr uint32_t columns = 16u;
-        constexpr uint32_t cell = 64u;
+        const uint32_t columns = std::min<uint32_t>(
+            16u, std::max<uint32_t>(1u, static_cast<uint32_t>(entries.size())));
+        constexpr uint32_t cell = 256u;
         const uint32_t rows = static_cast<uint32_t>(
             (entries.size() + columns - 1u) / columns);
         const uint32_t width = columns * cell;

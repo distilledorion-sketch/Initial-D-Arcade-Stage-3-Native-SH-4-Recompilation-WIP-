@@ -1,35 +1,46 @@
 # Status and evidence ledger
 
-Status date: 2026-08-15
-Public checkpoint: v1335 WIP
+Status date: 2026-08-16
 
-This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
+Public checkpoint: v1400 WIP
+
+This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced native boot/attract path is not the same thing as a playable game.
 
 | Area | Demonstrated | Current limitation |
 |---|---|---|
-| Static SH-4 translation | Broad instruction decoding/code generation; direct translated calls; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
-| Deterministic replay | N70 accepted 70/70 with `unimplemented=0`, `FPSCR=0`, no fault/watchdog, and cross-machine identical frame hash | Uses private user-owned replay/input state that cannot be published |
-| ELAN 3D path | Persistent state, recursive links, materials, instances, lighting, textures, culling, depth, and native diagnostic rendering | New submitted-stream lifecycle does not yet complete end to end |
-| Intro visuals | Roughly 53 seconds of ordered 3D cinematography through slice 3200; AE86, FD3S, red rival, shot cuts and chase | 2D title/logo layers absent; texture/material polish remains |
-| TA/PVR 2D | Store-queue traffic and submitted command history have been observed and mapped | Native list execution/compositing is dormant |
-| ELAN completion | Five observed list-complete `RegisterWait` masks classified; both CLX status banks and TA-ITP update behavior covered in the private integration test | Embedded waits inside the submitted `Link` stream are not reaching the handler yet |
+| Static SH-4 translation | Direct ahead-of-time translated calls on the validated path; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
+| Native boot | Accepted trace reached the frontend and course/attract sequence with no interpreter/JIT fallback | Menus, races, results, and long-run coverage are incomplete |
+| ELAN control path | 1,566 observed/handled submissions, zero rejected, zero walk failures; bounded Link/Model traversal and known wait/DMA events | Unsupported records remain fail-closed and require implementation, not bypasses |
+| Credit/frontend assets | Private owner-supplied files produce 25 records / 2,000-byte allocation on both constructions; heap overwrite disappears | Assets are legally sensitive and intentionally absent from the public repository |
+| Course/attract component | Timed transition completes; active component returned cleanly through 745 sampled calls in 20 seconds | A running scene is not yet controllable gameplay |
+| Geometry/textures | Post-fix SQ capture: 41,515 vertices, 29,389 triangles, 208 textured batches, 44 decoded textures | Camera/projection association is missing for the active course scene |
+| Full-scene renderer | v1400: 620 accepted batches, 48,686 vertices, 33,810 triangles | `projection=0`, zero projected batches, and 21 rejected batches; output is raw diagnostic geometry |
+| Deterministic intro replay | Cross-machine frame SHA-256 matched; earlier N70 accepted 70/70 with no untranslated calls or FPSCR failures | Relies on private user-owned replay/input state that cannot be published |
 | JVS/input | Clean-room 837-13551 / 315-6149-facing model exists | Complete cabinet controls and full gameplay validation remain |
-| Audio | Narrow opt-in AICA driver-ready bootstrap seam | No complete native AICA/ARM audio path |
-| Distribution | Sanitized source/evidence package with reproducible public tests | No executable game package; users must supply legally owned inputs to a future private build |
+| Audio | Narrow opt-in AICA bootstrap seam exists | No complete native AICA/ARM audio path |
+| Distribution | Sanitized source/evidence repository with public tests | No game executable or copyrighted input package |
 
-## Strongest accepted evidence
+## Latest accepted sequence
 
-- N70 frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
-- Accepted N70 state: 667 batches, 61,498 vertices, 17,490 triangles, 990,196 textured pixels, and 53,996 lit vertices.
-- Full-intro ladder reached N3200 with each recorded run accepted N/N, `unimplemented=0`, `FPSCR=0`, and no recorded memory fault, crash, or watchdog.
-- Current public classifier smoke test covers recursive links, SH-4/ERAM texture DMA links, all five known list-complete wait bits, empty/unknown-mask rejection, and false command-header aliases.
+1. The Flycast-derived, stripped ELAN command grammar was integrated without importing Flycast's CPU, dynarec, renderer, scheduler, UI, or save-state systems.
+2. Native boot reported `enabled=1 observed=1566 handled=1566 rejected=0` and `walk_failures=0`.
+3. The second frontend construction was found to request zero credit records because four files were absent from the private HOSTFS overlay.
+4. Extracting those files from the user's own disc image into the external private overlay produced 25 records and a 2,000-byte allocation on both passes. No asset is stored in this repository.
+5. The course/path allocator then succeeded, the timed state-4 transition completed, and the active course component continued returning normally.
+6. The native framebuffer captured substantial course-scene geometry, but its scene-selection path still reported no projection association.
 
-## Latest WIP truth
+## Strongest current evidence
 
-v1335 broadened direct `RegisterWait` handling for masks `0x80`, `0x100`, `0x200`, `0x400`, and `0x200000`. The focused private Windows integration test passed. An exact fast WSL rebuild was stopped cleanly at the user's request, so the full gate-off and stage-112 acceptance runs have not been completed.
+- Native ELAN: 1,566 handled of 1,566 observed; zero rejected; zero walk failures.
+- Post-credit-fix capture: 41,515 vertices, 29,389 triangles, 208 textured batches, 44 decoded textures.
+- Full-scene v1400 capture: 620 accepted batches, 48,686 vertices, 33,810 triangles, 21 rejected batches, `projection=0`.
+- Active course object: 745 completed sampled calls over 20 seconds with no primary-heap store-queue regression.
+- Earlier N70 frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
 
-The preceding v1334 trace reported `register_waits=0`. That means the change must not be described as fixing the lifecycle blocker. The best current explanation is that the next frame arrives as a linked command stream and its embedded waits are never walked to the existing handler.
+## Immediate blocker
+
+The next task is associating the active scene's ELAN model/view/projection state with its draw batches. Until that is correct, the renderer can prove that real scene geometry exists but cannot present it from the game's intended camera.
 
 ## Definition of playable
 
-This project will not call itself playable until a user can cold boot from legally owned inputs, reach menus, start and control a race, receive working audio/video/input, complete meaningful gameplay, and do so through the static native path without an interpreter/JIT fallback.
+The project will not call itself playable until a user can cold boot from legally owned inputs, reach menus, start and control a race, receive working audio/video/input, complete meaningful gameplay, and do so through the static native path without an interpreter/JIT fallback.

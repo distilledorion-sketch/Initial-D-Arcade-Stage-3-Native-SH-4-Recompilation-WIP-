@@ -30,7 +30,7 @@ NAOMI 2 graphics require two cooperating paths:
 1. ELAN transforms, lighting, materials, instances, links, and generated geometry.
 2. The PowerVR/TA path receives polygon and sprite lists, including the 2D title/logo layers.
 
-The current diagnostic renderer proves substantial ELAN 3D behavior. The next critical step is completing submitted ELAN link execution and then activating TA/PVR list compositing at the frame boundary.
+The bounded submitted-stream walker now handles validated `Link` and `Model` recursion, record sizing, known waits, and texture-DMA events without importing an emulator CPU or renderer. The current diagnostic renderer proves substantial active-scene ELAN geometry, but the course draws are not yet associated with their projection/model-view state. Camera-state association is the immediate graphics task, followed by TA/PVR list compositing at the frame boundary.
 
 ## Validation philosophy
 

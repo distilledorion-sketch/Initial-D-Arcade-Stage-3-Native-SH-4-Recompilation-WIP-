@@ -1,40 +1,38 @@
 # Roadmap
 
-Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
+Work is ordered by the first unresolved native hardware boundary. Each milestone has a concrete acceptance gate.
 
-## P0 — Execute the submitted ELAN link stream
+## Completed native-path milestones
 
-- Add a bounded walk at the existing native ELAN command-port seam.
-- Follow only validated link shapes and ranges.
-- Route embedded `RegisterWait` records through the existing classifier.
-- Reject unknown/empty wait masks and malformed/cyclic links fail-closed.
+- Bounded ELAN `Link`/`Model` stream walking with malformed/cyclic streams rejected fail-closed.
+- Known `RegisterWait` and texture-DMA events delivered at their real command boundaries.
+- Accepted native boot with 1,566/1,566 ELAN submissions handled and zero walk failures.
+- Private credit-asset allocation defect traced and corrected without redistributing the assets.
+- Frontend timed transition completed and the course/attract component observed running continuously.
 
-Acceptance: the exact v1334 configuration records nonzero waits and no new unimplemented commands, memory faults, crashes, or watchdogs.
+## P0 — Associate camera/projection state with active scene draws
 
-## P0 — Close the frame-lifecycle handshake
+- Trace projection, model-view, and instance state through resident links and scene selection.
+- Determine whether course draws inherit state from a prior submission or use a currently unhandled record shape.
+- Keep unmatched or malformed state visible as a diagnostic rejection.
 
-- Prove native CH2-to-ELAN DMA kicks.
-- Observe request slot 0 transition from `2` to `0`.
-- Advance the producer beyond frame 1.
-- Preserve both CLX normal-status banks and advance `TA_ITP_CURRENT` per active wait.
+Acceptance: the same v1400 native scene records nonzero projected batches and produces a stable camera-space frame without fit-to-view substitution.
 
-Acceptance: repeated exact runs pass N/N with `unimplemented=0`, `FPSCR=0`, stable provenance, and the accepted N70 frame hash when compatibility gates are off.
+## P0 — Execute and composite TA/PVR layers
 
-## P1 — Activate TA/PVR list execution and compositing
-
-- Execute captured opaque, punch-through, translucent, modifier-volume, and sprite lists.
-- Composite TA/PVR 2D output over ELAN 3D at the real frame boundary.
+- Execute opaque, punch-through, translucent, modifier-volume, and sprite lists.
+- Composite TA/PVR output with ELAN 3D at the authentic frame boundary.
 - Preserve list ordering and interrupt timing.
 
-Acceptance: title/logo cards and cabinet overlays appear from guest-submitted data, with no fabricated textures or manual replacements.
+Acceptance: title/logo cards, HUD/cabinet overlays, and the projected 3D scene appear from guest-submitted data with no fabricated textures.
 
-## P1 — Restore faithful textures and materials
+## P1 — Restore faithful materials and presentation
 
-- Trace missing game-driven uploads from legally owned private inputs.
-- Validate sky, road, alpha, palette, mip, and blend cases.
-- Continue reference comparisons without embedding reference video or extracted assets.
+- Resolve the 21 currently rejected full-scene batches.
+- Validate depth, culling, blend, transparency, palette, mip, and filtering behavior.
+- Trace missing uploads only from legally owned private inputs.
 
-Acceptance: repeatable frame diffs show the renderer—not a diagnostic substitution—producing the expected layers.
+Acceptance: repeatable comparisons show the native renderer producing the expected layers rather than a diagnostic substitution.
 
 ## P1 — Complete audio and controls
 
@@ -45,16 +43,16 @@ Acceptance: controllable attract/menu/gameplay flow with synchronized audio and 
 
 ## P2 — Whole-game static-AOT coverage
 
-- Translate every reachable function/table coherently.
-- Eliminate unresolved indirect targets and compatibility shims.
+- Translate every reachable function and indirect table coherently.
+- Eliminate unresolved targets and compatibility-only shims.
 - Add race, course, results, continue, save/configuration, and long-run determinism suites.
 
-Acceptance: cold boot through a complete race and return flow, entirely through the native static path.
+Acceptance: cold boot through a complete race and return flow entirely through the native static path.
 
 ## P2 — Productization
 
-- Reproducible build orchestration that accepts only user-supplied legally owned inputs.
-- Clear asset extraction boundary, configuration UI, controller mapping, crash diagnostics, and release packaging.
+- Reproducible builds that accept only user-supplied legally owned inputs.
+- Clear extraction boundary, configuration UI, controller mapping, crash diagnostics, and release packaging.
 - Performance profiling and native hot-path optimization after correctness gates pass.
 
 Acceptance: clean-machine documentation and packaging that never redistributes third-party game content.
