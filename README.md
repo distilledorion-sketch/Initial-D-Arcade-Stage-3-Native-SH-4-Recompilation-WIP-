@@ -57,6 +57,6 @@ No proprietary input is needed for either check.
 
 ## Project boundary
 
-The non-negotiable direction is a native static-AOT port: translated C++, direct calls, bounded hardware-facing seams, and fail-closed diagnostics. Interpreter/JIT fallbacks, fake-success stubs, guest-logic bypasses, and packaged game data are outside the project.
+this is a native static-AOT port
 
 This independent research project is not affiliated with or endorsed by Sega, Kodansha, Shuichi Shigeno, or the original developers and publishers. All referenced names and trademarks belong to their respective owners.
