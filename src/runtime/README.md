@@ -9,4 +9,10 @@ These files are selected from the private integration tree to show the real clea
 
 Only `native_elan_bridge.h` is compiled by the standalone public smoke test. The decoder/renderer snapshots refer to support headers in the private integration tree and are included for review, not as a claim that this repository is a complete runtime.
 
+The private integration tree has advanced beyond these selected snapshots with
+continuous submitted-scene presentation, additional PVR list features, native
+AICA/Maple tests, and asset-lineage validation. Those components will be moved
+into this public tree only when they can be separated cleanly from generated
+game code and private captures without weakening the legal boundary.
+
 Generated game translations, memory/device integration, private replay code, asset inputs, and compatibility-only experiments are intentionally excluded.
