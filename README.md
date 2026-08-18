@@ -20,23 +20,28 @@ The GIF shows separate diagnostic milestones from the native path. It is not a s
 - The accepted native-boot trace recorded 1,566 observed and 1,566 handled ELAN submissions with zero rejected commands.
 - A missing private credit-screen asset set was traced to a zero-record allocation and later heap overwrite. Supplying the four files from the owner's legally held disc image made both constructions allocate 25 records (2,000 bytes) and removed the heap corruption. Those files are not included here.
 - The boot sequence now finishes the timed frontend transition and keeps the course/attract component running. A post-fix capture contained 41,515 vertices, 29,389 triangles, 208 textured batches, and 44 decoded textures.
-- The latest full-scene diagnostic capture contained 48,686 vertices and 33,810 triangles across 620 accepted batches.
+- Restoring all 100 previously suppressed SH-4 `PREF` store-queue flushes removed the duplicated/two-cars-in-one geometry failure. The generated private translation now contains 531 real `PREF` call sites.
+- The active native trace matches Flycast's ELAN reference for the first 64,439 semantic append events, and the projected command-port frame is a coherent single-car scene rather than fit-to-view substitute geometry.
+- A recent projected frame accepted 751 batches and 63,356 vertices, produced 12,393 triangles, and rejected zero batches for projection or near/far culling. The 10 remaining rejected submissions cannot form valid triangles.
+- Of 183 native texture states, 160 have an exact Flycast payload/size/format match. Across the 172 unique decoded bindings, exact matches account for 86.9% of textured raster work; the two largest unmatched payloads decode as coherent game environment textures rather than corruption.
+- The optional native Windows preview displayed changing attract/course scenes for a 45-second run (282 rasterized frames and 2,384 cabinet-input polls).
+- A measured renderer pass reduced representative total frame time from 180.786 ms to 150.522 ms. The workload varied slightly; normalized raster cost improved by about 14%.
 - Earlier deterministic intro validation reproduced an identical frame SHA-256 on another machine: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
 
 ## What does not work yet
 
 - The result is not start-to-finish playable.
-- The active course scene currently has no associated projection record in the diagnostic renderer (`projection=0`). The latest output therefore looks like raw/faceted scene geometry rather than a correct in-game camera view.
-- Plain PVR/TA 2D lists still need correct execution and compositing over ELAN 3D.
-- Twenty-one batches in the latest full-scene diagnostic capture were rejected instead of being guessed through.
+- Plain PVR/TA 2D lists and every presentation layer still need complete execution and compositing over ELAN 3D.
+- Keyboard edge latching is implemented so short coin/start/service presses are not lost between expensive software-render frames, but a real interactive cabinet-flow test is still required.
+- The native AICA/SGC seam is present and tested, but the reached game state has not emitted the real stream-start command; adding a host audio sink now would only play silence.
 - Complete audio, controls, menus, races, save/configuration paths, performance work, and release packaging remain unfinished.
 - Whole-game translation coverage is not claimed; unvisited paths can expose additional indirect targets or instruction-semantic issues.
 
-![Current raw course-scene diagnostic](docs/media/native-course-scene-v1400.png)
+![Earlier raw course-scene diagnostic](docs/media/native-course-scene-v1400.png)
 
-This image is useful proof that the native course component is producing substantial scene data, but it is not a finished gameplay frame. Camera/projection association is the immediate graphics blocker.
+This retained v1400 image is historical evidence from before projection association was fixed. It is not representative of the current projected renderer and is not a claim of finished gameplay.
 
-See [STATUS.md](STATUS.md) for the evidence ledger, [ROADMAP.md](ROADMAP.md) for ordered acceptance criteria, and [docs/MILESTONE_V1400.md](docs/MILESTONE_V1400.md) for the latest investigation notes.
+See [STATUS.md](STATUS.md) for the evidence ledger, [ROADMAP.md](ROADMAP.md) for ordered acceptance criteria, and [docs/MILESTONE_V1826.md](docs/MILESTONE_V1826.md) for the latest investigation notes.
 
 ## Repository contents
 

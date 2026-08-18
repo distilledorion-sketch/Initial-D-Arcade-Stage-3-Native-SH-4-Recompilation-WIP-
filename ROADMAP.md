@@ -1,47 +1,52 @@
 # Roadmap
 
-Work is ordered by the first unresolved native hardware boundary. Each milestone has a concrete acceptance gate.
+Work is ordered by the first unresolved native hardware and user-flow boundaries. Each milestone has a concrete acceptance gate.
 
 ## Completed native-path milestones
 
 - Bounded ELAN `Link`/`Model` stream walking with malformed/cyclic streams rejected fail-closed.
 - Known `RegisterWait` and texture-DMA events delivered at their real command boundaries.
-- Accepted native boot with 1,566/1,566 ELAN submissions handled and zero walk failures.
-- Private credit-asset allocation defect traced and corrected without redistributing the assets.
-- Frontend timed transition completed and the course/attract component observed running continuously.
+- Accepted native boot through the frontend transition into a continuously running course/attract component.
+- All 100 suppressed geometry/ELAN `PREF` sites restored as real SH-4 store-queue flushes.
+- Long native ELAN trace matched to Flycast for the first 64,439 semantic append events.
+- Active model/view/projection state associated with command-port draws; coherent projected single-car frames now render without fit-to-view substitution.
+- VRAM-backed texture path validated against Flycast: 160/183 exact states and 86.9% of textured raster workload covered by exact-matched unique payloads.
+- Native Windows preview proven across changing frames; short keyboard inputs now use a message-edge latch.
+- First CPU software-raster optimization pass completed while all five private hardware regression gates remain green.
 
-## P0 — Associate camera/projection state with active scene draws
+## P0 — Prove interactive cabinet flow
 
-- Trace projection, model-view, and instance state through resident links and scene selection.
-- Determine whether course draws inherit state from a prior submission or use a currently unhandled record shape.
-- Keep unmatched or malformed state visible as a diagnostic rejection.
+- Validate coin, start, service, steering, accelerator, brake, and view-change input on a real focused native window.
+- Trace JVS state through the translated game instead of treating a host key transition as sufficient evidence.
+- Reach a menu/race transition from live user input with no replay or scripted-input dependency.
 
-Acceptance: the same v1400 native scene records nonzero projected batches and produces a stable camera-space frame without fit-to-view substitution.
+Acceptance: a user can insert credit, start, select, and control a live native sequence while the projected renderer continues updating.
 
-## P0 — Execute and composite TA/PVR layers
+## P0 — Execute and composite every TA/PVR layer
 
-- Execute opaque, punch-through, translucent, modifier-volume, and sprite lists.
-- Composite TA/PVR output with ELAN 3D at the authentic frame boundary.
-- Preserve list ordering and interrupt timing.
+- Execute opaque, punch-through, translucent, modifier-volume, and sprite lists at their authentic frame boundaries.
+- Complete 2D title, HUD, cabinet, and Japanese overlay compositing over ELAN 3D.
+- Preserve guest ordering, blend/depth behavior, and interrupt timing.
 
-Acceptance: title/logo cards, HUD/cabinet overlays, and the projected 3D scene appear from guest-submitted data with no fabricated textures.
+Acceptance: all expected layers come from guest-submitted data with no fabricated geometry, textures, or overlays.
 
-## P1 — Restore faithful materials and presentation
+## P0 — Reach authentic audio start
 
-- Resolve the 21 currently rejected full-scene batches.
-- Validate depth, culling, blend, transparency, palette, mip, and filtering behavior.
-- Trace missing uploads only from legally owned private inputs.
+- Trace the translated path that should emit the AICA SGC stream-start command.
+- Expand native SGC actions only from observed/proven command semantics.
+- Add a host audio sink after nonzero native samples exist.
 
-Acceptance: repeatable comparisons show the native renderer producing the expected layers rather than a diagnostic substitution.
+Acceptance: synchronized audible output is produced from the game's own AICA RAM/commands; a silent device callback is not accepted as progress.
 
-## P1 — Complete audio and controls
+## P1 — Finish materials and renderer optimization
 
-- Replace the AICA ready-only bootstrap seam with the required native audio path.
-- Validate JVS steering, accelerator, brake, buttons, coin/service, and outputs.
+- Expand reference coverage for the remaining unmatched texture payloads and validate depth, culling, blend, transparency, palette, mip, fog, modifier-volume, and filtering behavior.
+- Investigate only the 10 invalid/non-triangle submissions if later evidence shows they should contain drawable data.
+- Profile and optimize hot paths without replacing game state or weakening correctness checks.
 
-Acceptance: controllable attract/menu/gameplay flow with synchronized audio and no input-script dependency.
+Acceptance: repeatable native/Flycast comparisons cover the reached scenes, and optimized frames preserve pixel/semantic regression gates.
 
-## P2 — Whole-game static-AOT coverage
+## P1 — Whole-game static-AOT coverage
 
 - Translate every reachable function and indirect table coherently.
 - Eliminate unresolved targets and compatibility-only shims.
@@ -53,6 +58,6 @@ Acceptance: cold boot through a complete race and return flow entirely through t
 
 - Reproducible builds that accept only user-supplied legally owned inputs.
 - Clear extraction boundary, configuration UI, controller mapping, crash diagnostics, and release packaging.
-- Performance profiling and native hot-path optimization after correctness gates pass.
+- Clean-machine validation without private development paths or snapshots.
 
-Acceptance: clean-machine documentation and packaging that never redistributes third-party game content.
+Acceptance: a user can build and run from legally owned inputs without any redistributed Sega/game content.

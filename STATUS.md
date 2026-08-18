@@ -1,45 +1,48 @@
 # Status and evidence ledger
 
-Status date: 2026-08-16
+Status date: 2026-08-18
 
-Public checkpoint: v1400 WIP
+Public checkpoint: v1826 WIP
 
-This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced native boot/attract path is not the same thing as a playable game.
+This file separates demonstrated behavior from hypotheses. A single overall percentage is deliberately avoided: a technically advanced native boot/attract and projected graphics path is not the same thing as a playable product.
 
 | Area | Demonstrated | Current limitation |
 |---|---|---|
 | Static SH-4 translation | Direct ahead-of-time translated calls on the validated path; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
-| Native boot | Accepted trace reached the frontend and course/attract sequence with no interpreter/JIT fallback | Menus, races, results, and long-run coverage are incomplete |
-| ELAN control path | 1,566 observed/handled submissions, zero rejected, zero walk failures; bounded Link/Model traversal and known wait/DMA events | Unsupported records remain fail-closed and require implementation, not bypasses |
-| Credit/frontend assets | Private owner-supplied files produce 25 records / 2,000-byte allocation on both constructions; heap overwrite disappears | Assets are legally sensitive and intentionally absent from the public repository |
-| Course/attract component | Timed transition completes; active component returned cleanly through 745 sampled calls in 20 seconds | A running scene is not yet controllable gameplay |
-| Geometry/textures | Post-fix SQ capture: 41,515 vertices, 29,389 triangles, 208 textured batches, 44 decoded textures | Camera/projection association is missing for the active course scene |
-| Full-scene renderer | v1400: 620 accepted batches, 48,686 vertices, 33,810 triangles | `projection=0`, zero projected batches, and 21 rejected batches; output is raw diagnostic geometry |
-| Deterministic intro replay | Cross-machine frame SHA-256 matched; earlier N70 accepted 70/70 with no untranslated calls or FPSCR failures | Relies on private user-owned replay/input state that cannot be published |
-| JVS/input | Clean-room 837-13551 / 315-6149-facing model exists | Complete cabinet controls and full gameplay validation remain |
-| Audio | Narrow opt-in AICA bootstrap seam exists | No complete native AICA/ARM audio path |
+| Native boot | Accepted trace reaches the frontend and course/attract sequence with no interpreter/JIT fallback | Menus, controllable races, results, and long-run coverage are incomplete |
+| Store queues | All 100 previously suppressed `PREF` operations in 14 geometry/ELAN functions now perform real 32-byte store-queue flushes; the private generated unit contains 531 active `PREF` calls | Unvisited translated paths can still expose semantic gaps |
+| ELAN control path | Native append semantics match the Flycast reference for the first 64,439 events; bounded `Link`/`Model` traversal remains fail-closed | Broader paths and unsupported records still need coverage |
+| Projected framebuffer | Recent frame: 751 accepted batches, 63,356 vertices, 12,393 triangles; zero projection or near/far-cull rejection; all 307,200 output pixels have a real game-batch owner | This is a software validation renderer, not complete final graphics presentation |
+| Texture path | 160/183 states exactly match a Flycast payload, dimensions, format, and nonzero count; 149/172 unique decoded bindings cover 86.9% of textured raster work | The remaining unmatched captures require reference coverage and material validation |
+| Geometry integrity | The store-queue fix removed the duplicated/two-cars-in-one render; the 10 remaining rejected submissions have too few/invalid vertices to form triangles | Long-run scene and course coverage remains incomplete |
+| Native preview | 45-second run produced 282 changing raster frames and 2,384 input polls | Software rasterization is still expensive and presentation layers are incomplete |
+| JVS/input | Clean-room cabinet boundary plus Windows key-edge latching for short coin/start/service presses | Real interactive start/control validation is still pending |
+| Audio | Native Flycast-derived SGC tests pass and AICA RAM descriptors initialize | Reached state has not emitted the real stream-start command; there is no useful host sink yet |
 | Distribution | Sanitized source/evidence repository with public tests | No game executable or copyrighted input package |
 
 ## Latest accepted sequence
 
-1. The Flycast-derived, stripped ELAN command grammar was integrated without importing Flycast's CPU, dynarec, renderer, scheduler, UI, or save-state systems.
-2. Native boot reported `enabled=1 observed=1566 handled=1566 rejected=0` and `walk_failures=0`.
-3. The second frontend construction was found to request zero credit records because four files were absent from the private HOSTFS overlay.
-4. Extracting those files from the user's own disc image into the external private overlay produced 25 records and a 2,000-byte allocation on both passes. No asset is stored in this repository.
-5. The course/path allocator then succeeded, the timed state-4 transition completed, and the active course component continued returning normally.
-6. The native framebuffer captured substantial course-scene geometry, but its scene-selection path still reported no projection association.
+1. The Flycast-derived ELAN grammar and direct source adaptation remain limited to the Naomi 2 hardware seam; no Flycast CPU, dynarec, interpreter, UI, or save-state engine is used.
+2. Restoring the translated SH-4 store-queue flushes fixed corrupted/duplicated geometry at its source.
+3. The native ELAN decoder matched a Flycast snapshot and then matched the first 64,439 semantic append events of a long active trace.
+4. Projection/model/view state now attaches to the submitted command-port batches, producing a coherent single-car scene without a synthetic fit-to-view camera.
+5. VRAM-backed texture comparison found 160/183 exact native states. The dominant unmatched textures decode coherently as game environment maps rather than random/corrupt memory.
+6. Bilinear sampling, common blend, color rounding, alpha interpolation, and offset-color hot paths were optimized without changing intended output semantics.
+7. The optional Windows preview showed changing course/attract scenes. A message-edge latch was added because a roughly 150 ms software frame can otherwise miss short cabinet-key taps.
 
 ## Strongest current evidence
 
-- Native ELAN: 1,566 handled of 1,566 observed; zero rejected; zero walk failures.
-- Post-credit-fix capture: 41,515 vertices, 29,389 triangles, 208 textured batches, 44 decoded textures.
-- Full-scene v1400 capture: 620 accepted batches, 48,686 vertices, 33,810 triangles, 21 rejected batches, `projection=0`.
-- Active course object: 745 completed sampled calls over 20 seconds with no primary-heap store-queue regression.
-- Earlier N70 frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
+- Long ELAN parity: first 64,439 semantic append events match Flycast exactly.
+- Store queues: 531 active translated `PREF` calls, with all 100 stale geometry/ELAN no-ops restored.
+- Projected frame: 751 accepted batches, 63,356 vertices, 12,393 triangles, zero projection rejection.
+- Texture parity: 160/183 exact states; 86.9% of textured raster work covered by exact-matched unique payloads.
+- Frame ownership: 307,200/307,200 pixels attributed to submitted game batches.
+- Representative optimization: total 180.786 ms to 150.522 ms; raster 167.640 ms to 139.445 ms, with slightly different triangle workloads.
+- Private regression gates: AICA mailbox, Flycast-derived AICA SGC, system-ROM read-only, native ELAN bridge, and JVS tests all pass.
 
 ## Immediate blocker
 
-The next task is associating the active scene's ELAN model/view/projection state with its draw batches. Until that is correct, the renderer can prove that real scene geometry exists but cannot present it from the game's intended camera.
+The next user-visible gate is a real interactive run that turns coin/start/control input into menu or race progression while preserving the projected renderer. In parallel, the first authentic AICA stream-start command must be reached before a host audio sink can produce useful sound.
 
 ## Definition of playable
 
