@@ -10,25 +10,27 @@ An experimental static ahead-of-time recompilation project for the NAOMI 2 relea
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
-## What works today
+## What works today (2026-08-18)
 
 - A Python SH-4 decoder/code generator covers the instruction families exercised by the current static-AOT path, including FPSCR-aware floating-point register width and bank handling.
-- Native C++ execution reaches deterministic boot/attract-mode replay checkpoints with direct translated-function dispatch and no interpreter or JIT fallback.
-- A clean-room ELAN command decoder and diagnostic renderer reproduce about 53 seconds of the intro's 3D cinematography: shot changes, animated lighting, multiple cars, and the two-car chase sequence.
+- Native C++ execution cold-boots into sustained attract-mode rendering with direct translated-function dispatch and no interpreter or JIT fallback.
+- The submitted ELAN stream, CH2 DMA, render-complete interrupts, retained scenes, and native presentation path now advance continuously instead of stalling at the earlier frame-lifecycle frontier.
+- The Naomi 2 renderer handles the observed opaque, translucent, modifier-volume, punch-through, fog, blend, texture, and user-tile-clip cases used by the current scenes.
+- A missing course environment/path lookup was traced to two ISO9660-truncated files. A source-safe tool now restores their logical names from a user's own dump and verifies exact hashes.
+- A corrected native sequence renders a single coherent textured Trueno with stable camera motion at a 60 FPS presentation target; the earlier alternating rainbow/static environment maps are gone.
 - Cross-machine N70 validation reproduced an identical rendered-frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
-- Narrow device seams exist for ELAN command classification, JVS I/O, and the AICA bootstrap handshake.
-- The current v1335 work-in-progress recognizes all five observed ELAN `RegisterWait` list-complete masks, with a focused Windows test passing.
+- Private integration tests cover ELAN command/VRAM classification, JVS identity and EEPROM behavior, Maple VBlank/reset behavior, Naomi system-ROM write protection, Flycast-derived AICA SGC/mailbox behavior, and PVR twiddled texture layout.
 
 ![Intro shot progression](docs/media/native-intro-strip.png)
 
 ## What does not work yet
 
 - The result is not a start-to-finish playable build.
-- Submitted ELAN `Link` streams still need a bounded native walk so embedded `RegisterWait` records execute at the real command boundary.
-- The frame lifecycle currently stalls around stage 112 on the new native submission path; acceptance requires real waits, CH2 DMA kicks, request-slot completion, and producer progress.
-- Plain PVR/TA 2D lists are not yet composited over ELAN 3D, so title/logo cards and several overlays are missing.
-- Audio beyond the bootstrap-ready seam, complete controls, whole-game coverage, and presentation polish remain incomplete.
-- Some sky/road texture evidence depends on private pre-capture state and must never be fabricated or redistributed.
+- A complete controllable race has not yet been reached and validated end to end.
+- The entire intro/menu/course-loading sequence still needs frame-by-frame correctness checks; later texture, depth, transparency, shadow, fog, overlay, and camera issues may remain.
+- The current diagnostic renderer does not consistently sustain 60 unique rendered frames per second and still needs profiling and optimization.
+- Complete cabinet controls, synchronized game audio, whole-game static-AOT coverage, long-run determinism, and presentation polish remain incomplete.
+- The public repository deliberately omits private generated game code, captures, and all legally restricted inputs, so it is not a standalone game build.
 
 See [STATUS.md](STATUS.md) for the evidence ledger and [ROADMAP.md](ROADMAP.md) for ordered acceptance criteria.
 
@@ -39,7 +41,10 @@ See [STATUS.md](STATUS.md) for the evidence ledger and [ROADMAP.md](ROADMAP.md) 
 - `tests/` — public tests that require no game data.
 - `docs/` — architecture, media, and validation notes.
 
-The renderer snapshot is included to show the real integration work, but the complete private runtime and generated translation units are intentionally absent. It is therefore not a standalone game build target.
+The renderer snapshot is included to show the real integration work, while the
+complete private runtime and generated translation units remain intentionally
+absent. The new preparation utility also contains no game data: it operates
+only on user-supplied legally owned inputs.
 
 ## Run the public checks
 

@@ -405,6 +405,13 @@ def recompile_function(name, base_addr, raw_bytes, unresolved_ctr=None, resolved
                 out.extend(gen_delay_slot(d_addr, d_mnem, d_args, func_start, func_end))
             addr_key = f"{addr:08x}"
             target_hex = resolved_calls.get(addr_key)
+            # This call site joins two guest branches that install different
+            # callbacks. A flat reference map can record only one target and
+            # would silently replace the other callback. Keep the runtime R1
+            # selection; host_indirect_call still dispatches only to static
+            # AOT-translated functions.
+            if addr_key == "0c1f10c8":
+                target_hex = None
             emp_target = empirical_calls.get(addr_key)
             HOST_SHIMS = {
                 "0C04C860": "shim_file_exists",

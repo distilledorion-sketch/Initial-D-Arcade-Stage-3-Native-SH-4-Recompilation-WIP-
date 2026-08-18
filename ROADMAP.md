@@ -2,56 +2,53 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## P0 — Execute the submitted ELAN link stream
+## P0 — Reach and control the first complete race
 
-- Add a bounded walk at the existing native ELAN command-port seam.
-- Follow only validated link shapes and ranges.
-- Route embedded `RegisterWait` records through the existing classifier.
-- Reject unknown/empty wait masks and malformed/cyclic links fail-closed.
+- Complete the intro, menu, course-loading, race, results, and return transitions.
+- Remove any remaining static-AOT target gaps, stalls, or device-handshake blockers on that path.
+- Prove steering, accelerator, brake, gears, buttons, coin/service, and race timers together.
 
-Acceptance: the exact v1334 configuration records nonzero waits and no new unimplemented commands, memory faults, crashes, or watchdogs.
+Acceptance: a user can cold boot from legally owned inputs, enter a race, drive,
+finish or exit, and return through the native static path without an
+interpreter/JIT fallback.
 
-## P0 — Close the frame-lifecycle handshake
+## P0 — Validate the complete rendered sequence
 
-- Prove native CH2-to-ELAN DMA kicks.
-- Observe request slot 0 transition from `2` to `0`.
-- Advance the producer beyond frame 1.
-- Preserve both CLX normal-status banks and advance `TA_ITP_CURRENT` per active wait.
+- Capture bounded intro/menu/race sequences from the recomp and reference implementation.
+- Locate the first divergent frame rather than judging isolated screenshots.
+- Fix texture mapping, projection/clipping, depth/order, transparency, shadows, fog, overlays, and camera state from guest-submitted data.
+- Audit other cars, courses, weather, and day/night conditions.
 
-Acceptance: repeated exact runs pass N/N with `unimplemented=0`, `FPSCR=0`, stable provenance, and the accepted N70 frame hash when compatibility gates are off.
+Acceptance: repeatable sequence comparisons show coherent geometry and materials
+without duplicated objects, fabricated textures, or manual replacement frames.
 
-## P1 — Activate TA/PVR list execution and compositing
+## P1 — Complete timing, audio, and controls
 
-- Execute captured opaque, punch-through, translucent, modifier-volume, and sprite lists.
-- Composite TA/PVR 2D output over ELAN 3D at the real frame boundary.
-- Preserve list ordering and interrupt timing.
+- Keep guest timing independent from the host presentation cap.
+- Complete synchronized music, engine, voice, effect, and looping behavior.
+- Validate JVS analog ranges, dead zones, gears, buttons, coin/service, and outputs.
 
-Acceptance: title/logo cards and cabinet overlays appear from guest-submitted data, with no fabricated textures or manual replacements.
+Acceptance: gameplay behaves consistently at different host presentation targets
+with synchronized sound and complete cabinet controls.
 
-## P1 — Restore faithful textures and materials
+## P1 — Sustain the 60 FPS presentation target
 
-- Trace missing game-driven uploads from legally owned private inputs.
-- Validate sky, road, alpha, palette, mip, and blend cases.
-- Continue reference comparisons without embedding reference video or extracted assets.
+- Profile rasterization, texture decode/cache use, scene retention, and memory copies.
+- Optimize only after correctness gates protect the output.
+- Preserve deterministic results across worker counts and machines.
 
-Acceptance: repeatable frame diffs show the renderer—not a diagnostic substitution—producing the expected layers.
+Acceptance: release builds sustain 60 unique presented frames per second at the
+baseline resolution on the target PC class without changing guest timing.
 
-## P1 — Complete audio and controls
+## P2 — Whole-game coverage and regression testing
 
-- Replace the AICA ready-only bootstrap seam with the required native audio path.
-- Validate JVS steering, accelerator, brake, buttons, coin/service, and outputs.
-
-Acceptance: controllable attract/menu/gameplay flow with synchronized audio and no input-script dependency.
-
-## P2 — Whole-game static-AOT coverage
-
-- Translate every reachable function/table coherently.
-- Eliminate unresolved indirect targets and compatibility shims.
-- Add race, course, results, continue, save/configuration, and long-run determinism suites.
+- Cover every car, course, mode, results/continue flow, save/configuration path, and long run.
+- Eliminate unresolved indirect targets and compatibility-only diagnostics.
+- Add deterministic public tests for every source-safe subsystem.
 
 Acceptance: cold boot through a complete race and return flow, entirely through the native static path.
 
-## P2 — Productization
+## P2 — Productization and release packaging
 
 - Reproducible build orchestration that accepts only user-supplied legally owned inputs.
 - Clear asset extraction boundary, configuration UI, controller mapping, crash diagnostics, and release packaging.
