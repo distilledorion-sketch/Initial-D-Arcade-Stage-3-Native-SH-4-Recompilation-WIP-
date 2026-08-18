@@ -3,9 +3,10 @@
 ## Included
 
 - General SH-4 decoding and code-generation source.
-- Selected clean-room native runtime snapshots.
+- Selected original and properly attributed Flycast-derived native runtime snapshots.
 - Tests that run without game content.
 - Original project documentation, hashes, diagrams, and a limited set of progress captures.
+- Required license and attribution text for the Flycast-derived ELAN boundary.
 
 ## Intentionally excluded
 

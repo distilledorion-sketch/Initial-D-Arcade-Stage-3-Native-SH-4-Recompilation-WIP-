@@ -3,6 +3,7 @@
 #include "native_elan_decode.h"
 #include "vram_texture.h"
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -11,11 +12,13 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // Diagnostic host framebuffer for frame-final ELAN scenes. Fit-to-view remains
-// the default. IDAS3_NATIVE_FRAMEBUFFER_PROJECTION opts into the exact NAOMI 2
-// instance/projection transform proven against Flycast's ELAN implementation.
+// the default for offline diagnostics. The native window and
+// IDAS3_NATIVE_FRAMEBUFFER_PROJECTION use the exact NAOMI 2 instance/projection
+// transform proven against Flycast's ELAN implementation.
 // All triangle input still comes directly from the game's finalized ICH data.
 
 struct NativeElanFramebufferResult {
@@ -30,6 +33,7 @@ struct NativeElanFramebufferResult {
     uint32_t triangles = 0;
     uint32_t projectionMode = 0;
     uint32_t projectedBatches = 0;
+    uint32_t identityInstanceBatches = 0;
     uint32_t projectionRejectedBatches = 0;
     uint32_t projectionRejectedTriangles = 0;
     uint32_t projectionVertices = 0;
@@ -39,6 +43,9 @@ struct NativeElanFramebufferResult {
     uint32_t projectionValidVertices = 0;
     uint32_t projectionViewportRejectedTriangles = 0;
     uint32_t projectionNearClippedTriangles = 0;
+    uint32_t projectionNearOutsideTriangles = 0;
+    uint32_t projectionNearClipFailedTriangles = 0;
+    uint32_t projectionNonFiniteTriangles = 0;
     uint32_t nearFarCulledBatches = 0;
     uint32_t diagnosticExcludedBatches = 0;
     uint32_t uvBatches = 0;
@@ -50,7 +57,37 @@ struct NativeElanFramebufferResult {
     uint32_t texturedBatches = 0;
     uint32_t unsupportedTextureBatches = 0;
     uint32_t texturedTriangles = 0;
+    std::array<uint32_t, 8> sourceBlendBatches{};
+    std::array<uint32_t, 8> destinationBlendBatches{};
+    uint32_t useAlphaBatches = 0;
+    uint32_t offsetColorBatches = 0;
+    uint32_t sourceSelectBatches = 0;
+    uint32_t destinationSelectBatches = 0;
     uint32_t lightModeledBatches = 0;
+    uint32_t gouraudBatches = 0;
+    uint32_t flatShadedBatches = 0;
+    std::array<uint32_t, 4> fogModeBatches{};
+    uint32_t colorClampBatches = 0;
+    std::array<uint32_t, 8> listTypeBatches{};
+    std::array<uint32_t, 8> listTypeTriangles{};
+    std::array<uint64_t, 8> listTypeRasterPixels{};
+    uint32_t shadowedBatches = 0;
+    uint32_t openModifierVolumeBatches = 0;
+    uint32_t modifierVolumeBatches = 0;
+    uint32_t modifierVolumeTriangles = 0;
+    uint64_t modifierDepthPixels = 0;
+    uint64_t modifierFinalizePixels = 0;
+    uint64_t modifierShadowPixels = 0;
+    uint32_t modifierVolumes = 0;
+    uint32_t punchAlphaTest = 0;
+    uint64_t punchAlphaTestedPixels = 0;
+    uint64_t punchAlphaRejectedPixels = 0;
+    uint32_t volumeFlagBatches = 0;
+    uint32_t twoVolumeBatches = 0;
+    uint32_t twoVolumeVertexColorBatches = 0;
+    uint32_t twoVolumeSecondTextureBatches = 0;
+    uint32_t translucentAutosort = 0;
+    uint32_t autosortedTranslucentTriangles = 0;
     uint64_t uvVertices = 0;
     uint64_t texturedPixels = 0;
     uint64_t litVertices = 0;
@@ -72,15 +109,120 @@ struct NativeElanFramebufferImage {
 
 class NativeElanDiagnosticFramebuffer {
 public:
+    // The submitted-scene queue contains intermediate ELAN construction
+    // passes as well as complete frames. Select the scene with the most
+    // prevalidated captured-projection geometry in the bounded recent window,
+    // breaking ties toward the newest scene. Raw resident snapshots without
+    // projection/instance state must not outrank a drawable frame. Legacy
+    // callers that do not populate presentation counts retain the original
+    // unique-vertex/raw-batch scoring.
+    static size_t selectMostCompleteRecentScene(
+            const std::vector<NativeElanFrameScene>& scenes) {
+        if (scenes.empty()) return 0u;
+        const bool havePresentationCounts = std::any_of(
+            scenes.begin(), scenes.end(), [](const NativeElanFrameScene& scene) {
+                return scene.presentationVertices != 0u ||
+                       scene.presentationBatches != 0u;
+            });
+        const auto vertexScore = [havePresentationCounts](
+                const NativeElanFrameScene& scene) {
+            return havePresentationCounts
+                ? scene.presentationVertices : scene.uniqueVertices;
+        };
+        const auto batchScore = [havePresentationCounts](
+                const NativeElanFrameScene& scene) {
+            return havePresentationCounts
+                ? scene.presentationBatches : scene.rawBatches;
+        };
+        size_t selected = 0u;
+        for (size_t i = 1u; i < scenes.size(); ++i) {
+            const auto& candidate = scenes[i];
+            const auto& best = scenes[selected];
+            const uint32_t candidateVertices = vertexScore(candidate);
+            const uint32_t bestVertices = vertexScore(best);
+            const uint32_t candidateBatches = batchScore(candidate);
+            const uint32_t bestBatches = batchScore(best);
+            if (candidateVertices > bestVertices ||
+                (candidateVertices == bestVertices &&
+                 candidateBatches > bestBatches) ||
+                (candidateVertices == bestVertices &&
+                 candidateBatches == bestBatches &&
+                 candidate.frame >= best.frame))
+                selected = i;
+        }
+        return selected;
+    }
+
+    // Deterministic regression seam for Flycast's 128x2 linear fog-table
+    // lookup. Production rendering calls the same private implementation.
+    static float samplePvrFogCoefficientForTest(
+            const NativePvrFogState& fog, float depth) {
+        return fogCoefficient(fog, depth);
+    }
+
+    static std::vector<size_t> pvrTranslucentDepthOrderForTest(
+            const std::vector<float>& depths) {
+        std::vector<size_t> order;
+        order.reserve(depths.size());
+        for (size_t i = 0u; i < depths.size(); ++i) order.push_back(i);
+        std::stable_sort(order.begin(), order.end(),
+            [&](size_t lhs, size_t rhs) {
+                return translucentDepthLess(depths[lhs], depths[rhs]);
+            });
+        return order;
+    }
+
+    // Deterministic regression seams for the exact low stencil-bit
+    // operations used by the production modifier-volume rasterizer.
+    static uint8_t pvrModifierDepthPassForTest(
+            uint8_t stencil, bool depthPass, bool useOr) {
+        applyModifierDepthPass(stencil, depthPass, useOr);
+        return stencil;
+    }
+
+    static uint8_t pvrModifierFinalizeForTest(uint8_t stencil, uint8_t mode) {
+        finalizeModifierStencil(stencil, mode);
+        return stencil;
+    }
+
+    static uint8_t pvrModifierShadowScaleForTest(uint8_t color, uint8_t scale) {
+        return scaleModifierShadowChannel(color, scale);
+    }
+
+    static std::array<uint8_t, 2> pvrModifierShadowPixelForTest(
+            uint8_t color, uint8_t stencilValue, uint8_t scale) {
+        std::vector<uint8_t> rgb{color, color, color};
+        std::vector<uint8_t> stencil{stencilValue};
+        applyModifierShadow(rgb, 1u, 1u, stencil, scale);
+        return {rgb[0], stencil[0]};
+    }
+
+    static bool pvrPunchThroughAlphaPassForTest(
+            uint8_t alpha, uint32_t alphaReference) {
+        return punchThroughAlphaPass(alpha, alphaReference);
+    }
+
+    static std::array<uint8_t, 2> pvrListDepthStateForTest(
+            uint32_t pcw, uint32_t ispTsp, uint32_t tsp,
+            bool autosortTranslucent) {
+        RasterState state = decodeRasterState(pcw, ispTsp, tsp);
+        applyPvrListDepthState(state, autosortTranslucent);
+        return {state.depthMode, state.depthWrite ? uint8_t{1u} : uint8_t{0u}};
+    }
+
     static NativeElanFramebufferImage renderLatestSceneRgb(
         const std::vector<NativeElanFrameScene>& scenes,
         uint32_t width = 640u, uint32_t height = 480u,
-        const std::vector<uint8_t>* naomi2Vram = nullptr) {
+        const std::vector<uint8_t>* naomi2Vram = nullptr,
+        size_t sceneIndex = std::numeric_limits<size_t>::max()) {
         NativeElanFramebufferImage image{};
+        const auto timingBegin = std::chrono::steady_clock::now();
         auto& result = image.result;
         result.width = width;
         result.height = height;
         const bool useCapturedProjection = capturedProjectionRequested();
+        const bool useIdentityInstance = useCapturedProjection && identityInstanceRequested();
+        const float identityMinFocal = identityMinimumFocalLength();
         const bool traceLighting = lightingTraceRequested();
         const char* ownerBmpPath = pixelOwnerBmpPathRequested();
         const bool tracePixelOwners = pixelOwnerTraceRequested() || ownerBmpPath != nullptr;
@@ -90,9 +232,33 @@ public:
             width > 4096u || height > 4096u)
             return image;
 
-        const NativeElanFrameScene& scene = scenes.back();
+        const NativeElanFrameScene& scene = sceneIndex < scenes.size()
+            ? scenes[sceneIndex] : scenes.back();
+        // Fog A/B disables only fog/clamp evaluation. Other frame-bound PVR
+        // registers in this state (punch alpha and shadow scale) remain live.
+        NativePvrFogState renderFog = scene.fog;
+        if (!pvrFogRequested()) renderFog.valid = false;
+        const bool autosortTranslucent = useCapturedProjection &&
+            scene.fog.translucentAutosort && pvrAutosortRequested();
+        result.translucentAutosort = autosortTranslucent ? 1u : 0u;
+        const bool modifierVolumes = useCapturedProjection &&
+            pvrModifierVolumesRequested();
+        result.modifierVolumes = modifierVolumes ? 1u : 0u;
+        result.punchAlphaTest = pvrPunchAlphaRequested() ? 1u : 0u;
         result.sceneFrame = scene.frame;
         std::vector<const NativeElanDrawBatch*> batches;
+        // Command-port traversal legitimately revisits shared ELAN streams,
+        // which can leave several thousand candidate batches in one frame.
+        // The original exact duplicate pass compared every candidate against
+        // every accepted batch and became quadratic on those production
+        // scenes.  Bucket by an exact-field hash first, then retain the full
+        // equality check inside the bucket so collisions cannot change output.
+        // The bucket key deliberately samples the geometry instead of hashing
+        // every vertex; equal geometry is guaranteed to share the sample, and
+        // unequal geometry that collides is rejected by the exact check.
+        std::unordered_map<uint64_t, std::vector<const NativeElanDrawBatch*>>
+            duplicateBuckets;
+        duplicateBuckets.reserve(scene.draws.size());
         for (const auto& draw : scene.draws) {
             const auto& batch = draw.batch;
             if (batch.vertexCount < 3u || batch.vertices.size() != batch.vertexCount ||
@@ -100,23 +266,31 @@ public:
                 ++result.rejectedBatches;
                 continue;
             }
-            if (useCapturedProjection && (!batch.projection.valid || !batch.instance.valid)) {
+            const bool identityAllowed = useIdentityInstance &&
+                std::fabs(batch.projection.fx) >= identityMinFocal &&
+                std::fabs(batch.projection.fy) >= identityMinFocal;
+            if (useCapturedProjection &&
+                (!batch.projection.valid || (!batch.instance.valid && !identityAllowed))) {
                 ++result.rejectedBatches;
                 ++result.projectionRejectedBatches;
                 continue;
             }
-            if (batchDiagnosticallyExcluded(batch.ichOffset)) {
+            if (batchDiagnosticallyExcluded(
+                    batch.ichOffset, draw.sourceRootOffset)) {
                 ++result.diagnosticExcludedBatches;
                 continue;
             }
             if (useCapturedProjection && nearFarCullEnabled() &&
-                !batchBetweenNearAndFar(batch)) {
+                !batchBetweenNearAndFar(batch,
+                    projectionInstance(batch, useIdentityInstance))) {
                 ++result.rejectedBatches;
                 ++result.nearFarCulledBatches;
                 continue;
             }
+            const uint64_t duplicateKey = deduplicationHash(batch, useCapturedProjection);
+            auto& duplicateCandidates = duplicateBuckets[duplicateKey];
             bool duplicate = false;
-            for (const NativeElanDrawBatch* prior : batches) {
+            for (const NativeElanDrawBatch* prior : duplicateCandidates) {
                 if (sameGeometry(*prior, batch) &&
                     (!useCapturedProjection || sameRenderState(*prior, batch))) {
                     duplicate = true;
@@ -127,12 +301,17 @@ public:
                 ++result.duplicateGeometryBatches;
                 continue;
             }
+            duplicateCandidates.push_back(&batch);
             batches.push_back(&batch);
+            if (useCapturedProjection && !batch.instance.valid && useIdentityInstance)
+                ++result.identityInstanceBatches;
         }
         result.acceptedBatches = static_cast<uint32_t>(batches.size());
         if (batches.empty()) return image;
+        const auto timingFiltered = std::chrono::steady_clock::now();
 
         traceTextureStates(batches, naomi2Vram, result);
+        const auto timingInventoried = std::chrono::steady_clock::now();
 
         // ELAN command submission may interleave TA list types, but the PVR
         // renders them as separate lists. Preserve order within each list and
@@ -141,8 +320,8 @@ public:
         const auto listOrder = [](const NativeElanDrawBatch* batch) {
             switch ((batch->pcw >> 24u) & 7u) {
                 case 0u: return 0u; // opaque
-                case 1u: return 1u; // opaque modifier volume
-                case 4u: return 2u; // punch-through
+                case 4u: return 1u; // punch-through
+                case 1u: return 2u; // opaque modifier volume
                 case 2u: return 3u; // translucent
                 case 3u: return 4u; // translucent modifier volume
                 default: return 5u;
@@ -156,32 +335,38 @@ public:
         if (useCapturedProjection && capturedProjectionTraceRequested()) {
             std::vector<const NativeElanDrawBatch*> uniqueStates;
             for (const NativeElanDrawBatch* batch : batches) {
+                const auto& instance = projectionInstance(*batch, useIdentityInstance);
                 const auto same = std::find_if(uniqueStates.begin(), uniqueStates.end(),
                     [&](const NativeElanDrawBatch* prior) {
+                        const auto& priorInstance =
+                            projectionInstance(*prior, useIdentityInstance);
                         return prior->projection.fx == batch->projection.fx &&
                                prior->projection.tx == batch->projection.tx &&
                                prior->projection.fy == batch->projection.fy &&
                                prior->projection.ty == batch->projection.ty &&
-                               prior->instance.nearValue == batch->instance.nearValue &&
-                               prior->instance.farValue == batch->instance.farValue &&
-                               prior->instance.inverseNear == batch->instance.inverseNear &&
-                               prior->instance.transform == batch->instance.transform;
+                               priorInstance.envMapUOffset == instance.envMapUOffset &&
+                               priorInstance.envMapVOffset == instance.envMapVOffset &&
+                               priorInstance.nearValue == instance.nearValue &&
+                               priorInstance.farValue == instance.farValue &&
+                               priorInstance.inverseNear == instance.inverseNear &&
+                               priorInstance.normalTransform == instance.normalTransform &&
+                               priorInstance.transform == instance.transform;
                     });
                 if (same != uniqueStates.end()) continue;
                 uniqueStates.push_back(batch);
                 if (uniqueStates.size() > 16u) continue;
-                const auto& m = batch->instance.transform;
+                const auto& m = instance.transform;
                 std::fprintf(stderr,
                     "[NATIVE-ELAN-PROJECTION-STATE] index=%zu ich=%08X instance=%08X "
                     "projection=%08X guest_sequence=%llu guest_outer_pr=%08X "
                     "near=%.9g far=%.9g inv_near=%.9g "
                     "matrix=%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g "
                     "proj=%.9g,%.9g,%.9g,%.9g\n",
-                    uniqueStates.size() - 1u, batch->ichOffset, batch->instance.offset,
+                    uniqueStates.size() - 1u, batch->ichOffset, instance.offset,
                     batch->projection.offset,
-                    static_cast<unsigned long long>(batch->instance.guestSubmitSequence),
-                    batch->instance.guestOuterPr, batch->instance.nearValue,
-                    batch->instance.farValue, batch->instance.inverseNear,
+                    static_cast<unsigned long long>(instance.guestSubmitSequence),
+                    instance.guestOuterPr, instance.nearValue,
+                    instance.farValue, instance.inverseNear,
                     m[0], m[1], m[2], m[3], m[4], m[5],
                     m[6], m[7], m[8], m[9], m[10], m[11],
                     batch->projection.fx, batch->projection.tx,
@@ -198,11 +383,20 @@ public:
         float minY = 0.0f;
         float maxX = 1.0f;
         float maxY = 1.0f;
+        const float fitTrimPercent = diagnosticFitTrimPercent();
+        std::vector<float> fitX;
+        std::vector<float> fitY;
         if (!useCapturedProjection) {
             minX = std::numeric_limits<float>::infinity();
             minY = std::numeric_limits<float>::infinity();
             maxX = -std::numeric_limits<float>::infinity();
             maxY = -std::numeric_limits<float>::infinity();
+            if (fitTrimPercent > 0.0f) {
+                size_t fitVertices = 0u;
+                for (const auto* batch : batches) fitVertices += batch->vertices.size();
+                fitX.reserve(fitVertices);
+                fitY.reserve(fitVertices);
+            }
         }
         for (const auto* batch : batches) {
             result.vertices += batch->vertexCount;
@@ -212,8 +406,27 @@ public:
                     minY = std::min(minY, v.y);
                     maxX = std::max(maxX, v.x);
                     maxY = std::max(maxY, v.y);
+                    if (fitTrimPercent > 0.0f) {
+                        fitX.push_back(v.x);
+                        fitY.push_back(v.y);
+                    }
                 }
             }
+        }
+        if (!useCapturedProjection && fitTrimPercent > 0.0f && fitX.size() >= 8u) {
+            std::sort(fitX.begin(), fitX.end());
+            std::sort(fitY.begin(), fitY.end());
+            const size_t trim = std::min<size_t>(
+                static_cast<size_t>(static_cast<double>(fitX.size()) *
+                                    fitTrimPercent / 100.0),
+                (fitX.size() - 2u) / 2u);
+            minX = fitX[trim];
+            maxX = fitX[fitX.size() - 1u - trim];
+            minY = fitY[trim];
+            maxY = fitY[fitY.size() - 1u - trim];
+            std::fprintf(stderr,
+                "[NATIVE-ELAN-FIT] trim_percent=%.3f vertices=%zu bounds=%.9g,%.9g,%.9g,%.9g\n",
+                fitTrimPercent, fitX.size(), minX, minY, maxX, maxY);
         }
         const float spanX = std::max(maxX - minX, 1.0e-6f);
         const float spanY = std::max(maxY - minY, 1.0e-6f);
@@ -237,6 +450,11 @@ public:
         if (useCapturedProjection)
             depth.assign(static_cast<size_t>(width) * height,
                          -std::numeric_limits<float>::infinity());
+        // Flycast uses bit 7 to mark pixels that accept modifier shadows and
+        // low bits 1:0 to accumulate/finalize modifier-volume coverage.
+        std::vector<uint8_t> stencil;
+        if (modifierVolumes)
+            stencil.assign(static_cast<size_t>(width) * height, 0u);
         std::vector<uint32_t> pixelOwners;
         if (tracePixelOwners)
             pixelOwners.assign(static_cast<size_t>(width) * height,
@@ -251,41 +469,214 @@ public:
             {96u, 154u, 220u}, {212u, 132u, 96u}, {126u, 188u, 122u},
             {186u, 126u, 198u}, {204u, 184u, 100u}
         };
-        std::vector<TextureCacheEntry> textureCache;
-        textureCache.reserve(result.uniqueTextureStates);
+        // Decoded PVR textures are immutable until their backing VRAM bytes
+        // change.  Re-decoding up to 155 large textures for every preview
+        // frame made the Windows heap retain several gigabytes in seconds.
+        // Keep a bounded per-render-thread cache and validate each texture by
+        // its exact VRAM hash once per frame before reuse.
+        static thread_local std::vector<TextureCacheEntry> textureCache;
+        static thread_local uint64_t textureCacheGeneration = 0u;
+        ++textureCacheGeneration;
+        if (textureCache.capacity() < 256u) textureCache.reserve(256u);
+        const auto textureFingerprint = [&](uint32_t tsp, uint32_t tcw) {
+            const uint32_t width = 8u << ((tsp >> 3u) & 7u);
+            const uint32_t height = 8u << (tsp & 7u);
+            const uint32_t address = (tcw & 0x001FFFFFu) << 3u;
+            const bool stride = (tcw & (1u << 25u)) != 0u;
+            const uint32_t pixelFormat = (tcw >> 27u) & 7u;
+            const bool vq = (tcw & (1u << 30u)) != 0u;
+            const bool mipmapped = (tcw & (1u << 31u)) != 0u;
+            uint32_t bytes = 0u;
+            uint32_t hash = 0u;
+            if (!stride && !vq && !mipmapped && pixelFormat <= 2u) {
+                bytes = textureStorageBytes(
+                    width, height, pixelFormat, false, false);
+                uint32_t nonzero = 0u;
+                hash = hashVramRange(naomi2Vram, address, bytes, nonzero);
+                if (!naomi2Vram || bytes == 0u ||
+                    address > naomi2Vram->size() ||
+                    bytes > naomi2Vram->size() - address) {
+                    bytes = 0u;
+                    hash = 0u;
+                }
+            }
+            return std::pair<uint32_t, uint32_t>{bytes, hash};
+        };
+        struct DeferredTriangle {
+            Point a{};
+            Point b{};
+            Point c{};
+            RasterState rasterState{};
+            float sortDepth = 0.0f;
+            uint32_t batchIndex = 0u;
+            size_t textureCacheIndex = std::numeric_limits<size_t>::max();
+        };
+        struct ModifierTriangle {
+            Point a{};
+            Point b{};
+            Point c{};
+        };
+        std::vector<DeferredTriangle> translucentTriangles;
+        std::vector<ModifierTriangle> modifierGroup;
+        const auto timingRasterBegin = std::chrono::steady_clock::now();
+        bool opaqueModifierPassFinished = false;
+        const auto finishOpaqueModifierPass = [&]() {
+            if (opaqueModifierPassFinished) return;
+            if (modifierVolumes) {
+                result.modifierShadowPixels += applyModifierShadow(
+                    rgb, width, height, stencil,
+                    static_cast<uint8_t>(scene.fog.shadeScale & 0xFFu));
+            }
+            modifierGroup.clear();
+            opaqueModifierPassFinished = true;
+        };
+        const auto flushTranslucent = [&]() {
+            if (translucentTriangles.empty()) return;
+            // Flycast sortTriangles uses the minimum Naomi 2 projected Z for
+            // each primitive and a stable ascending sort. PVR depth is 1/-Z,
+            // so this draws farther triangles before nearer triangles while
+            // retaining submission order for equal depths.
+            std::stable_sort(translucentTriangles.begin(), translucentTriangles.end(),
+                [](const DeferredTriangle& lhs, const DeferredTriangle& rhs) {
+                    return translucentDepthLess(lhs.sortDepth, rhs.sortDepth);
+                });
+            for (const DeferredTriangle& triangle : translucentTriangles) {
+                const TextureBinding* triangleTexture =
+                    triangle.textureCacheIndex < textureCache.size()
+                        ? &textureCache[triangle.textureCacheIndex].binding : nullptr;
+                const uint64_t pixels = fillTriangle(
+                    rgb, alpha, secondaryRgb, secondaryAlpha, width, height,
+                    triangle.a, triangle.b, triangle.c, &depth,
+                    triangleTexture,
+                    triangle.rasterState, renderFog,
+                    modifierVolumes ? &stencil : nullptr,
+                    &result.punchAlphaTestedPixels,
+                    &result.punchAlphaRejectedPixels,
+                    tracePixelOwners ? &pixelOwners : nullptr,
+                    triangle.batchIndex);
+                result.texturedPixels += pixels;
+                result.listTypeRasterPixels[2] += pixels;
+                if (triangle.textureCacheIndex < textureCache.size())
+                    textureCache[triangle.textureCacheIndex].rasterPixels += pixels;
+            }
+            translucentTriangles.clear();
+        };
         for (size_t bi = 0; bi < batches.size(); ++bi) {
             const auto& batch = *batches[bi];
             const auto& vertices = batch.vertices;
+            const uint32_t listType = (batch.pcw >> 24u) & 7u;
+            if (listType != 2u) flushTranslucent();
+            // The classic Flycast path applies opaque modifier shadows before
+            // any translucent color pass. Stable list sorting above makes
+            // this the single transition out of the modifier stage.
+            if (listOrder(&batch) > 2u) finishOpaqueModifierPass();
+            ++result.listTypeBatches[listType];
+            const uint32_t submittedPcw = effectivePcw(batch);
+            const uint32_t effectiveTsp0 = effectiveTsp(batch, batch.tsp0, false);
+            if ((submittedPcw & (1u << 7u)) != 0u)
+                ++result.shadowedBatches;
+            if ((submittedPcw & (1u << 6u)) != 0u)
+                ++result.volumeFlagBatches;
+            const uint32_t effectiveTsp1 = effectiveTsp(batch, batch.tsp1, true);
+            const bool twoVolume = listType != 2u && listType != 3u &&
+                (submittedPcw & (3u << 6u)) == (3u << 6u) &&
+                effectiveTsp1 != 0xFFFFFFFFu;
+            if (twoVolume) {
+                ++result.twoVolumeBatches;
+                if (batch.flags == 0x042u || batch.flags == 0x04Au)
+                    ++result.twoVolumeVertexColorBatches;
+                if ((submittedPcw & (1u << 3u)) != 0u &&
+                    (effectiveTsp1 != effectiveTsp0 || batch.tcw1 != batch.tcw0))
+                    ++result.twoVolumeSecondTextureBatches;
+            }
+            if (modelStateEnabled() && batch.model.valid && batch.model.openVolume)
+                ++result.openModifierVolumeBatches;
+            if (listType == 1u) ++result.modifierVolumeBatches;
+            const auto& renderInstance = projectionInstance(batch, useIdentityInstance);
             // ELAN Model command state, applied exactly as Flycast's
             // setStateParams does: the model TSP is XORed into the polygon
             // TSP and the ISP cull mode is XORed with cullingReversed and the
             // left-handed projection flip.
-            const uint32_t effectiveTsp0 = effectiveTsp(batch, batch.tsp0);
-            const RasterState rasterState =
-                decodeRasterState(batch.pcw, effectiveIspTsp(batch), effectiveTsp0);
+            RasterState rasterState = decodeRasterState(
+                submittedPcw, effectiveIspTsp(batch), effectiveTsp0);
+            applyPvrListDepthState(rasterState, autosortTranslucent);
+            rasterState.tileClip = batch.tileClip;
+            if (listType == 1u || listType == 3u) {
+                // Flycast sendMVPolygon uses the raw modifier ISP. Closed
+                // volumes force CullMode=0; open volumes retain the list ISP.
+                const bool openVolume = modelStateEnabled() && batch.model.valid &&
+                    batch.model.openVolume;
+                rasterState.cullMode = openVolume
+                    ? static_cast<uint8_t>((batch.ispTsp >> 27u) & 3u) : 0u;
+                rasterState.modifierMode =
+                    static_cast<uint8_t>((batch.ispTsp >> 29u) & 3u);
+                rasterState.volumeLast = (batch.pcw & (1u << 6u)) != 0u;
+                rasterState.depthWrite = false;
+            }
+            ++result.sourceBlendBatches[rasterState.srcBlend & 7u];
+            ++result.destinationBlendBatches[rasterState.dstBlend & 7u];
+            result.useAlphaBatches += rasterState.useAlpha ? 1u : 0u;
+            result.offsetColorBatches += rasterState.offset ? 1u : 0u;
+            result.sourceSelectBatches += rasterState.srcSelect ? 1u : 0u;
+            result.destinationSelectBatches += rasterState.dstSelect ? 1u : 0u;
+            if (rasterState.gouraud)
+                ++result.gouraudBatches;
+            else
+                ++result.flatShadedBatches;
+            ++result.fogModeBatches[(effectiveTsp0 >> 22u) & 3u];
+            if ((effectiveTsp0 & (1u << 21u)) != 0u)
+                ++result.colorClampBatches;
             const uint64_t pixelsBeforeBatch = result.texturedPixels;
             const uint8_t* fallback = palette[bi % (sizeof(palette) / sizeof(palette[0]))];
             if (batch.lightModel.valid) ++result.lightModeledBatches;
             const bool environmentMapped = batch.material.valid &&
-                (batch.material.words[2] & (1u << 11u)) != 0u && batch.instance.valid;
+                (batch.material.words[2] & (1u << 11u)) != 0u && renderInstance.valid;
             const bool batchHasUv = std::any_of(vertices.begin(), vertices.end(),
                 [](const NativeElanVertexSample& vertex) { return vertex.hasUv; }) ||
                 environmentMapped;
-            const bool batchTextured = (batch.pcw & (1u << 3u)) != 0u && batchHasUv;
+            const bool batchTextured = (submittedPcw & (1u << 3u)) != 0u && batchHasUv;
             const TextureBinding* textureBinding = nullptr;
             TextureCacheEntry* textureEntry = nullptr;
+            size_t textureCacheIndex = std::numeric_limits<size_t>::max();
             if (batchTextured) {
                 auto cached = std::find_if(textureCache.begin(), textureCache.end(),
                     [&](const TextureCacheEntry& entry) {
                         return entry.tsp == effectiveTsp0 && entry.tcw == batch.tcw0;
                     });
                 if (cached == textureCache.end()) {
-                    textureCache.push_back({effectiveTsp0, batch.tcw0,
-                        decodeTextureBinding(effectiveTsp0, batch.tcw0, naomi2Vram)});
+                    TextureCacheEntry entry{};
+                    entry.tsp = effectiveTsp0;
+                    entry.tcw = batch.tcw0;
+                    const auto fingerprint = textureFingerprint(
+                        effectiveTsp0, batch.tcw0);
+                    entry.vramBytes = fingerprint.first;
+                    entry.vramHash = fingerprint.second;
+                    entry.binding = decodeTextureBinding(
+                        effectiveTsp0, batch.tcw0, naomi2Vram);
+                    entry.validationGeneration = textureCacheGeneration;
+                    textureCache.push_back(std::move(entry));
                     cached = textureCache.end() - 1;
-                    if (cached->binding.valid) ++result.decodedTextureStates;
+                } else if (cached->validationGeneration != textureCacheGeneration) {
+                    cached->firstIch = 0u;
+                    cached->batches = 0u;
+                    cached->vertices = 0u;
+                    cached->rasterPixels = 0u;
+                    const auto fingerprint = textureFingerprint(
+                        effectiveTsp0, batch.tcw0);
+                    if (cached->vramBytes != fingerprint.first ||
+                        cached->vramHash != fingerprint.second) {
+                        cached->binding = decodeTextureBinding(
+                            effectiveTsp0, batch.tcw0, naomi2Vram);
+                        cached->vramBytes = fingerprint.first;
+                        cached->vramHash = fingerprint.second;
+                    }
+                    cached->validationGeneration = textureCacheGeneration;
                 }
+                if (cached->batches == 0u && cached->binding.valid)
+                    ++result.decodedTextureStates;
                 textureEntry = &*cached;
+                textureCacheIndex = static_cast<size_t>(
+                    std::distance(textureCache.begin(), cached));
                 if (textureEntry->firstIch == 0u)
                     textureEntry->firstIch = batch.ichOffset;
                 ++textureEntry->batches;
@@ -303,9 +694,9 @@ public:
                 const VertexColors colors = shadeVertexColors(batch, v, fallback);
                 result.litVertices += colors.lit ? 1u : 0u;
                 if (useCapturedProjection) {
-                    Point point = projectVertex(v, batch.instance, batch.projection, result);
+                    Point point = projectVertex(v, renderInstance, batch.projection, result);
                     if (environmentMapped)
-                        applyEnvironmentMap(batch.instance, v, point.u, point.v, point.hasUv);
+                        applyEnvironmentMap(renderInstance, v, point.u, point.v, point.hasUv);
                     point.argb = colors.base;
                     point.offsetArgb = colors.offset;
                     points.push_back(point);
@@ -319,7 +710,7 @@ public:
                     point.offsetArgb = colors.offset;
                     point.hasUv = v.hasUv;
                     if (environmentMapped)
-                        applyEnvironmentMap(batch.instance, v, point.u, point.v, point.hasUv);
+                        applyEnvironmentMap(renderInstance, v, point.u, point.v, point.hasUv);
                     point.valid = true;
                     points.push_back(point);
                 }
@@ -329,13 +720,78 @@ public:
             uint32_t batchTriangles = 0u;
             uint32_t batchCulled = 0u;
             uint32_t batchDrawn = 0u;
+            const uint32_t trianglesBeforeBatch = result.triangles;
+            std::vector<ModifierTriangle> batchModifierTriangles;
+            const auto pvrProjectedDepth = [](const Point& point) {
+                if (!std::isfinite(point.eyeZ) || point.eyeZ == 0.0f)
+                    return -std::numeric_limits<float>::infinity();
+                return -1.0f / point.eyeZ;
+            };
+            const auto rasterOrDefer = [&](const Point& a, const Point& b,
+                                           const Point& c,
+                                           const TextureBinding* triangleTexture,
+                                           float sortDepth) {
+                if (autosortTranslucent && listType == 2u) {
+                    DeferredTriangle triangle{};
+                    triangle.a = a;
+                    triangle.b = b;
+                    triangle.c = c;
+                    triangle.rasterState = rasterState;
+                    triangle.sortDepth = sortDepth;
+                    triangle.batchIndex = static_cast<uint32_t>(bi);
+                    triangle.textureCacheIndex = triangleTexture
+                        ? textureCacheIndex : std::numeric_limits<size_t>::max();
+                    translucentTriangles.push_back(std::move(triangle));
+                    ++result.autosortedTranslucentTriangles;
+                    return uint32_t{0u};
+                }
+                if (useCapturedProjection && listType == 1u) {
+                    batchModifierTriangles.push_back({a, b, c});
+                    if (modifierVolumes) {
+                        const bool useOr = !rasterState.volumeLast &&
+                            rasterState.modifierMode > 0u;
+                        result.modifierDepthPixels += rasterizeModifierDepth(
+                            width, height, a, b, c, depth, stencil,
+                            rasterState, useOr);
+                    }
+                    return uint32_t{0u};
+                }
+                return fillTriangle(
+                    rgb, alpha, secondaryRgb, secondaryAlpha,
+                    width, height, a, b, c,
+                    useCapturedProjection ? &depth : nullptr,
+                    triangleTexture, rasterState, renderFog,
+                    modifierVolumes ? &stencil : nullptr,
+                    &result.punchAlphaTestedPixels,
+                    &result.punchAlphaRejectedPixels,
+                    tracePixelOwners ? &pixelOwners : nullptr,
+                    static_cast<uint32_t>(bi));
+            };
             const auto renderTriangle = [&](size_t a, size_t b, size_t c) {
                 ++batchTriangles;
+                const float sortDepth = std::min({
+                    pvrProjectedDepth(points[a]), pvrProjectedDepth(points[b]),
+                    pvrProjectedDepth(points[c])});
                 if (useCapturedProjection &&
                     (!points[a].valid || !points[b].valid || !points[c].valid)) {
-                    const auto clipped = clipNearTriangle(
-                        points[a], points[b], points[c], batch.instance, batch.projection);
+                    if (!points[a].finiteEye || !points[b].finiteEye ||
+                        !points[c].finiteEye) {
+                        ++result.projectionNonFiniteTriangles;
+                        ++result.projectionRejectedTriangles;
+                        return;
+                    }
+                    auto clipped = clipNearTriangle(
+                        points[a], points[b], points[c], renderInstance, batch.projection);
                     if (clipped.size() >= 3u) {
+                        // Dreamcast/NAOMI uses the last vertex as the provoking
+                        // vertex. Clipping creates new vertices, but flat color
+                        // still belongs to the original primitive's last input.
+                        if (!rasterState.gouraud) {
+                            for (Point& point : clipped) {
+                                point.argb = points[c].argb;
+                                point.offsetArgb = points[c].offsetArgb;
+                            }
+                        }
                         ++result.projectionNearClippedTriangles;
                         for (size_t ci = 1u; ci + 1u < clipped.size(); ++ci) {
                             if (!intersectsViewport(clipped[0], clipped[ci], clipped[ci + 1u],
@@ -348,16 +804,20 @@ public:
                                 textureBinding && clipped[0].hasUv && clipped[ci].hasUv &&
                                 clipped[ci + 1u].hasUv ? textureBinding : nullptr;
                             if (triangleTexture) ++result.texturedTriangles;
-                            result.texturedPixels += fillTriangle(
-                                rgb, alpha, secondaryRgb, secondaryAlpha,
-                                width, height, clipped[0], clipped[ci],
-                                clipped[ci + 1u], &depth, triangleTexture, rasterState,
-                                tracePixelOwners ? &pixelOwners : nullptr,
-                                static_cast<uint32_t>(bi));
+                            result.texturedPixels += rasterOrDefer(
+                                clipped[0], clipped[ci], clipped[ci + 1u],
+                                triangleTexture, sortDepth);
                             ++result.triangles;
                         }
                         return;
                     }
+                    const float nearZ =
+                        -std::max(renderInstance.nearValue, 1.0e-6f);
+                    if (points[a].eyeZ > nearZ && points[b].eyeZ > nearZ &&
+                        points[c].eyeZ > nearZ)
+                        ++result.projectionNearOutsideTriangles;
+                    else
+                        ++result.projectionNearClipFailedTriangles;
                     ++result.projectionRejectedTriangles;
                     return;
                 }
@@ -375,13 +835,9 @@ public:
                     ++batchCulled;
                 else
                     ++batchDrawn;
-                result.texturedPixels += fillTriangle(
-                    rgb, alpha, secondaryRgb, secondaryAlpha,
-                    width, height, points[a], points[b], points[c],
-                    useCapturedProjection ? &depth : nullptr, triangleTexture,
-                    rasterState, tracePixelOwners ? &pixelOwners : nullptr,
-                    static_cast<uint32_t>(bi));
-                if (!useCapturedProjection) {
+                result.texturedPixels += rasterOrDefer(
+                    points[a], points[b], points[c], triangleTexture, sortDepth);
+                if (!useCapturedProjection && diagnosticOutlinesEnabled()) {
                     const uint8_t outline[3] = {235u, 235u, 238u};
                     drawLine(rgb, width, height, points[a], points[b], outline);
                     drawLine(rgb, width, height, points[b], points[c], outline);
@@ -431,19 +887,41 @@ public:
                 if ((header & 0x80000000u) != 0u)
                     stripStart = true;
             }
+            if (useCapturedProjection && listType == 1u) {
+                result.modifierVolumeTriangles +=
+                    static_cast<uint32_t>(batchModifierTriangles.size());
+                if (modifierVolumes)
+                    modifierGroup.insert(modifierGroup.end(),
+                        batchModifierTriangles.begin(), batchModifierTriangles.end());
+                if (modifierVolumes &&
+                    (rasterState.modifierMode == 1u ||
+                     rasterState.modifierMode == 2u)) {
+                    for (const ModifierTriangle& triangle : modifierGroup) {
+                        result.modifierFinalizePixels += rasterizeModifierFinalize(
+                            width, height, triangle.a, triangle.b, triangle.c,
+                            stencil, rasterState, rasterState.modifierMode);
+                    }
+                    modifierGroup.clear();
+                }
+            }
             const uint64_t batchPixels = result.texturedPixels - pixelsBeforeBatch;
+            result.listTypeTriangles[listType] +=
+                result.triangles - trianglesBeforeBatch;
+            result.listTypeRasterPixels[listType] += batchPixels;
             if (textureEntry) textureEntry->rasterPixels += batchPixels;
             if (cullTraceRequested())
                 std::fprintf(stderr,
                     "[NATIVE-ELAN-CULL] batch=%zu ich=%08X list=%u pcw=%08X isp=%08X "
                     "tsp=%08X tcw=%08X textured=%u material=%08X params=%08X "
-                    "cull=%u depth_mode=%u depth_write=%u triangles=%u "
+                    "tileclip=%08X model=%u,%08X cull=%u depth_mode=%u depth_write=%u triangles=%u "
                     "drawn=%u culled=%u pixels=%llu\n",
                     bi, batch.ichOffset,
                     static_cast<unsigned>((batch.pcw >> 24u) & 7u),
                     batch.pcw, batch.ispTsp, effectiveTsp0, batch.tcw0,
                     textureBinding ? 1u : 0u, batch.material.offset,
                     batch.material.valid ? batch.material.words[2] : 0u,
+                    batch.tileClip,
+                    batch.model.valid ? 1u : 0u, batch.model.pcw,
                     static_cast<unsigned>(rasterState.cullMode),
                     static_cast<unsigned>(rasterState.depthMode),
                     rasterState.depthWrite ? 1u : 0u,
@@ -473,9 +951,21 @@ public:
                     batch.lights.size(), first.nx, first.ny, first.nz,
                     first.baseArgb, first.offsetArgb,
                     firstColors.base, firstColors.offset, firstColors.lit ? 1u : 0u);
+                for (const NativeElanLightState& light : batch.lights) {
+                    std::fprintf(stderr,
+                        "[NATIVE-ELAN-LIGHT-RECORD] bi=%zu ich=%08X id=%u offset=%08X "
+                        "parallel=%u words=%08X,%08X,%08X,%08X,%08X,%08X,%08X,%08X\n",
+                        bi, batch.ichOffset, light.lightId, light.offset,
+                        light.parallel ? 1u : 0u,
+                        light.words[0], light.words[1], light.words[2], light.words[3],
+                        light.words[4], light.words[5], light.words[6], light.words[7]);
+                }
                 ++tracedLightingBatches;
             }
         }
+        finishOpaqueModifierPass();
+        flushTranslucent();
+        const auto timingRasterDone = std::chrono::steady_clock::now();
 
         if (const char* atlasPath = textureAtlasPathRequested();
             atlasPath && *atlasPath) {
@@ -637,6 +1127,25 @@ public:
         }
 
         image.rgb = std::move(rgb);
+        if (const char* timing = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_TIMING_TRACE");
+            timing && *timing && std::strcmp(timing, "0") != 0) {
+            const auto milliseconds = [](auto begin, auto end) {
+                return std::chrono::duration<double, std::milli>(end - begin).count();
+            };
+            const auto timingDone = std::chrono::steady_clock::now();
+            std::fprintf(stderr,
+                "[NATIVE-ELAN-FRAMEBUFFER-TIMING] frame=%llu batches=%u vertices=%u "
+                "triangles=%u filter_ms=%.3f inventory_ms=%.3f setup_ms=%.3f "
+                "raster_ms=%.3f finalize_ms=%.3f total_ms=%.3f\n",
+                static_cast<unsigned long long>(result.sceneFrame),
+                result.acceptedBatches, result.vertices, result.triangles,
+                milliseconds(timingBegin, timingFiltered),
+                milliseconds(timingFiltered, timingInventoried),
+                milliseconds(timingInventoried, timingRasterBegin),
+                milliseconds(timingRasterBegin, timingRasterDone),
+                milliseconds(timingRasterDone, timingDone),
+                milliseconds(timingBegin, timingDone));
+        }
         return image;
     }
 
@@ -653,6 +1162,44 @@ public:
     }
 
 private:
+    static bool translucentDepthLess(float lhs, float rhs) {
+        return lhs < rhs;
+    }
+
+    static bool pvrFogRequested() {
+        const char* value = std::getenv("IDAS3_NATIVE_PVR_FOG");
+        return !value || !*value || std::strcmp(value, "0") != 0;
+    }
+
+    static bool pvrAutosortRequested() {
+        const char* value = std::getenv("IDAS3_NATIVE_PVR_AUTOSORT");
+        return !value || !*value || std::strcmp(value, "0") != 0;
+    }
+
+    static bool pvrModifierVolumesRequested() {
+        const char* value = std::getenv("IDAS3_NATIVE_PVR_MODIFIER_VOLUMES");
+        return !value || !*value || std::strcmp(value, "0") != 0;
+    }
+
+    static bool pvrPunchAlphaRequested() {
+        const char* value = std::getenv("IDAS3_NATIVE_PVR_PUNCH_ALPHA");
+        return !value || !*value || std::strcmp(value, "0") != 0;
+    }
+
+    static bool diagnosticOutlinesEnabled() {
+        const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_OUTLINES");
+        return value && *value && std::strcmp(value, "0") != 0;
+    }
+
+    static float diagnosticFitTrimPercent() {
+        const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_TRIM_PERCENT");
+        if (!value || !*value) return 0.0f;
+        char* end = nullptr;
+        const float parsed = std::strtof(value, &end);
+        if (end == value || !std::isfinite(parsed)) return 0.0f;
+        return std::clamp(parsed, 0.0f, 45.0f);
+    }
+
     struct Point {
         float x = 0.0f;
         float y = 0.0f;
@@ -682,6 +1229,7 @@ private:
     };
 
     struct RasterState {
+        bool gouraud = true;
         bool useAlpha = false;
         bool offset = false;
         bool srcSelect = false;
@@ -691,12 +1239,26 @@ private:
         uint8_t cullMode = 0u;
         uint8_t depthMode = 6u;
         bool depthWrite = true;
+        uint8_t fogMode = 2u;
+        bool colorClamp = false;
+        uint8_t listType = 0u;
+        bool shadowed = false;
+        uint8_t modifierMode = 0u;
+        bool volumeLast = false;
+        bool punchAlphaTest = false;
+        // PVR User Tile Clip rectangle plus the Model command's clip mode.
+        // Initial D uses this to confine its second camera to the rear-view
+        // mirror instead of presenting it as a full-screen second view.
+        uint32_t tileClip = (39u << 6u) | (14u << 17u);
     };
 
     struct TextureCacheEntry {
         uint32_t tsp = 0u;
         uint32_t tcw = 0u;
         TextureBinding binding{};
+        uint32_t vramBytes = 0u;
+        uint32_t vramHash = 0u;
+        uint64_t validationGeneration = 0u;
         uint32_t firstIch = 0u;
         uint64_t batches = 0u;
         uint64_t vertices = 0u;
@@ -961,14 +1523,73 @@ private:
         // Flycast's Naomi 2 vertex path: UV += normal.xy / 2 + 0.5.
         // Clamp is part of ELAN environment mapping, independent of the PVR
         // texture wrap bits that are applied later by the sampler.
-        u = std::clamp(vertex.u + normal[0] * 0.5f + 0.5f, 0.0f, 1.0f);
-        v = std::clamp(vertex.v + normal[1] * 0.5f + 0.5f, 0.0f, 1.0f);
+        // Flycast seeds in_uv from InstanceMatrix::envMapU/envMapV whenever
+        // GMP selects environment mapping; the Naomi 2 vertex shader then
+        // adds the transformed normal term. The ordinary model UV is not used
+        // for this path.
+        u = std::clamp(instance.envMapUOffset + normal[0] * 0.5f + 0.5f,
+                       0.0f, 1.0f);
+        v = std::clamp(instance.envMapVOffset + normal[1] * 0.5f + 0.5f,
+                       0.0f, 1.0f);
         hasUv = true;
     }
 
     static bool capturedProjectionRequested() {
         const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_PROJECTION");
+        if (value && *value) return std::strcmp(value, "0") != 0;
+        const char* window = std::getenv("IDAS3_NATIVE_WINDOW");
+        return window && *window && std::strcmp(window, "0") != 0;
+    }
+
+    static bool identityInstanceRequested() {
+        const char* value = std::getenv("IDAS3_NATIVE_FRAMEBUFFER_IDENTITY_INSTANCE");
         return value && *value && std::strcmp(value, "0") != 0;
+    }
+
+    // Diagnostic render-pass isolation. Initial D builds multiple ELAN passes
+    // in the same resident ring; their distinct projection focal lengths must
+    // not automatically be composited into one framebuffer. Zero preserves
+    // the unrestricted Flycast identity-matrix A/B behaviour.
+    static float identityMinimumFocalLength() {
+        const char* value =
+            std::getenv("IDAS3_NATIVE_FRAMEBUFFER_IDENTITY_MIN_FOCAL");
+        if (!value || !*value) return 0.0f;
+        char* end = nullptr;
+        const float parsed = std::strtof(value, &end);
+        return end != value && std::isfinite(parsed) && parsed > 0.0f
+            ? parsed : 0.0f;
+    }
+
+    // Flycast assigns IdentityMatIndex when ELAN submits a polygon without an
+    // active Instance command. NativeElanInstanceState stores the unexpanded
+    // ELAN coefficients, so (-1,+1,-1) on the diagonal expands to a true host
+    // identity matrix in projectVertex's ELAN sign convention.
+    static const NativeElanInstanceState& identityInstanceState() {
+        static const NativeElanInstanceState identity = [] {
+            NativeElanInstanceState state{};
+            state.offset = 0xFFFFFFFFu;
+            state.envMapUOffset = 0.0f;
+            state.envMapVOffset = 0.0f;
+            state.nearValue = 0.001f;
+            state.normalTransform = {1.0f, 0.0f, 0.0f,
+                                     0.0f, 1.0f, 0.0f,
+                                     0.0f, 0.0f, 1.0f};
+            state.transform = {-1.0f, 0.0f, 0.0f,
+                                0.0f, 1.0f, 0.0f,
+                                0.0f, 0.0f, -1.0f,
+                                0.0f, 0.0f, 0.0f};
+            state.farValue = 100000.0f;
+            state.inverseNear = 1000.0f;
+            state.valid = true;
+            return state;
+        }();
+        return identity;
+    }
+
+    static const NativeElanInstanceState& projectionInstance(
+            const NativeElanDrawBatch& batch, bool useIdentityInstance) {
+        return batch.instance.valid || !useIdentityInstance
+            ? batch.instance : identityInstanceState();
     }
 
     static bool lightingTraceRequested() {
@@ -1059,9 +1680,38 @@ private:
         return std::signbit(-batch.projection.fx) == std::signbit(batch.projection.fy);
     }
 
-    static uint32_t effectiveTsp(const NativeElanDrawBatch& batch, uint32_t tsp) {
+    static bool environmentMappingSelected(const NativeElanDrawBatch& batch,
+                                           bool secondVolume) {
+        if (!batch.material.valid) return false;
+        const uint32_t bit = secondVolume ? 12u : 11u;
+        return (batch.material.words[2] & (1u << bit)) != 0u;
+    }
+
+    static uint32_t effectiveTsp(const NativeElanDrawBatch& batch, uint32_t tsp,
+                                 bool secondVolume) {
+        // Flycast setStateParams forces environment-mapped volumes to use
+        // texture alpha before applying the model TSP XOR.
+        if (environmentMappingSelected(batch, secondVolume)) {
+            tsp |= 1u << 20u;  // UseAlpha
+            tsp &= ~(1u << 19u); // IgnoreTexA
+        }
         if (!modelStateEnabled() || !batch.model.valid) return tsp;
         return tsp ^ batch.model.tsp;
+    }
+
+    static uint32_t effectivePcw(const NativeElanDrawBatch& batch) {
+        uint32_t pcw = batch.pcw;
+        // curGmp->paramSelect.e0/e1 in Flycast enables texturing and disables
+        // offset color even when the ICH's original object control did not.
+        if (environmentMappingSelected(batch, false) ||
+            environmentMappingSelected(batch, true)) {
+            pcw |= 1u << 3u;   // Texture
+            pcw &= ~(1u << 2u); // Offset
+        }
+        if (modelStateEnabled() && batch.model.valid &&
+            batch.model.shadowedVolume)
+            pcw ^= 1u << 7u;
+        return pcw;
     }
 
     static bool diagFlipCullRequested() {
@@ -1087,8 +1737,9 @@ private:
         return value && *value && std::strcmp(value, "0") != 0;
     }
 
-    static bool batchBetweenNearAndFar(const NativeElanDrawBatch& batch) {
-        if (!batch.instance.valid || batch.vertices.empty()) return true;
+    static bool batchBetweenNearAndFar(const NativeElanDrawBatch& batch,
+                                       const NativeElanInstanceState& instance) {
+        if (!instance.valid || batch.vertices.empty()) return true;
         float minObject[3] = {1.0e38f, 1.0e38f, 1.0e38f};
         float maxObject[3] = {-1.0e38f, -1.0e38f, -1.0e38f};
         for (const auto& v : batch.vertices) {
@@ -1111,7 +1762,7 @@ private:
             maxObject[1] - centerObject[1],
             maxObject[2] - centerObject[2]
         };
-        const auto& m = batch.instance.transform;
+        const auto& m = instance.transform;
         // Eye Z row of the ELAN model-view matrix: -(tm02, tm12, tm22, tm32).
         const float centerZ = -(m[2] * centerObject[0] + m[5] * centerObject[1] +
                                 m[8] * centerObject[2] + m[11]);
@@ -1120,8 +1771,8 @@ private:
                               std::fabs(m[8] * extents[2]);
         const float minZ = centerZ - extentZ;
         const float maxZ = centerZ + extentZ;
-        const float nearPlane = batch.instance.nearValue;
-        const float farPlane = batch.instance.farValue;
+        const float nearPlane = instance.nearValue;
+        const float farPlane = instance.farValue;
         if (!std::isfinite(minZ) || !std::isfinite(maxZ)) return true;
         if (minZ > -nearPlane) return false;
         if (farPlane > 0.0f && maxZ < -farPlane) return false;
@@ -1146,12 +1797,21 @@ private:
         return false;
     }
 
-    static bool batchDiagnosticallyExcluded(uint32_t ichOffset) {
+    static bool batchDiagnosticallyExcluded(uint32_t ichOffset,
+                                             uint32_t sourceRootOffset) {
         bool present = false;
         if (ichInEnvList("IDAS3_NATIVE_DIAG_SKIP_ICH", ichOffset, present)) return true;
         const bool onlyMatch =
             ichInEnvList("IDAS3_NATIVE_DIAG_ONLY_ICH", ichOffset, present);
-        return present && !onlyMatch;
+        if (present && !onlyMatch) return true;
+
+        if (ichInEnvList("IDAS3_NATIVE_DIAG_SKIP_SOURCE_ROOT",
+                         sourceRootOffset, present))
+            return true;
+        const bool onlyRootMatch =
+            ichInEnvList("IDAS3_NATIVE_DIAG_ONLY_SOURCE_ROOT",
+                         sourceRootOffset, present);
+        return present && !onlyRootMatch;
     }
 
     static bool cullTraceRequested() {
@@ -1389,6 +2049,9 @@ private:
 
     static RasterState decodeRasterState(uint32_t pcw, uint32_t ispTsp, uint32_t tsp) {
         RasterState state{};
+        // PCW.Gouraud is copied into ISP/TSP by the TA and is the authoritative
+        // polygon declaration in Flycast's renderer state.
+        state.gouraud = (pcw & (1u << 1u)) != 0u;
         state.useAlpha = (tsp & (1u << 20u)) != 0u;
         state.offset = (pcw & (1u << 2u)) != 0u;
         state.dstSelect = (tsp & (1u << 24u)) != 0u;
@@ -1398,6 +2061,11 @@ private:
         state.cullMode = static_cast<uint8_t>((ispTsp >> 27u) & 3u);
         state.depthMode = static_cast<uint8_t>((ispTsp >> 29u) & 7u);
         state.depthWrite = (ispTsp & (1u << 26u)) == 0u;
+        state.fogMode = static_cast<uint8_t>((tsp >> 22u) & 3u);
+        state.colorClamp = (tsp & (1u << 21u)) != 0u;
+        state.listType = static_cast<uint8_t>((pcw >> 24u) & 7u);
+        state.shadowed = (pcw & (1u << 7u)) != 0u;
+        state.punchAlphaTest = state.listType == 4u && pvrPunchAlphaRequested();
         // PowerVR punch-through polygons use the same fixed depth behavior as
         // Flycast's hardware path: greater-or-equal testing with depth writes
         // enabled, regardless of the polygon's encoded DepthMode/ZWriteDis.
@@ -1409,9 +2077,31 @@ private:
         return state;
     }
 
+    static void applyPvrListDepthState(RasterState& state,
+                                       bool autosortTranslucent) {
+        // Flycast v2.6 SetGPState uses fixed >= depth testing for both
+        // punch-through polygons and auto-sorted translucent polygons. Sorted
+        // translucent fragments do not update depth; punch-through fragments
+        // always do. decodeRasterState already applies the punch-through rule.
+        if (state.listType == 2u && autosortTranslucent) {
+            state.depthMode = 6u;
+            state.depthWrite = false;
+        }
+    }
+
     static int textureIndex(int64_t value, int size, bool clamp, bool flip) {
         if (clamp)
             return static_cast<int>(std::clamp<int64_t>(value, 0, size - 1));
+        // Native PVR texture dimensions are powers of two. Wrapping and
+        // mirrored wrapping can therefore use masks instead of signed 64-bit
+        // division/modulo for every nearest or bilinear texel fetch.
+        if (size > 0 && (size & (size - 1)) == 0) {
+            const uint64_t period = static_cast<uint64_t>(size) * (flip ? 2u : 1u);
+            uint64_t index = static_cast<uint64_t>(value) & (period - 1u);
+            if (flip && index >= static_cast<uint64_t>(size))
+                index = period - 1u - index;
+            return static_cast<int>(index);
+        }
         int64_t period = value / size;
         int64_t index = value % size;
         if (index < 0) {
@@ -1449,17 +2139,34 @@ private:
         const int64_t y0 = static_cast<int64_t>(std::floor(fy));
         const double dx = fx - static_cast<double>(x0);
         const double dy = fy - static_cast<double>(y0);
-        const uint32_t c00 = textureTexel(binding, x0, y0);
-        const uint32_t c10 = textureTexel(binding, x0 + 1, y0);
-        const uint32_t c01 = textureTexel(binding, x0, y0 + 1);
-        const uint32_t c11 = textureTexel(binding, x0 + 1, y0 + 1);
+        // Resolve each wrapped/clamped coordinate once. The four bilinear
+        // texels share two X and two Y coordinates; calling textureTexel four
+        // times used to repeat the power-of-two wrap work eight times for
+        // every shaded pixel.
+        const int ix0 = textureIndex(x0, binding.texture.width,
+                                     binding.clampU, binding.flipU);
+        const int ix1 = textureIndex(x0 + 1, binding.texture.width,
+                                     binding.clampU, binding.flipU);
+        const int iy0 = textureIndex(y0, binding.texture.height,
+                                     binding.clampV, binding.flipV);
+        const int iy1 = textureIndex(y0 + 1, binding.texture.height,
+                                     binding.clampV, binding.flipV);
+        const size_t row0 = static_cast<size_t>(iy0) * binding.texture.width;
+        const size_t row1 = static_cast<size_t>(iy1) * binding.texture.width;
+        const uint32_t c00 = binding.texture.texels[row0 + ix0];
+        const uint32_t c10 = binding.texture.texels[row0 + ix1];
+        const uint32_t c01 = binding.texture.texels[row1 + ix0];
+        const uint32_t c11 = binding.texture.texels[row1 + ix1];
         const auto channel = [&](uint32_t shift) -> uint32_t {
             const double top = static_cast<double>((c00 >> shift) & 0xFFu) * (1.0 - dx) +
                                static_cast<double>((c10 >> shift) & 0xFFu) * dx;
             const double bottom = static_cast<double>((c01 >> shift) & 0xFFu) * (1.0 - dx) +
                                   static_cast<double>((c11 >> shift) & 0xFFu) * dx;
-            return static_cast<uint32_t>(std::clamp(
-                std::lround(top * (1.0 - dy) + bottom * dy), 0l, 255l));
+            // All inputs and bilinear weights are non-negative and bounded by
+            // 255, so round-to-nearest is exactly floor(value + 0.5). Avoid a
+            // general signed lround/clamp call for each of four channels.
+            return static_cast<uint32_t>(
+                top * (1.0 - dy) + bottom * dy + 0.5);
         };
         return (channel(24u) << 24u) | (channel(16u) << 16u) |
                (channel(8u) << 8u) | channel(0u);
@@ -1468,8 +2175,9 @@ private:
     static bool writeTextureAtlas(const std::string& path,
                                   const std::vector<TextureCacheEntry>& entries) {
         if (path.empty() || entries.empty()) return false;
-        constexpr uint32_t columns = 16u;
-        constexpr uint32_t cell = 64u;
+        const uint32_t columns = std::min<uint32_t>(
+            16u, std::max<uint32_t>(1u, static_cast<uint32_t>(entries.size())));
+        constexpr uint32_t cell = 256u;
         const uint32_t rows = static_cast<uint32_t>(
             (entries.size() + columns - 1u) / columns);
         const uint32_t width = columns * cell;
@@ -1518,19 +2226,26 @@ private:
                 ++result.uvBatches;
                 result.uvVertices += uvVertices;
             }
-            const bool pcwTexture = (batch->pcw & (1u << 3u)) != 0u;
+            const uint32_t effectiveTexturePcw = effectivePcw(*batch);
+            const uint32_t effectiveTextureTsp =
+                effectiveTsp(*batch, batch->tsp0, false);
+            const bool environmentMapped =
+                environmentMappingSelected(*batch, false);
+            const bool pcwTexture = (effectiveTexturePcw & (1u << 3u)) != 0u;
             if (pcwTexture) ++result.texturedPcwBatches;
-            if (!pcwTexture || uvVertices == 0u) continue;
+            if (!pcwTexture || (uvVertices == 0u && !environmentMapped)) continue;
             ++result.textureCandidateBatches;
             const uint32_t materialParams = batch->material.valid
                 ? batch->material.words[2] : 0u;
             auto it = std::find_if(states.begin(), states.end(), [&](const auto& state) {
-                return state.pcw == batch->pcw && state.tsp == batch->tsp0 &&
+                return state.pcw == effectiveTexturePcw &&
+                       state.tsp == effectiveTextureTsp &&
                        state.tcw == batch->tcw0 &&
                        state.materialParams == materialParams;
             });
             if (it == states.end()) {
-                states.push_back({batch->pcw, batch->tsp0, batch->tcw0,
+                states.push_back({effectiveTexturePcw, effectiveTextureTsp,
+                                  batch->tcw0,
                                   materialParams, 0u, 0u, 0u});
                 it = states.end() - 1;
             }
@@ -1763,29 +2478,16 @@ private:
     }
 
     static bool sameGeometry(const NativeElanDrawBatch& a, const NativeElanDrawBatch& b) {
-        if (a.flags != b.flags || a.vertexCount != b.vertexCount ||
-            a.vertices.size() != b.vertices.size()) return false;
-        for (size_t i = 0; i < a.vertices.size(); ++i) {
-            const auto& av = a.vertices[i];
-            const auto& bv = b.vertices[i];
-            if (av.header != bv.header || av.x != bv.x || av.y != bv.y || av.z != bv.z ||
-                av.hasUv != bv.hasUv || (av.hasUv && (av.u != bv.u || av.v != bv.v)))
-                return false;
-        }
-        return true;
+        return nativeElanExactSameGeometry(a, b);
+    }
+
+    static uint64_t deduplicationHash(const NativeElanDrawBatch& batch,
+                                      bool includeRenderState) {
+        return nativeElanExactDrawHash(batch, includeRenderState);
     }
 
     static bool sameRenderState(const NativeElanDrawBatch& a, const NativeElanDrawBatch& b) {
-        return a.pcw == b.pcw && a.ispTsp == b.ispTsp &&
-               a.tsp0 == b.tsp0 && a.tcw0 == b.tcw0 &&
-               a.tsp1 == b.tsp1 && a.tcw1 == b.tcw1 &&
-               a.projection.valid == b.projection.valid &&
-               a.projection.fx == b.projection.fx && a.projection.tx == b.projection.tx &&
-               a.projection.fy == b.projection.fy && a.projection.ty == b.projection.ty &&
-               a.instance.valid == b.instance.valid &&
-               a.instance.nearValue == b.instance.nearValue &&
-               a.instance.transform == b.instance.transform &&
-               a.material.valid == b.material.valid && a.material.words == b.material.words;
+        return nativeElanExactSameRenderState(a, b);
     }
 
     static void setPixel(std::vector<uint8_t>& rgb, uint32_t width, uint32_t height,
@@ -1844,6 +2546,243 @@ private:
         return false;
     }
 
+    static float fogDensity(const NativePvrFogState& fog) {
+        const int exponent = static_cast<int>(
+            static_cast<int8_t>(fog.density & 0xFFu));
+        const float mantissa =
+            static_cast<float>((fog.density >> 8u) & 0xFFu) / 128.0f;
+        return std::ldexp(mantissa, exponent);
+    }
+
+    static float fogCoefficientWithDensity(const NativePvrFogState& fog,
+                                           float depth, float density) {
+        if (!fog.valid || !std::isfinite(depth)) return 0.0f;
+        const float fogDepth = std::clamp(density * depth, 1.0f, 255.9999f);
+        uint32_t fogDepthBits = 0u;
+        std::memcpy(&fogDepthBits, &fogDepth, sizeof(fogDepthBits));
+        const int exponent = std::clamp(
+            static_cast<int>((fogDepthBits >> 23u) & 0xFFu) - 127, 0, 7);
+        constexpr float scaleByExponent[8] = {
+            16.0f, 8.0f, 4.0f, 2.0f, 1.0f, 0.5f, 0.25f, 0.125f
+        };
+        const float scaled = fogDepth * scaleByExponent[exponent] - 16.0f;
+        const float scaledFloor = std::floor(scaled);
+        const int index = std::clamp(
+            static_cast<int>(scaledFloor) + exponent * 16, 0, 127);
+        const float fraction = scaled - scaledFloor;
+        const uint32_t word = fog.table[static_cast<size_t>(index)];
+        // Flycast uploads byte 0 and byte 1 as the two rows of a linear
+        // 128x2 texture and samples from y=.75 toward y=.25 as m increases.
+        const float upper = static_cast<float>((word >> 8u) & 0xFFu);
+        const float lower = static_cast<float>(word & 0xFFu);
+        return std::clamp(
+            (upper + (lower - upper) * fraction) / 255.0f, 0.0f, 1.0f);
+    }
+
+    static float fogCoefficient(const NativePvrFogState& fog, float depth) {
+        return fogCoefficientWithDensity(fog, depth, fogDensity(fog));
+    }
+
+    static uint8_t mixByte(uint8_t source, uint8_t target, float amount) {
+        return static_cast<uint8_t>(std::clamp(
+            static_cast<float>(source) +
+            (static_cast<float>(target) - static_cast<float>(source)) * amount,
+            0.0f, 255.0f) + 0.5f);
+    }
+
+    static void applyModifierDepthPass(
+            uint8_t& stencil, bool depthPass, bool useOr) {
+        if (!depthPass) return;
+        if (useOr)
+            stencil = static_cast<uint8_t>(stencil | 0x02u);
+        else
+            stencil = static_cast<uint8_t>(stencil ^ 0x02u);
+    }
+
+    static void finalizeModifierStencil(uint8_t& stencil, uint8_t mode) {
+        const uint8_t low = static_cast<uint8_t>(stencil & 0x03u);
+        uint8_t result = low;
+        if (mode == 1u)
+            result = low != 0u ? 0x01u : 0u;
+        else if (mode == 2u)
+            result = low == 0x01u ? 0x01u : 0u;
+        stencil = static_cast<uint8_t>((stencil & ~0x03u) | result);
+    }
+
+    static uint8_t scaleModifierShadowChannel(uint8_t color, uint8_t scale) {
+        // Flycast's final black-alpha blend is algebraically dst*scale/256.
+        return static_cast<uint8_t>(
+            (static_cast<uint32_t>(color) * scale + 128u) / 256u);
+    }
+
+    static bool punchThroughAlphaPass(uint8_t alpha, uint32_t alphaReference) {
+        // Flycast rounds the shader alpha to an 8-bit step and discards only
+        // when PT_ALPHA_REF is greater, so equality passes.
+        return alpha >= static_cast<uint8_t>(alphaReference & 0xFFu);
+    }
+
+    struct TileClipRaster {
+        int minX = 0;
+        int minY = 0;
+        int maxXExclusive = 0;
+        int maxYExclusive = 0;
+        bool discardInside = false;
+    };
+
+    static bool prepareTileClip(uint32_t packed, uint32_t width, uint32_t height,
+                                int& minX, int& maxX, int& minY, int& maxY,
+                                TileClipRaster& clip) {
+        const uint32_t mode = packed >> 28u;
+        if (mode < 2u) return true;
+
+        clip.minX = static_cast<int>((packed & 63u) * 32u);
+        clip.maxXExclusive = static_cast<int>((((packed >> 6u) & 63u) + 1u) * 32u);
+        clip.minY = static_cast<int>(((packed >> 12u) & 31u) * 32u);
+        clip.maxYExclusive = static_cast<int>((((packed >> 17u) & 31u) + 1u) * 32u);
+        clip.discardInside = (mode & 1u) != 0u;
+
+        // A full-screen rectangle is equivalent to clipping disabled. This
+        // is both the hardware result and the common fast path.
+        if (clip.minX <= 0 && clip.minY <= 0 &&
+            clip.maxXExclusive >= static_cast<int>(width) &&
+            clip.maxYExclusive >= static_cast<int>(height))
+            return true;
+
+        if (!clip.discardInside) {
+            // Mode 2 draws only inside the rectangle. Intersect the triangle's
+            // scan bounds up front so clipped pixels never enter the hot loop.
+            minX = std::max(minX, clip.minX);
+            maxX = std::min(maxX, clip.maxXExclusive - 1);
+            minY = std::max(minY, clip.minY);
+            maxY = std::min(maxY, clip.maxYExclusive - 1);
+        }
+        return minX <= maxX && minY <= maxY;
+    }
+
+    static bool tileClipReject(const TileClipRaster& clip, int x, int y) {
+        if (!clip.discardInside) return false;
+        return x >= clip.minX && x < clip.maxXExclusive &&
+               y >= clip.minY && y < clip.maxYExclusive;
+    }
+
+    static uint32_t rasterizeModifierDepth(
+            uint32_t width, uint32_t height,
+            const Point& a, const Point& b, const Point& c,
+            const std::vector<float>& depth, std::vector<uint8_t>& stencil,
+            const RasterState& rasterState, bool useOr) {
+        const float area = edge(a, b, c.x, c.y);
+        if (std::fabs(area) < 1.0e-12f ||
+            triangleCulled(a, b, c, rasterState))
+            return 0u;
+        const float viewportMaxX = static_cast<float>(width - 1u);
+        const float viewportMaxY = static_cast<float>(height - 1u);
+        int minX = static_cast<int>(std::floor(std::clamp(
+            std::min({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
+        int maxX = static_cast<int>(std::ceil(std::clamp(
+            std::max({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
+        int minY = static_cast<int>(std::floor(std::clamp(
+            std::min({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
+        int maxY = static_cast<int>(std::ceil(std::clamp(
+            std::max({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
+        TileClipRaster tileClip{};
+        if (!prepareTileClip(rasterState.tileClip, width, height,
+                             minX, maxX, minY, maxY, tileClip))
+            return 0u;
+        const bool positive = area > 0.0f;
+        uint32_t touched = 0u;
+        for (int y = minY; y <= maxY; ++y) {
+            for (int x = minX; x <= maxX; ++x) {
+                const float px = static_cast<float>(x) + 0.5f;
+                const float py = static_cast<float>(y) + 0.5f;
+                const float e0 = edge(a, b, px, py);
+                const float e1 = edge(b, c, px, py);
+                const float e2 = edge(c, a, px, py);
+                const bool inside = positive
+                    ? (e0 >= 0.0f && e1 >= 0.0f && e2 >= 0.0f)
+                    : (e0 <= 0.0f && e1 <= 0.0f && e2 <= 0.0f);
+                if (!inside) continue;
+                if (tileClipReject(tileClip, x, y)) continue;
+                const float wa = e1 / area;
+                const float wb = e2 / area;
+                const float wc = e0 / area;
+                const float z = wa * a.depth + wb * b.depth + wc * c.depth;
+                const size_t index = static_cast<size_t>(y) * width +
+                                     static_cast<uint32_t>(x);
+                const bool depthPass = std::isfinite(z) &&
+                    index < depth.size() && z > depth[index];
+                applyModifierDepthPass(stencil[index], depthPass, useOr);
+                touched += depthPass ? 1u : 0u;
+            }
+        }
+        return touched;
+    }
+
+    static uint32_t rasterizeModifierFinalize(
+            uint32_t width, uint32_t height,
+            const Point& a, const Point& b, const Point& c,
+            std::vector<uint8_t>& stencil, const RasterState& rasterState,
+            uint8_t mode) {
+        const float area = edge(a, b, c.x, c.y);
+        if (std::fabs(area) < 1.0e-12f ||
+            triangleCulled(a, b, c, rasterState))
+            return 0u;
+        const float viewportMaxX = static_cast<float>(width - 1u);
+        const float viewportMaxY = static_cast<float>(height - 1u);
+        int minX = static_cast<int>(std::floor(std::clamp(
+            std::min({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
+        int maxX = static_cast<int>(std::ceil(std::clamp(
+            std::max({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
+        int minY = static_cast<int>(std::floor(std::clamp(
+            std::min({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
+        int maxY = static_cast<int>(std::ceil(std::clamp(
+            std::max({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
+        TileClipRaster tileClip{};
+        if (!prepareTileClip(rasterState.tileClip, width, height,
+                             minX, maxX, minY, maxY, tileClip))
+            return 0u;
+        const bool positive = area > 0.0f;
+        uint32_t covered = 0u;
+        for (int y = minY; y <= maxY; ++y) {
+            for (int x = minX; x <= maxX; ++x) {
+                const float px = static_cast<float>(x) + 0.5f;
+                const float py = static_cast<float>(y) + 0.5f;
+                const float e0 = edge(a, b, px, py);
+                const float e1 = edge(b, c, px, py);
+                const float e2 = edge(c, a, px, py);
+                const bool inside = positive
+                    ? (e0 >= 0.0f && e1 >= 0.0f && e2 >= 0.0f)
+                    : (e0 <= 0.0f && e1 <= 0.0f && e2 <= 0.0f);
+                if (!inside) continue;
+                if (tileClipReject(tileClip, x, y)) continue;
+                const size_t index = static_cast<size_t>(y) * width +
+                                     static_cast<uint32_t>(x);
+                finalizeModifierStencil(stencil[index], mode);
+                ++covered;
+            }
+        }
+        return covered;
+    }
+
+    static uint64_t applyModifierShadow(
+            std::vector<uint8_t>& rgb, uint32_t width, uint32_t height,
+            std::vector<uint8_t>& stencil, uint8_t scale) {
+        const size_t pixels = std::min(
+            static_cast<size_t>(width) * height, stencil.size());
+        uint64_t affected = 0u;
+        for (size_t pixel = 0u; pixel < pixels; ++pixel) {
+            if ((stencil[pixel] & 0x81u) == 0x81u) {
+                const size_t color = pixel * 3u;
+                rgb[color + 0u] = scaleModifierShadowChannel(rgb[color + 0u], scale);
+                rgb[color + 1u] = scaleModifierShadowChannel(rgb[color + 1u], scale);
+                rgb[color + 2u] = scaleModifierShadowChannel(rgb[color + 2u], scale);
+                ++affected;
+            }
+            // Flycast's final pass clears only the two modifier result bits.
+            stencil[pixel] = static_cast<uint8_t>(stencil[pixel] & ~0x03u);
+        }
+        return affected;
+    }
+
     static uint32_t fillTriangle(std::vector<uint8_t>& rgb,
                                  std::vector<uint8_t>& alpha,
                                  std::vector<uint8_t>& secondaryRgb,
@@ -1853,6 +2792,10 @@ private:
                                  std::vector<float>* depth,
                                  const TextureBinding* texture,
                                  const RasterState& rasterState,
+                                 const NativePvrFogState& fog,
+                                 std::vector<uint8_t>* stencil,
+                                 uint64_t* punchAlphaTestedPixels,
+                                 uint64_t* punchAlphaRejectedPixels,
                                  std::vector<uint32_t>* pixelOwners,
                                  uint32_t batchIndex) {
         const float area = edge(a, b, c.x, c.y);
@@ -1863,29 +2806,50 @@ private:
         // before the viewport clamp needlessly depends on host int range.
         const float viewportMaxX = static_cast<float>(width - 1u);
         const float viewportMaxY = static_cast<float>(height - 1u);
-        const int minX = static_cast<int>(std::floor(std::clamp(
+        int minX = static_cast<int>(std::floor(std::clamp(
             std::min({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
-        const int maxX = static_cast<int>(std::ceil(std::clamp(
+        int maxX = static_cast<int>(std::ceil(std::clamp(
             std::max({a.x, b.x, c.x}), 0.0f, viewportMaxX)));
-        const int minY = static_cast<int>(std::floor(std::clamp(
+        int minY = static_cast<int>(std::floor(std::clamp(
             std::min({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
-        const int maxY = static_cast<int>(std::ceil(std::clamp(
+        int maxY = static_cast<int>(std::ceil(std::clamp(
             std::max({a.y, b.y, c.y}), 0.0f, viewportMaxY)));
+        TileClipRaster tileClip{};
+        if (!prepareTileClip(rasterState.tileClip, width, height,
+                             minX, maxX, minY, maxY, tileClip))
+            return 0u;
         const bool positive = area > 0.0f;
+        const bool usesTableFog = fog.valid &&
+            (rasterState.fogMode == 0u || rasterState.fogMode == 3u);
+        const float tableFogDensity = usesTableFog ? fogDensity(fog) : 0.0f;
+        const float inverseArea = 1.0f / area;
+        const float e0StepX = b.y - a.y;
+        const float e1StepX = c.y - b.y;
+        const float e2StepX = a.y - c.y;
         uint32_t written = 0u;
         for (int y = minY; y <= maxY; ++y) {
+            const float firstX = static_cast<float>(minX) + 0.5f;
+            const float sampleY = static_cast<float>(y) + 0.5f;
+            float scanE0 = edge(a, b, firstX, sampleY);
+            float scanE1 = edge(b, c, firstX, sampleY);
+            float scanE2 = edge(c, a, firstX, sampleY);
             for (int x = minX; x <= maxX; ++x) {
-                const float px = static_cast<float>(x) + 0.5f;
-                const float py = static_cast<float>(y) + 0.5f;
-                const float e0 = edge(a, b, px, py);
-                const float e1 = edge(b, c, px, py);
-                const float e2 = edge(c, a, px, py);
+                const float e0 = scanE0;
+                const float e1 = scanE1;
+                const float e2 = scanE2;
+                // Advance before any early continue below. Edge functions are
+                // affine in X, so this replaces six multiplies per sample with
+                // three additions while preserving the same triangle test.
+                scanE0 += e0StepX;
+                scanE1 += e1StepX;
+                scanE2 += e2StepX;
                 const bool inside = positive ? (e0 >= 0.0f && e1 >= 0.0f && e2 >= 0.0f)
                                              : (e0 <= 0.0f && e1 <= 0.0f && e2 <= 0.0f);
                 if (!inside) continue;
-                const float wa = e1 / area;
-                const float wb = e2 / area;
-                const float wc = e0 / area;
+                if (tileClipReject(tileClip, x, y)) continue;
+                const float wa = e1 * inverseArea;
+                const float wb = e2 * inverseArea;
+                const float wc = e0 * inverseArea;
                 const float z = wa * a.depth + wb * b.depth + wc * c.depth;
                 const size_t index = static_cast<size_t>(y) * width +
                                      static_cast<uint32_t>(x);
@@ -1896,26 +2860,40 @@ private:
                 }
 
                 const auto vertexChannel = [&](unsigned shift) {
+                    if (!rasterState.gouraud)
+                        return static_cast<int>((c.argb >> shift) & 0xFFu);
                     return static_cast<int>(std::clamp(
                         wa * static_cast<float>((a.argb >> shift) & 0xFFu) +
                         wb * static_cast<float>((b.argb >> shift) & 0xFFu) +
                         wc * static_cast<float>((c.argb >> shift) & 0xFFu),
                         0.0f, 255.0f) + 0.5f);
                 };
-                const int vertexA = vertexChannel(24u);
-                const int vertexR = vertexChannel(16u);
-                const int vertexG = vertexChannel(8u);
-                const int vertexB = vertexChannel(0u);
+                int vertexA = rasterState.useAlpha ? vertexChannel(24u) : 255;
+                int vertexR = vertexChannel(16u);
+                int vertexG = vertexChannel(8u);
+                int vertexB = vertexChannel(0u);
                 const auto offsetChannel = [&](unsigned shift) {
+                    if (!rasterState.gouraud)
+                        return static_cast<int>((c.offsetArgb >> shift) & 0xFFu);
                     return static_cast<int>(std::clamp(
                         wa * static_cast<float>((a.offsetArgb >> shift) & 0xFFu) +
                         wb * static_cast<float>((b.offsetArgb >> shift) & 0xFFu) +
                         wc * static_cast<float>((c.offsetArgb >> shift) & 0xFFu),
                         0.0f, 255.0f) + 0.5f);
                 };
-                const int offsetR = offsetChannel(16u);
-                const int offsetG = offsetChannel(8u);
-                const int offsetB = offsetChannel(0u);
+                const int offsetR = rasterState.offset ? offsetChannel(16u) : 0;
+                const int offsetG = rasterState.offset ? offsetChannel(8u) : 0;
+                const int offsetB = rasterState.offset ? offsetChannel(0u) : 0;
+                const int offsetA = rasterState.fogMode == 1u
+                    ? offsetChannel(24u) : 0;
+                const float fogAmount = usesTableFog
+                    ? fogCoefficientWithDensity(fog, z, tableFogDensity) : 0.0f;
+                if (rasterState.fogMode == 3u && fog.valid) {
+                    vertexA = static_cast<int>(fogAmount * 255.0f + 0.5f);
+                    vertexR = static_cast<int>((fog.ramColor >> 16u) & 0xFFu);
+                    vertexG = static_cast<int>((fog.ramColor >> 8u) & 0xFFu);
+                    vertexB = static_cast<int>(fog.ramColor & 0xFFu);
+                }
                 uint32_t shaded =
                     (static_cast<uint32_t>(rasterState.useAlpha ? vertexA : 255) << 24u) |
                     (static_cast<uint32_t>(vertexR) << 16u) |
@@ -1947,12 +2925,61 @@ private:
                     }
                 }
 
-                const size_t colorOffset = index * 3u;
-                uint8_t shadedSource[4] = {
+                uint8_t shadedChannels[4] = {
                     static_cast<uint8_t>((shaded >> 16u) & 0xFFu),
                     static_cast<uint8_t>((shaded >> 8u) & 0xFFu),
                     static_cast<uint8_t>(shaded & 0xFFu),
                     static_cast<uint8_t>((shaded >> 24u) & 0xFFu)
+                };
+                if (rasterState.colorClamp && fog.valid) {
+                    const uint8_t minimum[4] = {
+                        static_cast<uint8_t>((fog.clampMin >> 16u) & 0xFFu),
+                        static_cast<uint8_t>((fog.clampMin >> 8u) & 0xFFu),
+                        static_cast<uint8_t>(fog.clampMin & 0xFFu),
+                        static_cast<uint8_t>((fog.clampMin >> 24u) & 0xFFu)
+                    };
+                    const uint8_t maximum[4] = {
+                        static_cast<uint8_t>((fog.clampMax >> 16u) & 0xFFu),
+                        static_cast<uint8_t>((fog.clampMax >> 8u) & 0xFFu),
+                        static_cast<uint8_t>(fog.clampMax & 0xFFu),
+                        static_cast<uint8_t>((fog.clampMax >> 24u) & 0xFFu)
+                    };
+                    for (unsigned channel = 0u; channel < 4u; ++channel)
+                        shadedChannels[channel] = std::clamp(
+                            shadedChannels[channel], minimum[channel], maximum[channel]);
+                }
+                if (rasterState.fogMode == 0u && fog.valid) {
+                    shadedChannels[0] = mixByte(shadedChannels[0],
+                        static_cast<uint8_t>((fog.ramColor >> 16u) & 0xFFu), fogAmount);
+                    shadedChannels[1] = mixByte(shadedChannels[1],
+                        static_cast<uint8_t>((fog.ramColor >> 8u) & 0xFFu), fogAmount);
+                    shadedChannels[2] = mixByte(shadedChannels[2],
+                        static_cast<uint8_t>(fog.ramColor & 0xFFu), fogAmount);
+                } else if (rasterState.fogMode == 1u && fog.valid) {
+                    const float vertexFog = static_cast<float>(offsetA) / 255.0f;
+                    shadedChannels[0] = mixByte(shadedChannels[0],
+                        static_cast<uint8_t>((fog.vertexColor >> 16u) & 0xFFu), vertexFog);
+                    shadedChannels[1] = mixByte(shadedChannels[1],
+                        static_cast<uint8_t>((fog.vertexColor >> 8u) & 0xFFu), vertexFog);
+                    shadedChannels[2] = mixByte(shadedChannels[2],
+                        static_cast<uint8_t>(fog.vertexColor & 0xFFu), vertexFog);
+                }
+
+                if (rasterState.punchAlphaTest) {
+                    if (punchAlphaTestedPixels) ++*punchAlphaTestedPixels;
+                    if (!punchThroughAlphaPass(
+                            shadedChannels[3], fog.punchAlphaRef)) {
+                        if (punchAlphaRejectedPixels) ++*punchAlphaRejectedPixels;
+                        continue;
+                    }
+                    // Flycast forces passing punch-through fragments opaque.
+                    shadedChannels[3] = 0xFFu;
+                }
+
+                const size_t colorOffset = index * 3u;
+                uint8_t shadedSource[4] = {
+                    shadedChannels[0], shadedChannels[1],
+                    shadedChannels[2], shadedChannels[3]
                 };
                 uint8_t secondarySource[4] = {
                     secondaryRgb[colorOffset + 0u],
@@ -1972,18 +2999,34 @@ private:
                     destinationRgb[colorOffset + 2u],
                     destinationAlpha[index]
                 };
-                uint8_t output[4]{};
-                for (unsigned channel = 0u; channel < 4u; ++channel) {
-                    const uint32_t srcCoef = blendCoefficient(
-                        rasterState.srcBlend, channel, source, destination, true);
-                    const uint32_t dstCoef = blendCoefficient(
-                        rasterState.dstBlend, channel, source, destination, false);
-                    output[channel] = static_cast<uint8_t>(std::min<uint32_t>(
-                        (static_cast<uint32_t>(source[channel]) * srcCoef +
-                         static_cast<uint32_t>(destination[channel]) * dstCoef + 127u) / 255u,
-                        255u));
+                uint8_t output[4];
+                if (rasterState.srcBlend == 1u && rasterState.dstBlend == 0u) {
+                    // ONE/ZERO is an exact source copy. This is the dominant
+                    // opaque PVR state and the general integer blend equation
+                    // produces these same four bytes exactly.
+                    output[0] = source[0];
+                    output[1] = source[1];
+                    output[2] = source[2];
+                    output[3] = source[3];
+                } else {
+                    for (unsigned channel = 0u; channel < 4u; ++channel) {
+                        const uint32_t srcCoef = blendCoefficient(
+                            rasterState.srcBlend, channel, source, destination, true);
+                        const uint32_t dstCoef = blendCoefficient(
+                            rasterState.dstBlend, channel, source, destination, false);
+                        output[channel] = static_cast<uint8_t>(std::min<uint32_t>(
+                            (static_cast<uint32_t>(source[channel]) * srcCoef +
+                             static_cast<uint32_t>(destination[channel]) * dstCoef + 127u) / 255u,
+                            255u));
+                    }
                 }
                 if (depth && rasterState.depthWrite) (*depth)[index] = z;
+                if (stencil &&
+                    (rasterState.listType == 0u || rasterState.listType == 4u)) {
+                    (*stencil)[index] = static_cast<uint8_t>(
+                        ((*stencil)[index] & 0x7Fu) |
+                        (rasterState.shadowed ? 0x80u : 0u));
+                }
                 destinationRgb[colorOffset + 0u] = output[0];
                 destinationRgb[colorOffset + 1u] = output[1];
                 destinationRgb[colorOffset + 2u] = output[2];

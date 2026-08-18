@@ -10,7 +10,7 @@ Requirements: Python 3.10 or newer.
 python -m unittest discover -s tests -v
 ```
 
-## Native command-classifier test
+## Native command-classifier/walker test
 
 Requirements: CMake 3.20 or newer and a C++17 compiler.
 

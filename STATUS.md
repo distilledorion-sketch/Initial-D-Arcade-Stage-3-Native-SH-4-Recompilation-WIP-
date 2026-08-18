@@ -1,35 +1,49 @@
 # Status and evidence ledger
 
-Status date: 2026-08-15
-Public checkpoint: v1335 WIP
+Status date: 2026-08-18
 
-This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
+Public checkpoint: v1826 WIP
+
+This file separates demonstrated behavior from hypotheses. A single overall percentage is deliberately avoided: a technically advanced native boot/attract and projected graphics path is not the same thing as a playable product.
 
 | Area | Demonstrated | Current limitation |
 |---|---|---|
-| Static SH-4 translation | Broad instruction decoding/code generation; direct translated calls; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
-| Deterministic replay | N70 accepted 70/70 with `unimplemented=0`, `FPSCR=0`, no fault/watchdog, and cross-machine identical frame hash | Uses private user-owned replay/input state that cannot be published |
-| ELAN 3D path | Persistent state, recursive links, materials, instances, lighting, textures, culling, depth, and native diagnostic rendering | New submitted-stream lifecycle does not yet complete end to end |
-| Intro visuals | Roughly 53 seconds of ordered 3D cinematography through slice 3200; AE86, FD3S, red rival, shot cuts and chase | 2D title/logo layers absent; texture/material polish remains |
-| TA/PVR 2D | Store-queue traffic and submitted command history have been observed and mapped | Native list execution/compositing is dormant |
-| ELAN completion | Five observed list-complete `RegisterWait` masks classified; both CLX status banks and TA-ITP update behavior covered in the private integration test | Embedded waits inside the submitted `Link` stream are not reaching the handler yet |
-| JVS/input | Clean-room 837-13551 / 315-6149-facing model exists | Complete cabinet controls and full gameplay validation remain |
-| Audio | Narrow opt-in AICA driver-ready bootstrap seam | No complete native AICA/ARM audio path |
-| Distribution | Sanitized source/evidence package with reproducible public tests | No executable game package; users must supply legally owned inputs to a future private build |
+| Static SH-4 translation | Direct ahead-of-time translated calls on the validated path; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
+| Native boot | Accepted trace reaches the frontend and course/attract sequence with no interpreter/JIT fallback | Menus, controllable races, results, and long-run coverage are incomplete |
+| Store queues | All 100 previously suppressed `PREF` operations in 14 geometry/ELAN functions now perform real 32-byte store-queue flushes; the private generated unit contains 531 active `PREF` calls | Unvisited translated paths can still expose semantic gaps |
+| ELAN control path | Native append semantics match the Flycast reference for the first 64,439 events; bounded `Link`/`Model` traversal remains fail-closed | Broader paths and unsupported records still need coverage |
+| Projected framebuffer | Recent frame: 751 accepted batches, 63,356 vertices, 12,393 triangles; zero projection or near/far-cull rejection; all 307,200 output pixels have a real game-batch owner | This is a software validation renderer, not complete final graphics presentation |
+| Texture path | 160/183 states exactly match a Flycast payload, dimensions, format, and nonzero count; 149/172 unique decoded bindings cover 86.9% of textured raster work | The remaining unmatched captures require reference coverage and material validation |
+| Geometry integrity | The store-queue fix removed the duplicated/two-cars-in-one render; the 10 remaining rejected submissions have too few/invalid vertices to form triangles | Long-run scene and course coverage remains incomplete |
+| Native preview | 45-second run produced 282 changing raster frames and 2,384 input polls | Software rasterization is still expensive and presentation layers are incomplete |
+| JVS/input | Clean-room cabinet boundary plus Windows key-edge latching for short coin/start/service presses | Real interactive start/control validation is still pending |
+| Audio | Native Flycast-derived SGC tests pass and AICA RAM descriptors initialize | Reached state has not emitted the real stream-start command; there is no useful host sink yet |
+| Distribution | Sanitized source/evidence repository with public tests | No game executable or copyrighted input package |
 
-## Strongest accepted evidence
+## Latest accepted sequence
 
-- N70 frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
-- Accepted N70 state: 667 batches, 61,498 vertices, 17,490 triangles, 990,196 textured pixels, and 53,996 lit vertices.
-- Full-intro ladder reached N3200 with each recorded run accepted N/N, `unimplemented=0`, `FPSCR=0`, and no recorded memory fault, crash, or watchdog.
-- Current public classifier smoke test covers recursive links, SH-4/ERAM texture DMA links, all five known list-complete wait bits, empty/unknown-mask rejection, and false command-header aliases.
+1. The Flycast-derived ELAN grammar and direct source adaptation remain limited to the Naomi 2 hardware seam; no Flycast CPU, dynarec, interpreter, UI, or save-state engine is used.
+2. Restoring the translated SH-4 store-queue flushes fixed corrupted/duplicated geometry at its source.
+3. The native ELAN decoder matched a Flycast snapshot and then matched the first 64,439 semantic append events of a long active trace.
+4. Projection/model/view state now attaches to the submitted command-port batches, producing a coherent single-car scene without a synthetic fit-to-view camera.
+5. VRAM-backed texture comparison found 160/183 exact native states. The dominant unmatched textures decode coherently as game environment maps rather than random/corrupt memory.
+6. Bilinear sampling, common blend, color rounding, alpha interpolation, and offset-color hot paths were optimized without changing intended output semantics.
+7. The optional Windows preview showed changing course/attract scenes. A message-edge latch was added because a roughly 150 ms software frame can otherwise miss short cabinet-key taps.
 
-## Latest WIP truth
+## Strongest current evidence
 
-v1335 broadened direct `RegisterWait` handling for masks `0x80`, `0x100`, `0x200`, `0x400`, and `0x200000`. The focused private Windows integration test passed. An exact fast WSL rebuild was stopped cleanly at the user's request, so the full gate-off and stage-112 acceptance runs have not been completed.
+- Long ELAN parity: first 64,439 semantic append events match Flycast exactly.
+- Store queues: 531 active translated `PREF` calls, with all 100 stale geometry/ELAN no-ops restored.
+- Projected frame: 751 accepted batches, 63,356 vertices, 12,393 triangles, zero projection rejection.
+- Texture parity: 160/183 exact states; 86.9% of textured raster work covered by exact-matched unique payloads.
+- Frame ownership: 307,200/307,200 pixels attributed to submitted game batches.
+- Representative optimization: total 180.786 ms to 150.522 ms; raster 167.640 ms to 139.445 ms, with slightly different triangle workloads.
+- Private regression gates: AICA mailbox, Flycast-derived AICA SGC, system-ROM read-only, native ELAN bridge, and JVS tests all pass.
 
-The preceding v1334 trace reported `register_waits=0`. That means the change must not be described as fixing the lifecycle blocker. The best current explanation is that the next frame arrives as a linked command stream and its embedded waits are never walked to the existing handler.
+## Immediate blocker
+
+The next user-visible gate is a real interactive run that turns coin/start/control input into menu or race progression while preserving the projected renderer. In parallel, the first authentic AICA stream-start command must be reached before a host audio sink can produce useful sound.
 
 ## Definition of playable
 
-This project will not call itself playable until a user can cold boot from legally owned inputs, reach menus, start and control a race, receive working audio/video/input, complete meaningful gameplay, and do so through the static native path without an interpreter/JIT fallback.
+The project will not call itself playable until a user can cold boot from legally owned inputs, reach menus, start and control a race, receive working audio/video/input, complete meaningful gameplay, and do so through the static native path without an interpreter/JIT fallback.
