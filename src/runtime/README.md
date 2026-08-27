@@ -9,11 +9,11 @@ These files are selected from the private integration tree to show the real clea
 
 Only `native_elan_bridge.h` is compiled by the standalone public smoke test. The decoder/renderer snapshots refer to support headers in the private integration tree and are included for review, not as a claim that this repository is a complete runtime.
 
-The private v2216 integration tree has advanced beyond these selected snapshots
+The private v2217 integration tree has advanced beyond these selected snapshots
 with targeted menu-to-race/result/save execution, corrected HUD and mirror
 projection, additional PVR list features, native AICA/Maple/JVS/card tests,
-persistent renderer workers, Vulkan pipeline prewarming, and asset-lineage
-validation. These components will be moved into this public tree only when they
+persistent renderer workers, Vulkan pipeline prewarming, fixed 60 Hz retained
+presentation during guest loads, and asset-lineage validation. These components will be moved into this public tree only when they
 can be separated cleanly from generated game code and private captures without
 weakening the legal boundary.
 

@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
-Status date: 2026-08-26
-Private integration checkpoint: v2216 WIP
+Status date: 2026-08-27
+Private integration checkpoint: v2217 WIP
 Public checkpoint: source-safe progress report (non-playable)
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -17,13 +17,14 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, and digital shifter routes pass focused tests | Physical wheel, force-feedback strength, and full cabinet hardware validation remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples and selects tested race music | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Sustained race motion measures 59.9–60.2 FPS at 3840×2160 and 119.8–120.1 FPS at 1920×1080 without changing guest timing | Two pre-motion transition intervals still include synchronous guest asset/music loads; uncapped presentation is not complete |
+| Performance | Fixed presentation measures 59.8–60.1 FPS through tested 4K race loading/takeover and motion, and 119.8–120.1 FPS at 1080p/120 without changing guest timing | Synchronous loading still delays new guest scenes; uncapped presentation is not complete |
 | Distribution | Sanitized source/evidence package and user-owned-input preparation tool | No executable game package; private inputs and generated game code remain excluded |
 
 ## Strongest accepted evidence
 
-- v2216 Windows x64 checkpoint SHA-256: `BE61B4291784A4A98129677FF7B7991BB982346CE1F5550C72547BF6C2FFCC16` (binary intentionally not published).
-- At 3840×2160, genuine JVS/physics-driven race motion advanced 160 m while sampled presentation held 59.9–60.2 FPS.
+- v2217 Windows x64 checkpoint SHA-256: `0F225655BF9F32C1FAEE76CF559EABD1D7D5C19A4960BD7A02B512582A4A08E6` (binary intentionally not published).
+- At 3840×2160, 43 samples from takeover onward measured 59.8–60.1 FPS while genuine JVS/physics-driven race motion advanced 668.687 m.
+- The v2216 29.3/51.2 transition samples were traced to the 60 Hz presenter waiting for new guest scenes during synchronous loads. v2217 retains the last completed image at fixed wall-clock cadence without advancing guest code.
 - At 1920×1080, all eight sampled race intervals from takeover through 160 m measured 119.8–120.1 FPS using presentation interpolation over authentic guest timing.
 - Vulkan prewarming moved seven observed race-only pipelines to startup. The two heaviest entry frames dropped from 20.97/19.01 ms to 11.36/5.69 ms and created zero pipelines in-frame.
 - The final acceptance runs recorded no fatal, exception, access-violation, unimplemented-target, NSEQ, or Vulkan fault markers.
@@ -50,9 +51,9 @@ failures, and renderer lifecycle defects. This does not imply that all graphics
 or gameplay paths are complete.
 
 The current performance frontier is no longer steady-state 60 FPS. It is broad
-content coverage, two synchronous transition-load gaps, hardware input/audio
-acceptance, release packaging, and eventually uncapped presentation that stays
-independent from guest gameplay timing.
+content coverage, reducing the underlying synchronous transition latency,
+hardware input/audio acceptance, release packaging, and eventually uncapped
+presentation that stays independent from guest gameplay timing.
 
 ## Definition of playable
 

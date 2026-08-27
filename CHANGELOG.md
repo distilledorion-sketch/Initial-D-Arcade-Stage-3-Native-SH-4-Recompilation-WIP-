@@ -1,5 +1,14 @@
 # Changelog
 
+## v2217-wip — 2026-08-27
+
+- Extended the independent fixed presentation cadence to the native 60 Hz target.
+- Traced the earlier 29.3/51.2 FPS race-entry samples to the 60 Hz presenter waiting for a new guest scene during synchronous course/music loads, rather than slow raster or Vulkan work.
+- Retained the last completed image during those guest pauses without advancing game functions, timers, input, audio sequencing, or physics.
+- Validated 43 takeover/race samples at 3840×2160 between 59.8 and 60.1 FPS while normal JVS/physics input drove 668.687 m.
+- Revalidated 1920×1080 at 120 FPS between 119.8 and 120.1 during operation; recorded a diagnostic-only shutdown-dump outlier separately.
+- Kept whole-game coverage, underlying load latency, hardware acceptance, packaging, and uncapped presentation as explicit open work.
+
 ## v2216-wip — 2026-08-26
 
 - Advanced the private NAOMI 2 static-AOT integration through targeted menu, loading, live-race, result, and disposable-card save/reload paths without an interpreter or JIT fallback.

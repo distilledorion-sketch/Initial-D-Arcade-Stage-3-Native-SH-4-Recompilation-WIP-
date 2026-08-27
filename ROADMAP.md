@@ -34,9 +34,11 @@ with synchronized sound and complete cabinet controls.
 - Persistent renderer workers remove per-frame thread churn.
 - Vulkan pipeline prewarming removes measured cold race-entry compilation from active frames.
 - Clean acceptance runs sustain 4K/60 during race motion and 1080p/120 presentation interpolation while preserving guest timing.
+- Fixed 60 Hz presentation retains the last completed image during synchronous guest loading, so output cadence no longer collapses while gameplay is correctly paused.
 
-Checkpoint result: 59.9–60.2 FPS at 3840×2160 after motion begins. Two
-synchronous guest loading gaps before motion remain a transition-level target.
+Checkpoint result: 59.8–60.1 FPS across 43 samples from tested 4K race takeover
+onward. Reducing the underlying guest loading latency remains a transition-level
+target even though presentation cadence is now stable.
 
 ## P2 — Whole-game coverage and regression testing
 
