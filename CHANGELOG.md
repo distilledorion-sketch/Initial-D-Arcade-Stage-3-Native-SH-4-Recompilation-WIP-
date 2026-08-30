@@ -1,5 +1,16 @@
 # Changelog
 
+## v2374-wip — 2026-08-30
+
+- Profiled a reproducible cold `k_ez` race-start slowdown and ruled out Vulkan, ELAN average cost, AICA, and repeated presentation endpoints.
+- Traced the dominant guest-side startup cost to the game's canonical byte-wise object clear.
+- Added a private exact bulk-main-RAM path that retains one guest memory cycle per byte and final SH-4 registers/flags, while leaving device, VRAM, ELAN, host-aperture, boundary-crossing, and zero-length cases on the original translated path.
+- Improved the identical resolved-input/card route from 100.0 minimum / 116.609 average generated FPS on v2373 to 120.0 minimum / 120.0 average on v2374 across 23 complete two-second race intervals.
+- Confirmed a zero repeat-counter delta during moving gameplay, zero faults, and unchanged course/transition timing.
+- Added helper-level and exact-linked-function regression coverage, revalidated the card-eject BRAF classifier, and passed the native audio/music, presenter, ELAN/JVS/card, AICA, and Vulkan suites.
+- Reconfirmed the private build is BIOS-free through a standalone audit reporting zero firmware callbacks, objects, input contracts, or cached firmware translations.
+- Kept broader course validation, exhaustive whole-game coverage, physical hardware acceptance, and unlimited presentation explicit as open work.
+
 ## v2217-wip — 2026-08-27
 
 - Extended the independent fixed presentation cadence to the native 60 Hz target.

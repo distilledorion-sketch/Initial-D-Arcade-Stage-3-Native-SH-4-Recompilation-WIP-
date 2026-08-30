@@ -40,6 +40,17 @@ Checkpoint result: 59.8–60.1 FPS across 43 samples from tested 4K race takeove
 onward. Reducing the underlying guest loading latency remains a transition-level
 target even though presentation cadence is now stable.
 
+## Validated checkpoint — Distinct 120 Hz on the measured cold route
+
+- Guest logic, physics, timers, input, and audio remain at the authentic 60 Hz cadence.
+- Presentation interpolation generates intermediate motion samples without advancing the game twice.
+- The measured cold `k_ez` startup hotspot was removed with an exact ordinary-main-RAM object-clear path.
+- All 23 complete two-second race intervals produced exactly 120 new presentation frames; the moving-race repeat counter stayed flat and the log contained zero faults.
+
+Checkpoint result: passed for the fixed `k_ez` regression route. The same gate
+must still be protected across other courses before 120 FPS is considered
+whole-game validated.
+
 ## P2 — Whole-game coverage and regression testing
 
 - Cover every car, course, mode, results/continue flow, save/configuration path, and long run.

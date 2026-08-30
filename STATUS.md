@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
-Status date: 2026-08-27
-Private integration checkpoint: v2217 WIP
+Status date: 2026-08-30
+Private integration checkpoint: v2374 WIP
 Public checkpoint: source-safe progress report (non-playable)
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -17,10 +17,16 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, and digital shifter routes pass focused tests | Physical wheel, force-feedback strength, and full cabinet hardware validation remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples and selects tested race music | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Fixed presentation measures 59.8–60.1 FPS through tested 4K race loading/takeover and motion, and 119.8–120.1 FPS at 1080p/120 without changing guest timing | Synchronous loading still delays new guest scenes; uncapped presentation is not complete |
-| Distribution | Sanitized source/evidence package and user-owned-input preparation tool | No executable game package; private inputs and generated game code remain excluded |
+| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation; v2374 held exactly 120 generated motion frames in all 23 complete two-second `k_ez` race intervals with zero moving-race repeats | Other courses still need the same cold-start gate; uncapped presentation is not complete |
+| Distribution | Sanitized source/evidence package plus a private BIOS-free, Python-free user-owned-input preparation/launcher flow | No public executable game package; private inputs and generated game code remain excluded |
 
 ## Strongest accepted evidence
+
+- v2374 Windows x64 checkpoint SHA-256: `81F18BBEA04D42B692BE295630A3F6A6DE8DF6F479ECF4881E38FCAC100FD0C4` (binary intentionally not published).
+- On the identical resolved-input/card `k_ez` route, v2373 measured 100.0 minimum / 116.609 average generated FPS across 22 full race samples. The exact main-RAM object-clear repair raised v2374 to 120.0 minimum / 120.0 average across 23 full samples.
+- The moving-race repeat-counter delta was zero in both runs; v2374's 120 FPS result is distinct interpolated motion, not repeated 60 Hz endpoints.
+- The exact linked memset regression passes zero, one-byte, unaligned 257-byte, and P1-alias 64 KiB cases with preserved registers, T flag, stack, guard bytes, and `length + 2` memory-access cycles.
+- The standalone audit reports zero firmware callbacks, firmware AOT objects, firmware input contracts, or cached firmware translations in v2374.
 
 - v2217 Windows x64 checkpoint SHA-256: `0F225655BF9F32C1FAEE76CF559EABD1D7D5C19A4960BD7A02B512582A4A08E6` (binary intentionally not published).
 - At 3840×2160, 43 samples from takeover onward measured 59.8–60.1 FPS while genuine JVS/physics-driven race motion advanced 668.687 m.
@@ -50,8 +56,9 @@ corrected the tested HUD projection, mirror placement, RX-7 geometry/texture
 failures, and renderer lifecycle defects. This does not imply that all graphics
 or gameplay paths are complete.
 
-The current performance frontier is no longer steady-state 60 FPS. It is broad
-content coverage, reducing the underlying synchronous transition latency,
+The current performance frontier is no longer steady-state 60 FPS or the
+measured `k_ez` cold-race slowdown. It is broad cross-course content coverage,
+reducing remaining synchronous transition latency,
 hardware input/audio acceptance, release packaging, and eventually uncapped
 presentation that stays independent from guest gameplay timing.
 
