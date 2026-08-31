@@ -10,14 +10,24 @@ An experimental static ahead-of-time recompilation project for the NAOMI 2 relea
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
-## What works today (2026-08-18)
+## What works today (2026-08-30)
 
 - A Python SH-4 decoder/code generator covers the instruction families exercised by the current static-AOT path, including FPSCR-aware floating-point register width and bank handling.
-- Native C++ execution cold-boots into sustained attract-mode rendering with direct translated-function dispatch and no interpreter or JIT fallback.
+- Native C++ execution cold-boots, advances through targeted menu and loading paths, enters live races, drives through normal JVS/physics input, and reaches tested result/save flows with direct translated-function dispatch and no interpreter or JIT fallback.
 - The submitted ELAN stream, CH2 DMA, render-complete interrupts, retained scenes, and native presentation path now advance continuously instead of stalling at the earlier frame-lifecycle frontier.
 - The Naomi 2 renderer handles the observed opaque, translucent, modifier-volume, punch-through, fog, blend, texture, and user-tile-clip cases used by the current scenes.
 - A missing course environment/path lookup was traced to two ISO9660-truncated files. A source-safe tool now restores their logical names from a user's own dump and verifies exact hashes.
-- A corrected native sequence renders a single coherent textured Trueno with stable camera motion at a 60 FPS presentation target; the earlier alternating rainbow/static environment maps are gone.
+- The renderer now preserves the tested HUD, mirror placement, projection, car geometry, texture mapping, and translucent/modifier-volume behavior through targeted menu and race scenes.
+- A persistent renderer worker pool and Vulkan pipeline prewarming remove the measured CPU thread-creation jitter and cold race-entry pipeline compilation stalls.
+- The private integration build keeps game logic, physics, timers, input, and audio on the authentic 60 Hz guest cadence while presenting distinct interpolated motion at 120 Hz. On the fixed `k_ez` regression route, v2374 produced exactly 120 new motion samples in all 23 complete two-second race intervals, with no repeated moving-race endpoints and no faults.
+- A guest-side cold-start hotspot was traced to the game's canonical byte-wise object clear. The private integration now bulk-clears only proven ordinary-main-RAM ranges while preserving one guest memory cycle per byte, final SH-4 registers/flags, and the original fallback for every other mapping.
+- AICA/ARM7 processing produces sustained non-silent output and selects the tested race music stream; automated QA runs use a deliberate null audio sink.
+- Keyboard/JVS controls, digital shifter routes, no-card operation, and a disposable-card insert/load/save/reload path pass focused tests.
+- The private launcher performs BIOS-free setup from user-owned inputs, reports missing/corrupt inputs with normal Windows errors, and requires no separate Python installation. Card files and custom race-music mappings are managed in user-visible folders.
+- The F1 settings UI now covers video, controls/key binding, force-feedback strength, HUD layout, card selection/insertion, and 13 custom race-music slots. Quick View Change on the authentic opponent selector cycles entry 0/no music and songs 1–13; a replacement displays its sanitized filename and follows the game’s real stream start/stop commands.
+- Whole-route QA has loaded all 48 defined route/branch targets and produced real movement for all 32 rival profiles. All 16 Time Trial layouts and all 32 rival profiles now have natural, game-owned result evidence.
+- v2391 removed an independent preview limiter that could discard valid authentic 60 Hz scenes before 120 Hz interpolation. The measured four-course priority matrix holds 119.8–120.0 FPS minimum presentation with zero repeated endpoints during accepted moving intervals.
+- v2396 fixed an inline-COMDAT linkage trap in the host asset loader, synchronized opponent-menu custom titles with the selected race stream, and added a build gate that rejects stale translated owners. The standalone audit again reports zero firmware callbacks, firmware objects, or firmware input contracts.
 - Cross-machine N70 validation reproduced an identical rendered-frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
 - Private integration tests cover ELAN command/VRAM classification, JVS identity and EEPROM behavior, Maple VBlank/reset behavior, Naomi system-ROM write protection, Flycast-derived AICA SGC/mailbox behavior, and PVR twiddled texture layout.
 
@@ -25,14 +35,18 @@ An experimental static ahead-of-time recompilation project for the NAOMI 2 relea
 
 ## What does not work yet
 
-- The result is not a start-to-finish playable build.
-- A complete controllable race has not yet been reached and validated end to end.
-- The entire intro/menu/course-loading sequence still needs frame-by-frame correctness checks; later texture, depth, transparency, shadow, fog, overlay, and camera issues may remain.
-- The current diagnostic renderer does not consistently sustain 60 unique rendered frames per second and still needs profiling and optimization.
-- Complete cabinet controls, synchronized game audio, whole-game static-AOT coverage, long-run determinism, and presentation polish remain incomplete.
+- This is not a finished or publicly playable game package, and it must not be treated as whole-game completion.
+- Every visual combination, weather condition, long campaign permutation, and card-error branch has not yet been exhaustively validated. The 32/32 natural-rival milestone closes opponent result coverage, not those broader combinations.
+- Some synchronous guest asset/music loading still pauses creation of new game scenes before car motion begins. The fixed presenter maintains cadence during static transitions, and the proven `k_ez` cold-race hotspot is removed, but other courses still require the same validation.
+- Physical wheel force feedback and audible end-user audio acceptance still need hardware validation even though the software paths and automated checks advance.
+- Unlimited presentation rate independent of gameplay is not complete. The validated high-rate target is currently 120 FPS with original guest timing.
+- Long-run determinism, broader clean-machine packaging, crash diagnostics, and remaining presentation polish are still open.
 - The public repository deliberately omits private generated game code, captures, and all legally restricted inputs, so it is not a standalone game build.
 
-See [STATUS.md](STATUS.md) for the evidence ledger and [ROADMAP.md](ROADMAP.md) for ordered acceptance criteria.
+See [STATUS.md](STATUS.md) for the evidence ledger,
+[the current source-safe checkpoint](docs/CURRENT_CHECKPOINT_V2396_2026-08-30.md)
+for the latest measured results, and [ROADMAP.md](ROADMAP.md) for ordered
+acceptance criteria.
 
 ## Repository contents
 
@@ -43,8 +57,8 @@ See [STATUS.md](STATUS.md) for the evidence ledger and [ROADMAP.md](ROADMAP.md) 
 
 The renderer snapshot is included to show the real integration work, while the
 complete private runtime and generated translation units remain intentionally
-absent. The new preparation utility also contains no game data: it operates
-only on user-supplied legally owned inputs.
+absent. The preparation utility also contains no game data: it operates only
+on user-supplied legally owned inputs.
 
 ## Run the public checks
 
@@ -66,6 +80,7 @@ No proprietary input is needed for either check.
 
 ## Project boundary
 
-this is a native static-AOT port
+The private integration build is a native static-AOT recompilation of the
+NAOMI 2 game. A Dreamcast port is explicitly outside the project scope.
 
 This independent research project is not affiliated with or endorsed by Sega, Kodansha, Shuichi Shigeno, or the original developers and publishers. All referenced names and trademarks belong to their respective owners.
