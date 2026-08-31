@@ -1,5 +1,16 @@
 # Changelog
 
+## v2396-wip — 2026-08-30
+
+- Removed the optional held-View host OST picker and kept song selection on a quick Change View press in the authentic opponent selector.
+- Added filename-based custom BGM titles only for slots with valid user replacements; clearing a slot leaves the original game title and music.
+- Unified physical, controller, and deterministic replay View input at the final logical JVS boundary.
+- Narrowed song-selection context from early card/mode screens to the real course-specific rival-face selector.
+- Synchronized the displayed 0/1–13 choice with the actual race stream, custom decoder, and AICA mixer; one bounded live route proved all layers agree.
+- Rebuilt the translated `DIAG_0C0E6280.obj` owner that supplies the active inline asset-loading shim and added an automatic freshness gate so stale COMDAT behavior cannot silently return.
+- Reconfirmed the product is BIOS-free and contains zero firmware callbacks, firmware AOT objects, firmware input contracts, or cached firmware translations.
+- Kept the demo executable, game data, translated guest bodies, cards, private logs, and user music out of the public repository.
+
 ## v2374-wip — 2026-08-30
 
 - Profiled a reproducible cold `k_ez` race-start slowdown and ruled out Vulkan, ELAN average cost, AICA, and repeated presentation endpoints.

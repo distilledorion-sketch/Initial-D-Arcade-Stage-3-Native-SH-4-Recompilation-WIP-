@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-08-30
-Private integration checkpoint: v2374 WIP
+Private integration checkpoint: v2396 WIP
 Public checkpoint: source-safe progress report (non-playable)
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -9,18 +9,24 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Area | Demonstrated | Current limitation |
 |---|---|---|
 | Static SH-4 translation | Broad instruction decoding/code generation; direct translated calls; FPSCR-aware FPU regression tests | Whole-program coverage and every indirect target are not complete |
-| Native boot/runtime | Static translated execution cold-boots and advances tested menu, loading, live-race, result, and save paths | Whole-game route and error-branch coverage is not complete |
+| Native boot/runtime | BIOS-free static translated execution cold-boots and advances tested menu, loading, live-race, result, and save paths; 48/48 route/branch targets load | Remaining long campaign permutations and error branches are not complete |
 | Deterministic replay | N70 accepted 70/70 with `unimplemented=0`, `FPSCR=0`, no fault/watchdog, and cross-machine identical frame hash | Uses private user-owned replay/input state that cannot be published |
 | ELAN 3D path | Submitted links, CH2 DMA, completion interrupts, persistent state, materials, instances, lighting, textures, culling, depth, and retained presentation scenes advance continuously through tested races | Untested cars, courses, weather, and scene combinations still need systematic comparison |
 | PVR rendering | Native handling exists for observed opaque/translucent lists, fog, modifier volumes, punch alpha, blend modes, texture layouts, autosort, tile clipping, tested HUD placement, and mirrors | Remaining combinations and presentation edge cases need scene-by-scene validation |
 | Course environment maps | Missing logical lookup paths were recovered from two exact user-owned ISO files; rainbow/static maps are corrected | Other courses and weather conditions are not yet audited |
-| JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, and digital shifter routes pass focused tests | Physical wheel, force-feedback strength, and full cabinet hardware validation remain open |
-| Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples and selects tested race music | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
+| JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, remappable bindings, device selection, and adjustable FFB path pass focused tests | Physical wheel/FFB hardware acceptance and full cabinet validation remain open |
+| Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation; v2374 held exactly 120 generated motion frames in all 23 complete two-second `k_ez` race intervals with zero moving-race repeats | Other courses still need the same cold-start gate; uncapped presentation is not complete |
+| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation; the four-course priority matrix held 119.8–120.0 FPS minimum with zero accepted moving-race repeats | Exhaustive content coverage and uncapped presentation are not complete |
 | Distribution | Sanitized source/evidence package plus a private BIOS-free, Python-free user-owned-input preparation/launcher flow | No public executable game package; private inputs and generated game code remain excluded |
 
 ## Strongest accepted evidence
+
+- v2396 Windows x64 checkpoint SHA-256: `966F218E54CC2C3A112D174163C85B141DDA25FE96836729D310E8773C555E91` (binary intentionally not published).
+- One BIOS-free 640×480/60 bounded route proved the opponent-menu label, stream override, Media Foundation decode, and AICA replacement activation in a single run while Vulkan held 60.0 Hz and live movement advanced.
+- The build verifier now rejects a translated COMDAT owner that predates the inline host headers it owns. The historical stale build fails with the exact owner name; v2396 passes fresh.
+- Current coverage is 48/48 route/branch loads, 32/32 rival movement, 16/16 natural Time Trial results, and 25/32 natural rival results.
+- The accepted four-course high-refresh matrix measured 119.8–120.0 FPS minimum presentation and no repeated endpoints in accepted moving intervals.
 
 - v2374 Windows x64 checkpoint SHA-256: `81F18BBEA04D42B692BE295630A3F6A6DE8DF6F479ECF4881E38FCAC100FD0C4` (binary intentionally not published).
 - On the identical resolved-input/card `k_ez` route, v2373 measured 100.0 minimum / 116.609 average generated FPS across 22 full race samples. The exact main-RAM object-clear repair raised v2374 to 120.0 minimum / 120.0 average across 23 full samples.
@@ -56,9 +62,9 @@ corrected the tested HUD projection, mirror placement, RX-7 geometry/texture
 failures, and renderer lifecycle defects. This does not imply that all graphics
 or gameplay paths are complete.
 
-The current performance frontier is no longer steady-state 60 FPS or the
-measured `k_ez` cold-race slowdown. It is broad cross-course content coverage,
-reducing remaining synchronous transition latency,
+The current performance frontier is no longer steady-state 60 FPS, the
+measured `k_ez` cold-race slowdown, or the four-course priority matrix. It is
+exhaustive content coverage, reducing remaining synchronous transition latency,
 hardware input/audio acceptance, release packaging, and eventually uncapped
 presentation that stays independent from guest gameplay timing.
 
