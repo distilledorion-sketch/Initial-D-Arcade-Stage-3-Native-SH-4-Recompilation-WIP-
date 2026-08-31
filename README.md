@@ -25,7 +25,7 @@ An experimental static ahead-of-time recompilation project for the NAOMI 2 relea
 - Keyboard/JVS controls, digital shifter routes, no-card operation, and a disposable-card insert/load/save/reload path pass focused tests.
 - The private launcher performs BIOS-free setup from user-owned inputs, reports missing/corrupt inputs with normal Windows errors, and requires no separate Python installation. Card files and custom race-music mappings are managed in user-visible folders.
 - The F1 settings UI now covers video, controls/key binding, force-feedback strength, HUD layout, card selection/insertion, and 13 custom race-music slots. Quick View Change on the authentic opponent selector cycles entry 0/no music and songs 1–13; a replacement displays its sanitized filename and follows the game’s real stream start/stop commands.
-- Whole-route QA has loaded all 48 defined route/branch targets and produced real movement for all 32 rival profiles. All 16 Time Trial layouts have natural result evidence; natural rival-result coverage is 25/32.
+- Whole-route QA has loaded all 48 defined route/branch targets and produced real movement for all 32 rival profiles. All 16 Time Trial layouts and all 32 rival profiles now have natural, game-owned result evidence.
 - v2391 removed an independent preview limiter that could discard valid authentic 60 Hz scenes before 120 Hz interpolation. The measured four-course priority matrix holds 119.8–120.0 FPS minimum presentation with zero repeated endpoints during accepted moving intervals.
 - v2396 fixed an inline-COMDAT linkage trap in the host asset loader, synchronized opponent-menu custom titles with the selected race stream, and added a build gate that rejects stale translated owners. The standalone audit again reports zero firmware callbacks, firmware objects, or firmware input contracts.
 - Cross-machine N70 validation reproduced an identical rendered-frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
@@ -36,7 +36,7 @@ An experimental static ahead-of-time recompilation project for the NAOMI 2 relea
 ## What does not work yet
 
 - This is not a finished or publicly playable game package, and it must not be treated as whole-game completion.
-- Every visual combination, weather condition, long campaign permutation, and card-error branch has not yet been exhaustively validated. Seven rival profiles still lack a natural-result proof even though all 32 load and move.
+- Every visual combination, weather condition, long campaign permutation, and card-error branch has not yet been exhaustively validated. The 32/32 natural-rival milestone closes opponent result coverage, not those broader combinations.
 - Some synchronous guest asset/music loading still pauses creation of new game scenes before car motion begins. The fixed presenter maintains cadence during static transitions, and the proven `k_ez` cold-race hotspot is removed, but other courses still require the same validation.
 - Physical wheel force feedback and audible end-user audio acceptance still need hardware validation even though the software paths and automated checks advance.
 - Unlimited presentation rate independent of gameplay is not complete. The validated high-rate target is currently 120 FPS with original guest timing.

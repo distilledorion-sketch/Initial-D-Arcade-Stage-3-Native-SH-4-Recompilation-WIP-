@@ -1,4 +1,4 @@
-# Current source-safe checkpoint — v2396
+# Current source-safe checkpoint — v2396 product / v2399 QA
 
 Date: 2026-08-30
 
@@ -52,12 +52,23 @@ object name and accepts v2396 as fresh.
 - route/branch targets loaded: 48/48;
 - rival profiles with real movement: 32/32;
 - Time Trial layouts with natural results: 16/16;
-- rival profiles with natural results: 25/32; and
+- rival profiles with natural results: 32/32; and
 - four-course priority high-refresh matrix: passed with 119.8–120.0 FPS
   minimum presentation and no repeated endpoints in accepted moving windows.
 
-The seven remaining natural rival-result proofs are `r_evo5`, `r_keisuke2`,
-`r_kyoko`, `r_ryosuke2`, `r_sakamoto`, `r_sudo2`, and `r_wataru`.
+The final seven natural proofs covered `r_evo5`, `r_keisuke2`, `r_kyoko`,
+`r_ryosuke2`, `r_sakamoto`, `r_sudo2`, and `r_wataru`. Each target was
+identity-gated away from the prerequisite outcome helper and reached the
+game's real result asset through normal JVS input and guest physics. The final
+Keisuke2 and Sudo2 runs held approximately 60.0 FPS average Vulkan
+presentation and recorded no fatal, access-violation, unimplemented-target,
+or device-loss marker.
+
+Two later private QA-only controls made the last branches deterministic: a
+minimum-travel gate for a one-time navigation detour, and an outcome-count
+threshold for an existing absolute cabinet detent. Both are default-off,
+cleared between harness runs, and absent from ordinary product behavior. The
+accepted Desktop/product binary therefore remains v2396.
 
 ## Verified private candidate
 
@@ -69,8 +80,8 @@ The binary is intentionally not published.
 
 ## Honest remaining work
 
-- Finish the seven remaining natural rival-result proofs and broader long-run
-  campaign/error-path coverage.
+- Continue broader long-run campaign/error-path coverage now that all 32
+  natural rival-result proofs are complete.
 - Complete physical wheel/force-feedback and audible end-user acceptance.
 - Continue visual comparison across remaining car/course/weather combinations.
 - Reduce remaining synchronous transition latency.
