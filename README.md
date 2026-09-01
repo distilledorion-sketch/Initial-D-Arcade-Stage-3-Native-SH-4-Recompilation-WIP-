@@ -101,13 +101,12 @@ Public ZIP SHA-256:
   have produced real movement through normal guest physics/input.
 - All 16 unique Time Attack layouts and all 32 Legend rival profiles have
   separate natural, game-owned result evidence.
-- The 70-row Time Attack/Bunta condition ledger retains passing route-load and
-  movement evidence. On the exact final v2449 executable, 26 selected rows are
-  now freshly current: a left/right Time Attack pair for each of all nine
-  course families plus all eight Bunta courses. Every selected row matched its
-  requested course, condition, time/weather state, and movement requirements;
-  Time Attack direction was independently proven by three agreeing selector
-  fields. All runs reported zero recognized faults and exited cooperatively.
+- The complete 70-row Time Attack/Bunta condition matrix now passes on the
+  exact final v2449 executable: 62 Time Attack direction/weather/time rows and
+  all eight Bunta courses. Every row matched its requested course, condition,
+  state, and movement requirements; Time Attack direction was independently
+  proven by three agreeing selector fields. All runs reported zero recognized
+  faults and exited cooperatively.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
@@ -147,10 +146,10 @@ Public ZIP SHA-256:
   swapchain path and Safe to the bounded GPU-readback path through one tested
   helper. Direct and Safe no-launch validation both passed, all maintained
   launchers parsed cleanly, and the native v2444 executable was unchanged.
-- Exact v2446/schema-5 evidence now accepts seven Time Attack rows with
-  independent three-field direction identity. Combined with the ten accepted
-  v2444 rows, the retained mixed-build ledger represents all nine course
-  families without treating dry/wet condition meshes as road direction.
+- The earlier v2446/schema-5 checkpoint established independent three-field
+  direction identity and stopped treating dry/wet condition meshes as road
+  direction. The final-v2449 70/70 matrix below supersedes its mixed-build
+  route count while retaining that fail-closed evidence policy.
 - The v2448 integration build passed the complete BIOS-free product suite.
   A normal visible 2560x1080 Direct-Vulkan Akagi run then held 120.0 FPS
   minimum/average for both display and Vulkan across 21 moving-race samples,
@@ -165,10 +164,10 @@ Public ZIP SHA-256:
   capture readback held 119.5–120.5 FPS after warm-up and exited without a
   fault, process, or Direct-session marker. The final build also passed the
   complete product suite.
-- Conservative BIOS-free v2449 route renewal now covers 18 Time Attack rows
-  (left and right on every course family, including Akina Snow) and all eight
-  Bunta courses. These 26 current-build checks reached real race movement and
-  shut down cleanly; the remaining 44 condition rows still need v2449 renewal.
+- Conservative BIOS-free v2449 route renewal now covers the entire defined
+  70-row matrix: 62 Time Attack combinations and all eight Bunta courses. A
+  no-launch strict reanalysis also returned 70 passes, zero failures, and zero
+  missing rows for evidence tied to the final executable SHA-256.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -193,9 +192,9 @@ is complete.
   expose jitter, clipping, flicker, or unstable performance on unverified
   content and hardware.
 - Unlimited presentation rate is not finished.
-- Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on one
-  current integration executable.
+- The defined Time Attack/Bunta route-state matrix is current, but every car,
+  opponent, long campaign/result/persistence permutation, and error branch has
+  not been exhaustively completed on one integration executable.
 - Physical Xbox discovery now has a product-shared hardware acceptance result;
   live axis/button movement, multiple controller models, wheels/force-feedback,
   and audible end-user audio behavior still need broader acceptance.
@@ -214,7 +213,9 @@ See [STATUS.md](STATUS.md) for the evidence ledger,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
 for the latest launcher/release facts,
 [the v2449 integration checkpoint](docs/CURRENT_CHECKPOINT_V2449_CINEMATIC_MASK_2026-09-01.md)
-for the current native-runtime acceptance, and [ROADMAP.md](ROADMAP.md) for
+for the current native-runtime acceptance,
+[the v2449 route-matrix checkpoint](docs/CURRENT_CHECKPOINT_V2449_ROUTE_MATRIX_2026-09-01.md)
+for the complete same-build condition ledger, and [ROADMAP.md](ROADMAP.md) for
 the ordered acceptance criteria.
 
 ## Repository contents

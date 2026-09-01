@@ -75,11 +75,12 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
   three independent guest selector fields matching the manifest. All 20
   focused contracts pass, including missing, partial, and contradictory
   fail-closed cases.
-- Exact final-v2449/schema-5 evidence now accepts 18 Time Attack rows: one left
-  and one right condition on each of all nine course families, including Akina
-  Snow. Every row has the expected course/condition/time/weather assets, three
-  agreeing direction fields, real player movement, zero recognized faults,
-  and cooperative exit code 0.
+- Exact final-v2449/schema-5 evidence accepts all 62 defined Time Attack rows
+  across all nine course families, including the full dry/wet, day/night, and
+  left/right combinations exposed by the retained matrix plus both Akina Snow
+  directions. Every row has the expected course/condition/time/weather assets,
+  three agreeing direction fields, real player movement, zero recognized
+  faults, and cooperative exit code 0.
 - All eight Bunta routes also pass on the same final v2449 executable. Each
   loaded its game-fixed night/dry course state, applied 480 AI-driving polls,
   reached measurable player movement, reported zero recognized faults, and
@@ -217,11 +218,12 @@ repeated cross-driver shutdown validation, whole-game same-build coverage,
 remaining visual/audio defects, synchronous transition latency, broader
 clean-machine packaging, and eventually uncapped presentation that stays
 independent from guest gameplay timing. The measured high-refresh routes do
-not make 120 Hz a whole-game validated mode. The 70-row ledger is still
-mixed-build, but 26 rows are now exact final-v2449 evidence: 18 Time Attack
-checks covering both directions on every course family and all eight Bunta
-routes. The remaining 44 condition permutations require v2449 renewal before
-the matrix can be called current-build complete.
+not make 120 Hz a whole-game validated mode. The entire 70-row condition
+ledger is now exact final-v2449/schema-5 evidence: 62 Time Attack rows and all
+eight Bunta routes. The remaining coverage frontier is full race completion,
+results/persistence, cars/opponents, visual and audible correctness, campaign
+branches, hardware breadth, and repeated live-renderer stress rather than
+route-state renewal.
 
 ## Definition of release-ready
 
