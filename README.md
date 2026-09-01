@@ -107,6 +107,11 @@ Public ZIP SHA-256:
   state, and movement requirements; Time Attack direction was independently
   proven by three agreeing selector fields. All runs reported zero recognized
   faults and exited cooperatively.
+- All 16 retained Time Attack layout routes were also renewed to a natural,
+  game-owned result on that exact v2449 executable using normal 2560x1080
+  Direct Vulkan at 60 Hz. Every route showed authentic movement before the
+  result, no forced outcome, zero recognized errors/runtime faults, a 59.8 FPS
+  or better Vulkan minimum, and cooperative clean-session shutdown.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
