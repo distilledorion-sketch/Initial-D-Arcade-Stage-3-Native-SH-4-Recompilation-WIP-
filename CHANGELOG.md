@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased route-evidence QA — 2026-09-01
+
+- Corrected a private matrix false negative for Time Attack guest paths that
+  load the exact left/right condition mesh but do not emit the optional
+  three-field selector diagnostic.
+- Kept validation fail-closed when a condition mesh is missing or contradicts
+  the requested side, when only part of a selector identity is present, or
+  when a complete identity disagrees with the manifest.
+- Normalized mixed-generation CSV rows before export so newer evidence columns
+  cannot be silently discarded by the first legacy object in the collection.
+- Added a no-launch evidence reanalysis mode which accepts only logs already
+  tied to the exact executable SHA-256.
+- Revalidated eight v2444 Time Attack/Bunta movement routes as schema-4 PASS,
+  with zero fault markers and zero game processes created by the offline
+  schema upgrade.
+
 ## v2445-direct-persistence — 2026-09-01
 
 - Made the F1 Direct/Safe Vulkan presentation choice survive launcher restart.
