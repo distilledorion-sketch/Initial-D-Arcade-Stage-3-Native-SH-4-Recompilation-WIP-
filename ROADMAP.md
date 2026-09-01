@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Published checkpoint — v2414 public early demo
+## Published checkpoint — v2415 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -18,6 +18,10 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   controller/wheel coverage remains an acceptance target.
 - Startup uploads and frame/presentation retirement use bounded fences; the
   product has no unbounded Vulkan queue-idle, device-idle, or fence wait.
+- The product rejects concurrent instances, Windows QA shutdown is
+  cooperative-only, and route-only coverage defaults to no Vulkan WSI.
+- Myogi Time Attack plus Shomaru and Tsuchisaka Bunta passed current-build
+  CPU-only route/movement and clean-shutdown probes.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.

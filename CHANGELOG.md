@@ -1,5 +1,19 @@
 # Changelog
 
+## v2415-host-safety — 2026-08-31
+
+- Added a process-wide single-instance guard so a second recomp exits before
+  creating another graphics context.
+- Changed the Windows QA watchdog to request ordinary cooperative presenter
+  shutdown instead of bypassing renderer teardown.
+- Removed abrupt process termination from the route harness; a failed normal
+  close now aborts further coverage without touching live driver work.
+- Made route-only coverage default to CPU rendering at a minimal preview rate,
+  with live Vulkan WSI requiring explicit opt-in.
+- Passed current-build CPU-only probes for Myogi Time Attack and the Shomaru
+  and Tsuchisaka Bunta routes, each with real movement and clean teardown.
+- Published a re-audited 14-file public package.
+
 ## v2414-bounded-vulkan-upload — 2026-08-31
 
 - Replaced the Vulkan startup texture-upload `vkQueueWaitIdle` call with a

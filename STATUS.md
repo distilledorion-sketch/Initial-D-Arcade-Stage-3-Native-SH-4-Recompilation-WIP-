@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-08-31
-Integration checkpoint: v2414 WIP
-Public checkpoint: v2414 Windows x64 early-demo prerelease
+Integration checkpoint: v2415 WIP
+Public checkpoint: v2415 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -18,16 +18,17 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; the four-course priority matrix held 119.8–120.0 FPS minimum with zero accepted moving-race repeats | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
-| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, driver-operation diagnostics, and bounded acquire/fence/startup-upload waits pass source/offscreen checks; no unbounded Vulkan idle/fence call remains | Live Win32 WSI stress across GPUs/drivers remains pending and is not replaced by offscreen evidence |
+| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, and single-instance enforcement pass source/offscreen checks; route-only QA defaults to no Vulkan WSI | Live Win32 WSI stress across GPUs/drivers remains pending and is not replaced by offscreen evidence |
 | Distribution | A BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs and performs verification/extraction locally | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
-- v2414 native executable SHA-256: `68F3D8501E1BE58EC07B167E1703703260B3523D47CA545B786ABAAB1FD53D0B`.
-- Public ZIP SHA-256: `826780D48ECAF3411E12F2EBD91EA0989EC66145AF1C692546BC36955C68A90F`; GitHub reports the same uploaded-asset digest and 17,768,925-byte size.
+- v2415 native executable SHA-256: `3185FF67F00EE5E8EF17E63F5B10ECDF66494B3B604358ED7DA863C7AB56B8D4`.
+- Public ZIP SHA-256: `8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`; local audited size is 17,877,033 bytes.
 - The exact public ZIP was audited as 14 files with no CHD, PIC, BIOS, extracted HOSTFS, card save, custom song, user log, or personal filesystem path.
-- v2414 linked 116 objects, passed freshness checks for 108 source owners, and passed 13 controller/music plus 12 lifecycle policy tests, controller-binding/smoothing, exact custom-music, interpolation, ELAN/card/AICA/offscreen Vulkan, card-eject, translation, freshness, and no-firmware checks.
-- Current coverage is 48/48 route/branch loads, 32/32 rival movement, 16/16 natural Time Attack results, and 32/32 natural rival results. The separate 70-row Time Attack/Bunta load-and-movement ledger mixes checkpoints and is not a full same-build v2414 completion matrix.
+- v2415 linked 116 objects, passed freshness checks for 108 source owners, and passed 13 controller/music plus 16 lifecycle policy tests, controller-binding/smoothing, exact custom-music, interpolation, ELAN/card/AICA/offscreen Vulkan, card-eject, translation, freshness, and no-firmware checks.
+- v2415 CPU-only same-build probes passed Myogi left/dry/day Time Attack and the Shomaru and Tsuchisaka Bunta routes with correct course/time/weather assets, real motion, zero fault markers, one process, exit code 0, and complete shutdown markers.
+- Current broader coverage is 48/48 route/branch loads, 32/32 rival movement, 16/16 natural Time Attack results, and 32/32 natural rival results. The separate 70-row Time Attack/Bunta load-and-movement ledger mixes checkpoints and is not a full same-build v2415 completion matrix.
 
 - v2396 Windows x64 checkpoint SHA-256: `966F218E54CC2C3A112D174163C85B141DDA25FE96836729D310E8773C555E91` (binary intentionally not published).
 - One BIOS-free 640×480/60 bounded route proved the opponent-menu label, stream override, Media Foundation decode, and AICA replacement activation in a single run while Vulkan held 60.0 Hz and live movement advanced.
@@ -55,7 +56,7 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 ## Latest WIP truth
 
 The earlier linked-stream/frame-lifecycle and attract-mode-only blockers are no
-longer the active frontier. The v2414 native build advances targeted
+longer the active frontier. The v2415 native build advances targeted
 menu-to-race and result/save paths, presents retained NAOMI 2 scenes
 continuously, and is available as a public early-demo prerelease that prepares
 data from matching user-owned inputs without a BIOS or Python installation.
