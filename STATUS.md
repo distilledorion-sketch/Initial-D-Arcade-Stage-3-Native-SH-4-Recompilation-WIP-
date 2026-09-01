@@ -23,6 +23,18 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 
 ## Strongest accepted evidence
 
+- Eight route results now carry the exact v2444 executable SHA-256 and pass
+  the corrected schema-4 evidence policy: Myogi left/dry/day, Usui
+  right/wet/night, Akagi left/dry/day, Akina right/wet/night, and Bunta on
+  Irohazaka, Happogahara, Shomaru, and Tsuchisaka. Every row proves the
+  expected primary course, exact condition mesh, time/weather assets, real
+  player movement, zero recognized fault markers, and cooperative exit.
+- The route analyzer now treats the exact left/right condition mesh as
+  authoritative when an optional selector diagnostic is absent, but fails
+  closed on missing, partial, or contradictory direction evidence. Its 18
+  focused contracts pass. The six retained same-hash logs were upgraded
+  offline without launching a game process; Akagi and Akina were also rerun
+  fresh and passed.
 - v2445 public ZIP SHA-256: `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`; audited size is 18,565,971 bytes.
 - The versioned launcher maps Direct to the optimized native Vulkan swapchain
   path and Safe to the bounded GPU-readback/Win32 path. Both modes passed the
@@ -155,7 +167,10 @@ broad physical-input acceptance, repeated cross-driver shutdown validation,
 whole-game same-build coverage, remaining visual/audio defects, synchronous
 transition latency, broader clean-machine packaging, and eventually uncapped
 presentation that stays independent from guest gameplay timing. The measured
-high-refresh routes do not make 120 Hz a whole-game validated mode.
+high-refresh routes do not make 120 Hz a whole-game validated mode. Eight of
+the 70 retained Time Attack/Bunta route rows now have exact v2444/schema-4
+proof; the remainder still require same-build renewal before the matrix can be
+called current-build complete.
 
 ## Definition of release-ready
 
