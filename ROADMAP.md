@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Published checkpoint — v2413 public early demo
+## Published checkpoint — v2414 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -16,6 +16,8 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   0–100% steering smoothing.
 - The complete controller and offscreen regression suite passes; broad physical
   controller/wheel coverage remains an acceptance target.
+- Startup uploads and frame/presentation retirement use bounded fences; the
+  product has no unbounded Vulkan queue-idle, device-idle, or fence wait.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.

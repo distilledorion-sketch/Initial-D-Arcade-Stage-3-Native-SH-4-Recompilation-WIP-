@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2413 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2413-steering-smoothing)
+[**Download Public Early Demo v2414 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2414-bounded-vulkan-upload)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public.Early.Demo.v2413.zip` from the
-   [v2413 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2413-steering-smoothing).
+1. Download and extract `Public.Early.Demo.v2414.zip` from the
+   [v2414 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2414-bounded-vulkan-upload).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`08EA0678658AB154B0EFEFD56D326740B89F7467D6692BDE47D94DD7A4CDB830`
+`826780D48ECAF3411E12F2EBD91EA0989EC66145AF1C692546BC36955C68A90F`
 
-## Current v2413 features
+## Current v2414 features
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -68,6 +68,8 @@ Public ZIP SHA-256:
   inputs.
 - Cooperative renderer shutdown: the program stops new Vulkan presentation,
   joins the raster worker, and only then destroys its window.
+- Bounded Vulkan acquire, graphics-fence, presentation-fence, and startup
+  upload waits; no queue-idle, device-idle, or infinite fence wait remains.
 
 ## Verified progress
 
@@ -77,12 +79,12 @@ Public ZIP SHA-256:
   separate natural, game-owned result evidence.
 - A 70-row Time Attack/Bunta condition matrix has passing route-load/movement
   evidence. This is mixed-checkpoint evidence, not yet a complete Bunta matrix
-  rerun on one v2413 executable.
+  rerun on one v2414 executable.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
   presentation in its accepted moving windows.
-- v2413 offline checks cover controller discovery/remapping policy, axis/button
+- v2414 offline checks cover controller discovery/remapping policy, axis/button
   normalization and capture while the F1 menu is paused, exact custom
   music routing, presentation interpolation, ELAN/card/AICA behavior, offscreen
   Vulkan, card-eject classification, translation integrity, link freshness,
@@ -104,7 +106,7 @@ is complete.
   content and hardware.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on v2413.
+  Bunta condition, and error branch has not been exhaustively rerun on v2414.
 - Controller, wheel/force-feedback, and audible end-user audio behavior need
   broader physical-hardware acceptance.
 - The cooperative shutdown path passes source and offscreen checks, but a full
@@ -119,7 +121,7 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2413 checkpoint](docs/CURRENT_CHECKPOINT_V2413_2026-08-31.md) for the
+[the v2414 checkpoint](docs/CURRENT_CHECKPOINT_V2414_2026-08-31.md) for the
 current release facts, and [ROADMAP.md](ROADMAP.md) for the ordered acceptance
 criteria.
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## v2414-bounded-vulkan-upload — 2026-08-31
+
+- Replaced the Vulkan startup texture-upload `vkQueueWaitIdle` call with a
+  per-upload fence capped at two seconds.
+- On timeout, the runtime disables Vulkan while deliberately retaining any
+  potentially in-flight command, fence, staging, and image resources.
+- Added a lifecycle policy that rejects queue-idle, device-idle, and infinite
+  fence waits from the product backend.
+- Passed the complete offscreen Vulkan and product regression suite and
+  published a re-audited 14-file public package.
+
 ## v2413-steering-smoothing — 2026-08-31
 
 - Added a saved 0–100% Steering Smoothing slider to F1 > Controls for XInput

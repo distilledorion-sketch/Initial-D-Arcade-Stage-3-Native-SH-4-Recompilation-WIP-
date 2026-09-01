@@ -28,7 +28,7 @@ test.
 
 The complete integration build consumes private, legally owned inputs and generates derived C++ translation units that are not part of this public repository. Publishing a command that appears to produce a game from missing data would be misleading. A future release workflow will accept user-supplied inputs locally and keep them outside version control.
 
-The [v2413 public early demo](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2413-steering-smoothing)
+The [v2414 public early demo](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2414-bounded-vulkan-upload)
 provides the Windows launcher/runtime separately. It verifies and extracts from
 the user's own matching `gds-0033.chd` and `317-0384-com.pic` on that machine;
 it does not make the omitted generated translation units part of this Git
