@@ -1,5 +1,17 @@
 # Changelog
 
+## v2445-direct-persistence — 2026-09-01
+
+- Made the F1 Direct/Safe Vulkan presentation choice survive launcher restart.
+- Mapped Direct to the optimized Vulkan swapchain and Safe to the bounded
+  GPU-readback/Win32 presentation path through one shared launcher helper.
+- Added read-only validation output for the exact runtime flag without starting
+  a game or Vulkan process.
+- Added public static contracts for validated parameters, saved-setting
+  precedence, mode mapping, Safe defaults, and private-path exclusion.
+- Repackaged the unchanged accepted v2444 native executable in a re-audited
+  14-file Windows x64 early demo.
+
 ## v2444-audio-card-portability — 2026-09-01
 
 - Persisted managed card selection by filename so the local `card data` slot

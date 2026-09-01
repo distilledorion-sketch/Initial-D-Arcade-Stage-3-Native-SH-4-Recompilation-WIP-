@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2444 WIP
-Public checkpoint: v2444 Windows x64 early-demo prerelease
+Integration checkpoint: v2445 WIP
+Public checkpoint: v2445 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -19,10 +19,17 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload; selected managed cards use a move-safe path under the local `card data` folder | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2441 2560x1080 Akagi run held 120.0 FPS minimum/average with 120 generated samples minimum and zero moving-race repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
-| Distribution | The v2444 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs and performs verification/extraction locally | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2445 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, and persists the selected Direct/Safe Vulkan path | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2445 public ZIP SHA-256: `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`; audited size is 18,565,971 bytes.
+- The versioned launcher maps Direct to the optimized native Vulkan swapchain
+  path and Safe to the bounded GPU-readback/Win32 path. Both modes passed the
+  same-helper dry-run contract, and all four deployed launchers parsed with
+  zero PowerShell errors.
+- v2445 reuses the accepted v2444 native executable byte-for-byte; no game or
+  Vulkan process was launched for the launcher-only acceptance.
 - v2444 native executable SHA-256: `49BEFEBCD2D23D97CF017EDB7F9F4E5E3685E23AA3994CA774EFE333EBCC4C5D`.
 - v2444 public ZIP SHA-256: `BEFE5D96AD8467C63E2A767B920AC523447ED42C3C849A3B817E051456E24515`; audited size is 18,565,999 bytes.
 - The ZIP contains 14 files and zero CHD, PIC, BIOS, extracted game asset,
@@ -127,7 +134,8 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 ## Latest WIP truth
 
 The earlier linked-stream/frame-lifecycle and attract-mode-only blockers are no
-longer the active frontier. The v2444 native build advances targeted
+longer the active frontier. The v2445 package uses the v2444 native build,
+which advances targeted
 menu-to-race and result/save paths, presents retained NAOMI 2 scenes
 continuously, and is available as a public early-demo prerelease that prepares
 data from matching user-owned inputs without a BIOS or Python installation.
