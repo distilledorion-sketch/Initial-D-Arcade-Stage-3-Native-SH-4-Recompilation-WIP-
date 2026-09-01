@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`
 
-## Current integration progress (v2448 WIP; public demo remains v2445)
+## Current integration progress (v2449 WIP; public demo remains v2445)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -90,6 +90,10 @@ Public ZIP SHA-256:
   presentation phase.
 - The FPS overlay now reports actual swapchain output as `OUT` and genuinely
   distinct authentic/interpolated frames as `NEW`; exact repeats are excluded.
+- Authored attract-mode cinematic mattes now expand to the real widescreen
+  edges. Recognition requires an exact four-vertex mesh/material signature and
+  proof that the projected quad spans the native 0..640 viewport, so HUD and
+  world geometry retain their existing aspect behavior.
 
 ## Verified progress
 
@@ -149,6 +153,12 @@ Public ZIP SHA-256:
   minimum/average for both display and Vulkan across 21 moving-race samples,
   produced at least 240 distinct frames per two-second bucket, added zero
   repeats, advanced 129.204 m, and exited cooperatively with no unclean marker.
+- The v2449 integration build corrected the centered-4:3 cinematic matte on a
+  2560x1080 BIOS-free attract run. Twelve captured scene points covered both
+  the initial narrow-road matte and later changing-zoom car close-ups; the
+  masks reached both output edges while Hor+ world rendering and unstretched
+  UI remained intact. The final build passed the complete product suite and
+  exited with no process or Direct-session marker left behind.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -193,7 +203,7 @@ data, or copyrighted music.
 See [STATUS.md](STATUS.md) for the evidence ledger,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
 for the latest launcher/release facts,
-[the v2448 integration checkpoint](docs/CURRENT_CHECKPOINT_V2448_FPS_OVERLAY_2026-09-01.md)
+[the v2449 integration checkpoint](docs/CURRENT_CHECKPOINT_V2449_CINEMATIC_MASK_2026-09-01.md)
 for the current native-runtime acceptance, and [ROADMAP.md](ROADMAP.md) for
 the ordered acceptance criteria.
 

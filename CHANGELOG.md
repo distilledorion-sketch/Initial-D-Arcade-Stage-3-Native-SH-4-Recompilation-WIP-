@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased v2449 cinematic-mask widescreen checkpoint — 2026-09-01
+
+- Traced the centered-4:3 black bars in the authentic attract sequence to two
+  object-space four-vertex cinematic matte batches rather than HUD sprites or
+  terrain.
+- Added a fail-closed classifier using the exact matte mesh/material signature
+  plus proof of projected native x=0..640 coverage.
+- Expanded only accepted mattes about the output centre, reaching the true
+  2560x1080 edges without stretching HUD or changing Hor+ world projection;
+  native 4:3 placement remains unchanged.
+- Passed two BIOS-free attract captures across scenes 3300..3630, including
+  camera cuts whose focal length changes during the matte animation.
+- Passed the complete controller, real-Xbox, audio, music, card, interpolation,
+  ELAN, Vulkan, timing, lifecycle, translation, freshness, and standalone
+  no-firmware suite with cooperative exit and no stale process/session marker.
+
 ## Unreleased v2448 honest-FPS checkpoint — 2026-09-01
 
 - Corrected the in-game FPS overlay so `OUT` is sampled from actual swapchain

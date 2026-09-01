@@ -22,11 +22,13 @@ decoder/renderer snapshots refer to support
 headers in the private integration tree and are included for review, not as a
 claim that this repository is a complete runtime.
 
-The private v2217 integration tree has advanced beyond these selected snapshots
+The private v2449 integration tree has advanced beyond these selected snapshots
 with targeted menu-to-race/result/save execution, corrected HUD and mirror
 projection, additional PVR list features, native AICA/Maple/JVS/card tests,
 persistent renderer workers, Vulkan pipeline prewarming, fixed 60 Hz retained
-presentation during guest loads, and asset-lineage validation. These components will be moved into this public tree only when they
+presentation during guest loads, distinct 120 Hz presentation accounting,
+exact authored-cinematic-matte widescreen handling, and asset-lineage
+validation. These components will be moved into this public tree only when they
 can be separated cleanly from generated game code and private captures without
 weakening the legal boundary.
 

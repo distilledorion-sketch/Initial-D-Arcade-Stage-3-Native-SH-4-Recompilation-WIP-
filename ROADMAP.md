@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2441 static topology cache
+## Current integration checkpoint — v2449 cinematic-mask widescreen
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -18,15 +18,21 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 - v2441 retains immutable topology eligibility summaries for exact-matched
   static geometry. In the controlled 16,384-vertex reuse case this reduced
   median topology preparation by 35.9% and complete frame time by 9.6%.
-- The complete offline suite, including direct BGR24/BGRA32 channel validation,
-  remains green. The live 120 Hz and clean-exit result above is from v2440;
-  v2441 still needs broader live acceptance rather than another forced launch.
+- v2448 corrected the in-game `OUT`/`NEW` presentation counters and held 120.0
+  FPS with 240 distinct frames per two-second moving-race sample on the exact
+  accepted Akagi run.
+- v2449 expands only exact authored cinematic mattes that prove native
+  x=0..640 coverage. BIOS-free 2560x1080 attract captures pass fixed and
+  changing camera zoom without stretching HUD or world geometry.
+- The complete offline suite, including physical Xbox discovery, audio,
+  music, card, interpolation, Vulkan, lifecycle, and standalone no-firmware
+  checks, remains green.
 
-Checkpoint result: the newest Direct run is host-clean, the bounded v2441 CPU
-optimization is measured and regression-clean, and broader route/cross-driver
-stress is still required.
+Checkpoint result: the newest Direct performance run and v2449 attract runs are
+host-clean, the cinematic widescreen defect is regression-protected, and
+broader route/cross-driver/visual stress is still required.
 
-## Published checkpoint — v2415 public early demo
+## Published checkpoint — v2445 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -44,8 +50,9 @@ stress is still required.
   product has no unbounded Vulkan queue-idle, device-idle, or fence wait.
 - The product rejects concurrent instances, Windows QA shutdown is
   cooperative-only, and route-only coverage defaults to no Vulkan WSI.
-- Myogi Time Attack plus Shomaru and Tsuchisaka Bunta passed current-build
-  CPU-only route/movement and clean-shutdown probes.
+- The saved Direct/Safe Vulkan presentation choice now survives launcher
+  restart; the public ZIP was re-audited with no game data, firmware, cards,
+  music, captures, generated guest code, or private paths.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.
