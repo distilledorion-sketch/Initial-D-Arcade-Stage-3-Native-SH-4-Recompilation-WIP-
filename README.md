@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2415 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2415-host-safety)
+[**Download Public Early Demo v2444 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2444-audio-card-portability)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public Early Demo v2415.zip` from the
-   [v2415 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2415-host-safety).
+1. Download and extract `Public Early Demo v2444.zip` from the
+   [v2444 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2444-audio-card-portability).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`
+`BEFE5D96AD8467C63E2A767B920AC523447ED42C3C849A3B817E051456E24515`
 
-## Current integration progress (v2442 WIP)
+## Current integration progress (v2444 WIP)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -67,7 +67,8 @@ Public ZIP SHA-256:
   original asset is overwritten.
 - Card creation/selection in the visible `card data` folder. The last selected
   card is loaded on the next start, and changing cards displays an unsaved-data
-  restart warning.
+  restart warning. Managed selections now remain portable when the extracted
+  demo folder is moved or renamed.
 - A self-contained, Python-free setup and integrity checker for user-owned
   inputs.
 - Cooperative renderer shutdown: the program stops new Vulkan presentation,
@@ -122,6 +123,16 @@ Public ZIP SHA-256:
   Vulkan process running. Axis/button capture, lower-travel axis remapping,
   controller menu navigation, music, card, interpolation, lifecycle, link
   freshness, and the no-firmware boundary all passed their focused checks.
+- The v2443 audio checkpoint opened the exact product 44.1 kHz stereo PCM
+  format on the preferred Windows endpoint without emitting sound, and its
+  null-sink cold run produced 7,080,718 post-mix signal frames with zero AICA
+  drops before cooperative exit.
+- The v2444 card-portability checkpoint rebuilt every presenter-dependent
+  owner and passed the complete controller, physical XInput, AICA mailbox/SGC,
+  Windows endpoint, exact custom-music, interpolation, Direct-session, ELAN,
+  card, offscreen Vulkan, timing, lifecycle, translation, freshness, and
+  standalone no-firmware suite. The clean public ZIP contains 14 audited files
+  and no game data, BIOS, cards, music, logs, captures, or private paths.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -147,7 +158,7 @@ is complete.
   content and hardware.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on v2415.
+  Bunta condition, and error branch has not been exhaustively rerun on v2444.
 - Physical Xbox discovery now has a product-shared hardware acceptance result;
   live axis/button movement, multiple controller models, wheels/force-feedback,
   and audible end-user audio behavior still need broader acceptance.
@@ -163,9 +174,8 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2442 integration checkpoint](docs/CURRENT_CHECKPOINT_V2442_2026-09-01.md)
-for the latest source/runtime facts, [the v2415 checkpoint](docs/CURRENT_CHECKPOINT_V2415_2026-08-31.md)
-for the current public-release facts, and [ROADMAP.md](ROADMAP.md) for the
+[the v2444 integration/public checkpoint](docs/CURRENT_CHECKPOINT_V2444_2026-09-01.md)
+for the latest source/runtime and release facts, and [ROADMAP.md](ROADMAP.md) for the
 ordered acceptance criteria.
 
 ## Repository contents
@@ -189,7 +199,8 @@ Python translator tests:
 python -m unittest discover -s tests -v
 ```
 
-Native ELAN classifier and controller/smoothing tests:
+Native ELAN classifier, controller/smoothing tests, and Windows-only shared
+XInput/audio endpoint probes:
 
 ```bash
 cmake -S . -B build

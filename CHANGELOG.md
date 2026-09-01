@@ -1,5 +1,23 @@
 # Changelog
 
+## v2444-audio-card-portability — 2026-09-01
+
+- Persisted managed card selection by filename so the local `card data` slot
+  survives moving or renaming an extracted demo.
+- Added matching launcher repair for older absolute card paths and verified all
+  private/public PowerShell launchers parse without errors.
+- Added a product-shared Windows audio format/endpoint component and a silent
+  endpoint acceptance probe; the probe opens and closes the real output format
+  without writing sound.
+- Published product-shared XInput discovery/normalization and its no-window
+  hardware probe, including the 35% partial-axis remapping contract.
+- Rebuilt all presenter-dependent owners and passed the complete off-screen,
+  input, audio, music, card, ELAN, Vulkan, timing, lifecycle, freshness,
+  translation, and BIOS-free standalone suite.
+- Re-audited and packaged the 14-file Windows x64 public early demo with no
+  game data, BIOS, card saves, custom music, logs, captures, generated guest
+  code, or private paths.
+
 ## v2441-static-topology-cache — 2026-09-01
 
 - Cached immutable connector, fan, point-validity, and UV-readiness summaries

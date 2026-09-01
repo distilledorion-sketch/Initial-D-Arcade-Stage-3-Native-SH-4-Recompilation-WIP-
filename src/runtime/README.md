@@ -9,9 +9,16 @@ These files are selected from the private integration tree to show the real clea
 - `native_controller_bindings.h` contains provider-neutral controller binding,
   axis normalization, capture, arcade-range conversion, and the v2413
   presentation-rate-independent steering filter.
+- `native_windows_xinput.h` is the product-shared Windows XInput loader,
+  connected-slot discovery path, and state-to-provider normalization used by
+  both the presenter and the public hardware probe.
+- `native_windows_audio_endpoint.h` defines the product's 44.1 kHz stereo PCM
+  output format and its Windows endpoint identity/volume query.
 
 `native_elan_bridge.h` and `native_controller_bindings.h` are compiled by the
-standalone public checks. The decoder/renderer snapshots refer to support
+portable public checks. On Windows, the same check set also builds no-window
+XInput and silent endpoint probes from the product-shared headers. The
+decoder/renderer snapshots refer to support
 headers in the private integration tree and are included for review, not as a
 claim that this repository is a complete runtime.
 
