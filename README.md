@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`
 
-## Current v2415 features
+## Current integration progress (v2440 WIP)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -73,6 +73,12 @@ Public ZIP SHA-256:
   renderer drain as a normal close.
 - Bounded Vulkan acquire, graphics-fence, presentation-fence, and startup
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
+- Direct Vulkan presentation now bypasses the CPU/GDI display copy when the
+  user explicitly selects it. A clean-session marker automatically falls back
+  to Safe presentation after an interrupted Direct session.
+- GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
+  packed topology, and persistent mapped geometry/uniform streams remove the
+  previous per-frame CPU staging copies.
 
 ## Verified progress
 
@@ -94,6 +100,15 @@ Public ZIP SHA-256:
   Vulkan, card-eject classification, translation integrity, link freshness,
   the no-firmware product boundary, cooperative QA shutdown, and single-instance
   enforcement.
+- The v2440 integration build passed the same complete offline suite and a live
+  RX 9070 XT Direct Vulkan run. A 75,000–127,000-vertex course/race sequence
+  sustained 119.7–120.3 visible presents per second, generated distinct
+  intermediate motion, crossed into the result/continue transition, and then
+  completed every cooperative shutdown phase with exit code 0.
+- During that live run the Direct path reduced sampled renderer/process CPU
+  demand from roughly 1.56 host cores in Safe/GDI presentation to 0.2–1.2
+  cores depending on scene load. Memory and handle counts stabilized, and the
+  Direct-session marker was removed on normal exit.
 - A cross-machine renderer replay produced the same accepted frame SHA-256:
   `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
 
@@ -126,9 +141,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2415 checkpoint](docs/CURRENT_CHECKPOINT_V2415_2026-08-31.md) for the
-current release facts, and [ROADMAP.md](ROADMAP.md) for the ordered acceptance
-criteria.
+[the v2440 integration checkpoint](docs/CURRENT_CHECKPOINT_V2440_2026-09-01.md)
+for the latest source/runtime facts, [the v2415 checkpoint](docs/CURRENT_CHECKPOINT_V2415_2026-08-31.md)
+for the current public-release facts, and [ROADMAP.md](ROADMAP.md) for the
+ordered acceptance criteria.
 
 ## Repository contents
 

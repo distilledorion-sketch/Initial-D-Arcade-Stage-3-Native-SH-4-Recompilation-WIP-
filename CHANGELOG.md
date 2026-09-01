@@ -1,5 +1,27 @@
 # Changelog
 
+## v2440-gpu-presentation — 2026-09-01
+
+- Moved PVR depth normalization into the Vulkan vertex shader.
+- Replaced CPU-staged vertex/index arrays with two bounded regions inside the
+  persistent mapped Vulkan geometry buffers.
+- Replaced CPU-staged ELAN projection/lighting uniforms with two aligned mapped
+  regions inside the existing uniform allocation.
+- Preserved exact adjacent-state reuse and fail-closed overflow handling for
+  geometry, topology, and uniform streams.
+- Added a native BGRA fallback contract so compatible Vulkan readback can be
+  copied directly into a Win32 32-bit DIB without a per-pixel 4-to-3-byte
+  conversion loop.
+- Added Direct Vulkan unclean-session protection: an interrupted Direct run
+  automatically falls back to the host-safe presentation path on next start.
+- Passed the complete controller, music, interpolation, card, renderer,
+  lifecycle, translation-freshness, and BIOS-free product suite.
+- Completed a live 2560x1080 Direct Vulkan course/result run at sustained
+  119.7–120.3 presentation FPS, bounded memory/handles, exit code 0, complete
+  renderer/audio/input teardown, and clean crash-marker removal.
+- Kept the public v2415 demo as the current downloadable prerelease while the
+  v2440 integration checkpoint receives broader hardware and route coverage.
+
 ## v2415-host-safety — 2026-08-31
 
 - Added a process-wide single-instance guard so a second recomp exits before

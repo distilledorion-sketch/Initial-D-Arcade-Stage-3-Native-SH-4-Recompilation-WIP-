@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
-Status date: 2026-08-31
-Integration checkpoint: v2415 WIP
+Status date: 2026-09-01
+Integration checkpoint: v2440 WIP
 Public checkpoint: v2415 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -17,11 +17,27 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, adjustable FFB, and saved 0–100% steering smoothing pass focused tests | Physical controller, wheel, and FFB acceptance across hardware remains open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; the four-course priority matrix held 119.8–120.0 FPS minimum with zero accepted moving-race repeats | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
-| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, and single-instance enforcement pass source/offscreen checks; route-only QA defaults to no Vulkan WSI | Live Win32 WSI stress across GPUs/drivers remains pending and is not replaced by offscreen evidence |
+| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, and Direct Vulkan display are active. The v2440 live course/result run held 119.7–120.3 FPS with distinct intermediate motion | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
+| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
 | Distribution | A BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs and performs verification/extraction locally | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
+
+- v2440 native executable SHA-256: `7FB61B45A0137F8FCE4A9A6CD36200B212F7DFDC6717D851739AD9CBB4D798BC` (binary intentionally not published).
+- The complete offline suite passed CPU/Vulkan pixel comparison, topology,
+  projection, ELAN lighting, environment mapping, homogeneous near clipping,
+  16,384-static-vertex reuse, controllers, custom music, interpolation, cards,
+  Direct-session marker lifecycle, 31 shutdown/presentation policies, 13
+  controller/music policies, guest timing, link freshness, and the no-firmware
+  standalone audit.
+- A live 2560x1080 RX 9070 XT Direct Vulkan run sustained 119.7–120.3 FPS
+  across roughly 75,000–127,000 vertices per authentic course frame. During
+  moving content the generated-frame count advanced at the required cadence
+  and the repeated-frame counter stayed effectively flat.
+- The v2440 process crossed the result/continue transition, stabilized near a
+  1.34 GiB working set with zero handle growth in the steady sample, exited 0,
+  completed renderer/audio/DirectInput/window teardown, and removed its
+  Direct-session marker.
 
 - v2415 native executable SHA-256: `3185FF67F00EE5E8EF17E63F5B10ECDF66494B3B604358ED7DA863C7AB56B8D4`.
 - Public ZIP SHA-256: `8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`; local audited size is 17,877,033 bytes.
@@ -71,12 +87,12 @@ corrected the tested HUD projection, mirror placement, RX-7 geometry/texture
 failures, and renderer lifecycle defects. This does not imply that all graphics
 or gameplay paths are complete.
 
-The current priority frontier is broad physical-input acceptance, conservative host
-shutdown validation, whole-game same-build coverage, remaining visual/audio
-defects, reducing synchronous transition latency, broader clean-machine
-packaging, and eventually uncapped presentation that stays independent from
-guest gameplay timing. The measured high-refresh routes do not make 120 Hz a
-whole-game validated mode.
+The current priority frontier is reducing remaining CPU command preparation,
+broad physical-input acceptance, repeated cross-driver shutdown validation,
+whole-game same-build coverage, remaining visual/audio defects, synchronous
+transition latency, broader clean-machine packaging, and eventually uncapped
+presentation that stays independent from guest gameplay timing. The measured
+high-refresh routes do not make 120 Hz a whole-game validated mode.
 
 ## Definition of release-ready
 
