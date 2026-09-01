@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2446 WIP
+Integration checkpoint: v2448 WIP
 Public checkpoint: v2445 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -17,12 +17,32 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, controller-operated F1 navigation, adjustable FFB, and saved 0–100% steering smoothing pass focused tests. A product-shared no-window probe found a real attached Xbox controller through `xinput1_4.dll` | Live physical axis/button movement, multiple controller models, wheels, and FFB acceptance remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload; selected managed cards use a move-safe path under the local `card data` folder | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2441 2560x1080 Akagi run held 120.0 FPS minimum/average with 120 generated samples minimum and zero moving-race repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
+| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
 | Distribution | The v2445 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, and persists the selected Direct/Safe Vulkan path | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2448 distinguishes swapchain output (`OUT`) from genuinely distinct output
+  (`NEW`) in the in-game FPS overlay. Both counters are sampled on the
+  presentation thread and published atomically; authentic 60 Hz endpoints and
+  interpolated midpoints count as distinct, while cadence repeats do not.
+- The v2448 native executable SHA-256 is
+  `AA068705DB38295967802DBEDAFC2E643A83119F763755D97428567C0DE1DC64`.
+  It passed the complete controller, attached-Xbox, audio endpoint, AICA,
+  custom-music, interpolation, Direct-session, card, ELAN, offscreen Vulkan,
+  guest-timing, lifecycle, link-freshness, translation-integrity, and
+  standalone no-firmware suite.
+- A normal visible Direct-Vulkan v2448 run used a 2560x1080 internal render,
+  authentic 60 Hz game timing, and 120 Hz presentation. Across 21 steady
+  moving-race samples, display and Vulkan minimum/average were all 120.0 FPS,
+  each two-second bucket contained at least 240 distinct frames, the repeat
+  counter delta was zero, movement reached 129.204 m, faults were zero, exit
+  code was 0, and the Direct-session marker was removed.
+- The 120 Hz analyzer now anchors current logs to explicit player-motion and
+  positive-travel telemetry instead of mistaking distinct animated menu frames
+  for race activity. Its focused contract passes 12 cases and retains a
+  generated-frame fallback for historical logs without motion telemetry.
 - v2446 extends the developer-only course-selector snapshot to segmented
   primary tables. Its native executable SHA-256 is
   `BB453D859F3D7DFD505CAC24501E16B7D17DEBC44ED0B2A7D557574923CB58C8`.
@@ -32,9 +52,11 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
   three independent guest selector fields matching the manifest. All 20
   focused contracts pass, including missing, partial, and contradictory
   fail-closed cases.
-- Akina Snow left/snow/night and Happogahara left/dry/night pass on v2446 with
-  the expected primary course, condition/time/weather assets, independent
-  `0,0,0` direction identity, real player movement, zero recognized fault
+- Seven Time Attack rows pass on exact v2446/schema-5 evidence: Akagi
+  left/dry/day, Akina right/wet/night, Akina Snow left/snow/night, Happogahara
+  left/dry/night, Irohazaka left/dry/day, Shomaru left/dry/day, and Tsuchisaka
+  left/dry/day. Each has the expected course/condition/time/weather assets,
+  three-field direction identity, real player movement, zero recognized fault
   markers, and cooperative exit code 0.
 - On exact v2444/schema-5 evidence, all eight Bunta routes plus Myogi
   left/dry/day and Usui right/wet/night pass. Four segmented Time Attack logs
@@ -167,16 +189,17 @@ corrected the tested HUD projection, mirror placement, RX-7 geometry/texture
 failures, and renderer lifecycle defects. This does not imply that all graphics
 or gameplay paths are complete.
 
-The current priority frontier is reducing remaining CPU command preparation,
-broad physical-input acceptance, repeated cross-driver shutdown validation,
-whole-game same-build coverage, remaining visual/audio defects, synchronous
-transition latency, broader clean-machine packaging, and eventually uncapped
-presentation that stays independent from guest gameplay timing. The measured
-high-refresh routes do not make 120 Hz a whole-game validated mode. The
-70-row ledger is currently mixed-build: ten rows have accepted v2444/schema-5
-proof and two segmented Time Attack rows have accepted v2446/schema-5 proof.
-The remainder still require one-build renewal before the matrix can be called
-current-build complete.
+The current priority frontier is isolating remaining terrain/HUD edge artifacts,
+reducing remaining CPU command preparation, broad physical-input acceptance,
+repeated cross-driver shutdown validation, whole-game same-build coverage,
+remaining visual/audio defects, synchronous transition latency, broader
+clean-machine packaging, and eventually uncapped presentation that stays
+independent from guest gameplay timing. The measured high-refresh routes do
+not make 120 Hz a whole-game validated mode. The 70-row ledger is currently
+mixed-build: ten rows have accepted v2444/schema-5 proof and seven Time Attack
+rows have accepted v2446/schema-5 proof. Together they represent all nine
+course families, but the remainder still require one-build renewal before the
+matrix can be called current-build complete.
 
 ## Definition of release-ready
 

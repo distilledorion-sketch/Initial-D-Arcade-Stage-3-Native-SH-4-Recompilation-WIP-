@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased v2448 honest-FPS checkpoint — 2026-09-01
+
+- Corrected the in-game FPS overlay so `OUT` is sampled from actual swapchain
+  presentations rather than renderer submissions.
+- Made the presentation counters atomic, removing stale cross-thread reads.
+- Counted both fresh authentic endpoints and interpolated midpoints as `NEW`,
+  while excluding exact cadence and overlay re-presents.
+- Updated the 120 Hz analyzer to use race-motion/positive-travel telemetry so
+  distinct animated menu frames cannot be misclassified as racing.
+- Passed 33 lifecycle/renderer policies, 20 route-parser policies, the new
+  12-case analyzer contract, and the complete BIOS-free product suite.
+- Completed a normal visible 2560x1080 Direct-Vulkan Akagi run at 120.0 FPS
+  minimum/average across 21 moving-race samples, 240 distinct frames per
+  two-second sample, zero repeat growth, zero faults, 129.204 m of movement,
+  cooperative exit code 0, and clean Direct-session-marker removal.
+
 ## Unreleased route-evidence QA — 2026-09-01
 
 - Corrected the interim route-evidence interpretation after broader course

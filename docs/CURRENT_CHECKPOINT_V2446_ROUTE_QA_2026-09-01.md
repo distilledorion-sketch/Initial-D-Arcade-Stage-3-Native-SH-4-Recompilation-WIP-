@@ -45,11 +45,22 @@ product launches do not read or report the private guest selector fields.
   and direction identity `0,0,0`; movement reached 7.964 m and exit was 0.
 - Happogahara left/dry/night loaded `s_vh`, condition `f`, night/dry assets,
   and direction identity `0,0,0`; movement reached 8.218 m and exit was 0.
+- Akagi left/dry/day loaded `h_hd`, condition `f`, day/dry assets, and
+  direction identity `0,0,0`; movement reached 8.659 m and exit was 0.
+- Akina right/wet/night loaded `k_df2`, condition `r`, night/rain assets, and
+  direction identity `1,1,1`; movement reached 8.083 m and exit was 0.
+- Irohazaka left/dry/day loaded `s_uh`, condition `f`, day/dry assets, and
+  direction identity `0,0,0`; movement reached 6.959 m and exit was 0.
+- Shomaru left/dry/day loaded `n_sy`, condition `f`, day/dry assets, and
+  direction identity `0,0,0`; movement reached 6.275 m and exit was 0.
+- Tsuchisaka left/dry/day loaded `k_tu`, condition `f`, day/dry assets, and
+  direction identity `0,0,0`; movement reached 7.756 m and exit was 0.
 
 ## Current limits
 
 The 70-row route ledger still mixes executable checkpoints. Exact
 v2444/schema-5 evidence accepts all eight Bunta rows and two Time Attack rows
-whose original diagnostics were complete. Exact v2446/schema-5 evidence now
-accepts two segmented Time Attack rows. Remaining rows require renewal on one
-build before the matrix can be described as current-build complete.
+whose original diagnostics were complete. Exact v2446/schema-5 evidence
+accepts seven Time Attack rows. Together these retained checkpoints represent
+all nine course families, but remaining rows still require renewal on one build
+before the matrix can be described as current-build complete.
