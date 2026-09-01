@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`
 
-## Current integration progress (v2445 WIP)
+## Current integration progress (v2448 WIP; public demo remains v2445)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -88,6 +88,8 @@ Public ZIP SHA-256:
 - Exact-matched static course/car batches retain their immutable topology
   eligibility summaries, avoiding repeated full-array scans on each 120 Hz
   presentation phase.
+- The FPS overlay now reports actual swapchain output as `OUT` and genuinely
+  distinct authentic/interpolated frames as `NEW`; exact repeats are excluded.
 
 ## Verified progress
 
@@ -138,6 +140,15 @@ Public ZIP SHA-256:
   swapchain path and Safe to the bounded GPU-readback path through one tested
   helper. Direct and Safe no-launch validation both passed, all maintained
   launchers parsed cleanly, and the native v2444 executable was unchanged.
+- Exact v2446/schema-5 evidence now accepts seven Time Attack rows with
+  independent three-field direction identity. Combined with the ten accepted
+  v2444 rows, the retained mixed-build ledger represents all nine course
+  families without treating dry/wet condition meshes as road direction.
+- The v2448 integration build passed the complete BIOS-free product suite.
+  A normal visible 2560x1080 Direct-Vulkan Akagi run then held 120.0 FPS
+  minimum/average for both display and Vulkan across 21 moving-race samples,
+  produced at least 240 distinct frames per two-second bucket, added zero
+  repeats, advanced 129.204 m, and exited cooperatively with no unclean marker.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -163,14 +174,15 @@ is complete.
   content and hardware.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on v2445.
+  Bunta condition, and error branch has not been exhaustively rerun on one
+  current integration executable.
 - Physical Xbox discovery now has a product-shared hardware acceptance result;
   live axis/button movement, multiple controller models, wheels/force-feedback,
   and audible end-user audio behavior still need broader acceptance.
-- The cooperative shutdown path passes source and offscreen checks, but a full
-  live Vulkan/WSI stress pass remains deliberately pending after earlier host
-  black-screen incidents. Please close the game normally and report the newest
-  logs if a failure occurs.
+- The cooperative shutdown path passes source/offscreen checks and bounded
+  live Direct-Vulkan runs. Repeated stress across more GPUs and drivers is
+  still required after earlier host black-screen incidents. Please close the
+  game normally and report the newest logs if a failure occurs.
 - Clean-machine packaging needs broader community testing.
 
 When reporting a problem, include the mode, course/opponent, direction,
@@ -181,9 +193,9 @@ data, or copyrighted music.
 See [STATUS.md](STATUS.md) for the evidence ledger,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
 for the latest launcher/release facts,
-[the v2444 integration checkpoint](docs/CURRENT_CHECKPOINT_V2444_2026-09-01.md)
-for the current native-runtime acceptance, and [ROADMAP.md](ROADMAP.md) for the
-ordered acceptance criteria.
+[the v2448 integration checkpoint](docs/CURRENT_CHECKPOINT_V2448_FPS_OVERLAY_2026-09-01.md)
+for the current native-runtime acceptance, and [ROADMAP.md](ROADMAP.md) for
+the ordered acceptance criteria.
 
 ## Repository contents
 
