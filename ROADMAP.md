@@ -31,14 +31,14 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   all 62 defined Time Attack direction/weather/time rows and all eight Bunta
   courses. Every row reached real movement, reported zero recognized faults,
   and exited cooperatively; strict no-launch reanalysis returned 70/70.
-- Exact-v2453 target-gated rival-result renewal has seven strict passes: Evo 5,
-  Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Sudo rematch, and Wataru.
-  This is 7/32 current-build profiles; the historical 32/32 accepted ledger is
-  intentionally not promoted to a same-build claim.
+- Exact-v2453 target-gated rival-result renewal has nine strict passes: Evo 5,
+  Evo 6, Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Smiley, Sudo
+  rematch, and Wataru. This is 9/32 current-build profiles; the historical
+  32/32 accepted ledger is intentionally not promoted to a same-build claim.
 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
-entire route-state matrix has exact-v2449 movement proof, and seven natural
+entire route-state matrix has exact-v2449 movement proof, and nine natural
 rival results now have strict exact-v2453 evidence. Full-race, cross-driver,
 car/opponent, campaign, persistence, and visual stress are still required.
 

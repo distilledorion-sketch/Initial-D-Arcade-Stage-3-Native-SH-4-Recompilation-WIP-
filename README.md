@@ -114,12 +114,13 @@ Public ZIP SHA-256:
   result, no forced outcome, zero recognized errors/runtime faults, a 59.8 FPS
   or better Vulkan minimum, and cooperative clean-session shutdown.
 - Exact-v2453 rival-result renewal is now tracked separately from the
-  historical mixed-checkpoint ledger. Evo 5, the Keisuke rematch, Kyoko, the
-  Ryosuke rematch, Sakamoto, the Sudo rematch, and Wataru each reached positive
-  player travel before a natural, game-owned result. After each target armed,
-  the log recorded zero requested or applied helper outcomes. All seven strict
-  runs averaged 60.0 FPS for display and Direct Vulkan presentation, reported
-  zero fault signals, and shut down cooperatively. This is 7/32 profiles
+  historical mixed-checkpoint ledger. Evo 5, Evo 6, the Keisuke rematch, Kyoko,
+  the Ryosuke rematch, Sakamoto, Smiley, the Sudo rematch, and Wataru each
+  reached positive player travel before a natural, game-owned result. After
+  each target armed, the log recorded zero requested or applied helper
+  outcomes. All nine strict runs averaged 60.0 FPS for display and Direct
+  Vulkan presentation, reported zero fault signals, and shut down
+  cooperatively. This is 9/32 profiles
   renewed on the exact v2453 SHA-256, not a whole-ledger same-build claim.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race

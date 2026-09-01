@@ -42,10 +42,12 @@ Each accepted row meets all of these gates:
 | Target | Natural travel | Display min/avg | Vulkan min/avg | Natural RESULT loads | Post-arm developer writes | Fault signals |
 |---|---:|---:|---:|---:|---:|---:|
 | Evo 5 | 289.136 m | 59.8 / 60.0 FPS | 59.8 / 60.0 FPS | 1 | 0 | 0 |
+| Evo 6 | 301.538 m | 59.8 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
 | Keisuke rematch | 787.215 m | 59.8 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
 | Kyoko | 256.297 m | 59.8 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
 | Ryosuke rematch | 360.507 m | 59.8 / 60.0 FPS | 60.0 / 60.0 FPS | 1 | 0 | 0 |
 | Sakamoto | 314.508 m | 59.9 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
+| Smiley | 295.724 m | 59.9 / 60.0 FPS | 59.8 / 60.0 FPS | 1 | 0 | 0 |
 | Sudo rematch | 888.622 m | 59.8 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
 | Wataru | 243.602 m | 59.9 / 60.0 FPS | 59.9 / 60.0 FPS | 1 | 0 | 0 |
 
@@ -58,7 +60,7 @@ without a post-arm developer result write.
 
 The historical accepted ledger still contains natural-result evidence for all
 32 retained rival profiles: 30 Legend profiles and two Bunta profiles. Those
-runs span multiple accepted binaries. The exact-v2453 ledger is **7/32**, not
+runs span multiple accepted binaries. The exact-v2453 ledger is **9/32**, not
 32/32. This checkpoint deliberately keeps those two claims separate.
 
 The broad historical coverage ledger also reports 48/48 defined route/branch
@@ -77,7 +79,7 @@ has been renewed on v2453.
 
 ## Remaining gate
 
-Renew the other 25 rival targets on this exact executable, strictly recheck
+Renew the other 23 rival targets on this exact executable, strictly recheck
 target-arm/result ordering and metrics, and fix any same-build regression found.
 Whole-game readiness still requires broader visual, audio, controller/wheel,
 card/error-branch, cross-driver, and repeated close/restart acceptance.

@@ -122,6 +122,20 @@ if (-not (Test-Path -LiteralPath $integrityTool -PathType Leaf)) {
 }
 . $integrityTool
 $gameFilesReady = Test-Idas3GameFiles -Root $gameFilesRoot -Quiet
+if (-not $gameFilesReady) {
+    # A just-started GUI launcher, antivirus scanner, or indexer can briefly
+    # disturb the metadata-only pass.  If the extracted layout is present,
+    # retry against file content before incorrectly falling back to CHD setup.
+    $manifest = Join-Path $gameFilesRoot '.idas3_extraction_complete.json'
+    $hostfs = Join-Path $gameFilesRoot 'driveA\HOSTFS'
+    if ($main -and (Test-Path -LiteralPath $main -PathType Leaf) -and
+        (Test-Path -LiteralPath $manifest -PathType Leaf) -and
+        (Test-Path -LiteralPath $hostfs -PathType Container)) {
+        Start-Sleep -Milliseconds 200
+        $gameFilesReady = Test-Idas3GameFiles -Root $gameFilesRoot `
+            -FullHash -Quiet
+    }
+}
 if (-not $ValidateOnly -and -not $gameFilesReady) {
     $setup = Join-Path $PSScriptRoot 'Setup Game Files.ps1'
     if (-not (Test-Path -LiteralPath $setup -PathType Leaf)) {
@@ -333,7 +347,10 @@ $cardPath = if ($CardImage) {
         if (-not (Test-Path -LiteralPath $absoluteCardPath -PathType Leaf) -and
             ((Test-Path -LiteralPath $portableCardPath -PathType Leaf) -or
              -not (Test-Path -LiteralPath $absoluteParent -PathType Container))) {
-            Write-Output "Repaired moved card setting: $portableCardPath"
+            # Keep this diagnostic off the success-output stream.  This block
+            # is an expression assigned to $cardPath, so Write-Output would
+            # turn the result into an array whose first item is this message.
+            Write-Verbose "Repaired moved card setting: $portableCardPath"
             $portableCardPath
         } else {
             $absoluteCardPath

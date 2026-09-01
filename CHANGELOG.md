@@ -14,12 +14,20 @@
   Direct-session marker.
 - Added an exact-candidate ledger generator which keeps the newest strict pass
   per target and does not mix evidence from older executable hashes.
-- Strictly renewed seven natural rival results on exact v2453: Evo 5, Keisuke
-  rematch, Kyoko, Ryosuke rematch, Sakamoto, Sudo rematch, and Wataru. All seven
-  averaged 60.0 FPS for display and Direct Vulkan presentation, produced zero
-  recognized fault signals, and closed cooperatively.
-- Kept the same-build claim honest at 7/32; the broader historical 32/32
+- Strictly renewed nine natural rival results on exact v2453: Evo 5, Evo 6,
+  Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Smiley, Sudo rematch, and
+  Wataru. All nine averaged 60.0 FPS for display and Direct Vulkan
+  presentation, produced zero recognized fault signals, and closed
+  cooperatively.
+- Kept the same-build claim honest at 9/32; the broader historical 32/32
   natural-result ledger remains explicitly mixed-checkpoint evidence.
+- Corrected the portable-card repair path so its diagnostic cannot be captured
+  as a drive name when a build folder moves.
+- Added a content-verified retry before automatic CHD setup, preventing a
+  transient metadata check from falsely reporting a clean extracted build as a
+  corrupt source disc.
+- Added an isolated moved-build regression which exercises the fast-to-full
+  integrity retry without loading game data or starting a game process.
 
 ## Unreleased v2449 cinematic-mask widescreen checkpoint — 2026-09-01
 
