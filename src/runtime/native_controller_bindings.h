@@ -90,7 +90,7 @@ inline float controllerBindingStrength(
 inline ControllerCaptureResult detectControllerBinding(
         const ControllerSnapshot& baseline,
         const ControllerSnapshot& current,
-        float axisThreshold = 0.55f) {
+        float axisThreshold = 0.35f) {
     // Buttons win over axes so pressing a face button while a noisy stick is
     // near its threshold always captures the deliberate control.
     for (uint16_t index = 0u; index < current.buttons.size(); ++index) {
@@ -153,4 +153,3 @@ inline uint16_t arcadePedalFromBinding(
 }
 
 }  // namespace idas3input
-

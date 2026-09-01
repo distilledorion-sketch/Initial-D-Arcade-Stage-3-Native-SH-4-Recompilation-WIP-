@@ -61,7 +61,16 @@ int main() {
     assert(captured.binding.kind == ControllerBindingKind::button);
     assert(captured.binding.index == 2u);
 
+    // A deliberate partial stick/wheel movement must be enough to remap an
+    // axis. Requiring more than half travel made the F1 control capture look
+    // unresponsive, especially on large steering wheels.
+    moved = {};
+    moved.axes[0] = 0.40f;
+    captured = detectControllerBinding(baseline, moved);
+    assert(captured.found);
+    assert(captured.binding.kind == ControllerBindingKind::axisPositive);
+    assert(captured.binding.index == 0u);
+
     std::puts("controller binding normalization/capture tests passed");
     return 0;
 }
-
