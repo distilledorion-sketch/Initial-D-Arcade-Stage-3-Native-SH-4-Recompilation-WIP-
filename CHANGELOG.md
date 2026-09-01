@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased v2453 exact rival-result renewal — 2026-09-01
+
+- Corrected developer-only natural-detour attempt bookkeeping so a retry win
+  cannot be miscounted as a second natural detour.
+- Added bounded, default-off outcome-window and outcome-pause QA controls for
+  deterministic menu-path selection without changing ordinary product input.
+- Suppressed already-generated legacy overlay Start/Accelerator pulses during
+  the bounded QA pause, making the pause effective at the final input merge.
+- Added exact executable SHA-256 and safety-profile metadata to race summaries.
+- Added a strict natural-result verifier that fails closed on weak target
+  evidence, post-arm helper writes, runtime faults, live processes, or a stale
+  Direct-session marker.
+- Added an exact-candidate ledger generator which keeps the newest strict pass
+  per target and does not mix evidence from older executable hashes.
+- Strictly renewed seven natural rival results on exact v2453: Evo 5, Keisuke
+  rematch, Kyoko, Ryosuke rematch, Sakamoto, Sudo rematch, and Wataru. All seven
+  averaged 60.0 FPS for display and Direct Vulkan presentation, produced zero
+  recognized fault signals, and closed cooperatively.
+- Kept the same-build claim honest at 7/32; the broader historical 32/32
+  natural-result ledger remains explicitly mixed-checkpoint evidence.
+
 ## Unreleased v2449 cinematic-mask widescreen checkpoint — 2026-09-01
 
 - Traced the centered-4:3 black bars in the authentic attract sequence to two

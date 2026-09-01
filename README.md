@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`
 
-## Current integration progress (v2449 WIP; public demo remains v2445)
+## Current integration progress (v2453 WIP; public demo remains v2445)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -113,15 +113,14 @@ Public ZIP SHA-256:
   Direct Vulkan at 60 Hz. Every route showed authentic movement before the
   result, no forced outcome, zero recognized errors/runtime faults, a 59.8 FPS
   or better Vulkan minimum, and cooperative clean-session shutdown.
-- Exact final-v2449 rival-result renewal is now underway rather than being
-  inferred from that historical mixed-checkpoint ledger. Sakamoto and Wataru
-  both reached positive player travel before a natural, game-owned result;
-  prerequisite opponents alone used the disposable-card QA outcome helper.
-  After each target armed, the log recorded zero requested or applied helper
-  outcomes. Both runs held 59.6 FPS or better race/Vulkan minima, reported zero
-  recognized errors/runtime faults, and shut down cooperatively. This is 2/32
-  profiles renewed on the final executable, not yet a whole-ledger same-build
-  claim.
+- Exact-v2453 rival-result renewal is now tracked separately from the
+  historical mixed-checkpoint ledger. Evo 5, the Keisuke rematch, Kyoko, the
+  Ryosuke rematch, Sakamoto, the Sudo rematch, and Wataru each reached positive
+  player travel before a natural, game-owned result. After each target armed,
+  the log recorded zero requested or applied helper outcomes. All seven strict
+  runs averaged 60.0 FPS for display and Direct Vulkan presentation, reported
+  zero fault signals, and shut down cooperatively. This is 7/32 profiles
+  renewed on the exact v2453 SHA-256, not a whole-ledger same-build claim.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
@@ -232,7 +231,9 @@ for the current native-runtime acceptance,
 [the v2449 route-matrix checkpoint](docs/CURRENT_CHECKPOINT_V2449_ROUTE_MATRIX_2026-09-01.md)
 for the complete same-build condition ledger,
 [the v2449 rival-result renewal checkpoint](docs/CURRENT_CHECKPOINT_V2449_RIVAL_RENEWAL_2026-09-01.md)
-for the current same-build target-gated ledger, and [ROADMAP.md](ROADMAP.md)
+for the earlier target-gated ledger,
+[the v2453 exact rival-result checkpoint](docs/CURRENT_CHECKPOINT_V2453_EXACT_RIVAL_RENEWAL_2026-09-01.md)
+for the current same-SHA strict ledger, and [ROADMAP.md](ROADMAP.md)
 for the ordered acceptance criteria.
 
 ## Repository contents

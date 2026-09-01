@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2449 WIP
+Integration checkpoint: v2453 WIP
 Public checkpoint: v2445 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -225,13 +225,15 @@ results/persistence, cars/opponents, visual and audible correctness, campaign
 branches, hardware breadth, and repeated live-renderer stress rather than
 route-state renewal.
 
-Exact final-v2449 full-race renewal has also started for the retained rival
-ledger. Sakamoto and Wataru are the first 2/32 target profiles renewed: both
-moved through ordinary guest physics/input and reached a natural game-owned
-result, with zero target outcome requests after the target gate armed, zero
-recognized errors/runtime faults, 59.6 FPS or better race/Vulkan minima, and
-cooperative clean shutdown. The older accepted 32/32 ledger remains useful
-historical evidence, but it is not being presented as a same-build v2449 pass.
+Exact-v2453 full-race renewal now has 7/32 retained rival profiles: Evo 5,
+Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Sudo rematch, and Wataru.
+Each moved through ordinary guest physics/input and reached a natural
+game-owned result, with zero target outcome requests after the target gate
+armed, zero recognized fault signals, 60.0 FPS average display/Direct Vulkan
+presentation, and cooperative clean shutdown. The exact executable SHA-256 is
+`4297DD4906E5A12CD474BC4496E7CF76F907E17CBBB19F92CD6178A09FB3FBD8`.
+The older accepted 32/32 ledger remains useful historical evidence, but it is
+not being presented as a same-build v2453 pass.
 
 ## Definition of release-ready
 
