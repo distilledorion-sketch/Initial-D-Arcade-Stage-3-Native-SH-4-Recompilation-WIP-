@@ -37,14 +37,34 @@ closure. No live Vulkan WSI surface was opened for this route-state campaign.
 Afterward, a no-launch reanalysis reparsed all retained logs, accepted only
 evidence tied to the exact executable hash above, and again returned 70/70.
 
+## Direct-Vulkan natural-finish renewal
+
+The 16 distinct retained Time Attack layout routes were then renewed on the
+same final v2449 executable with normal Direct Vulkan presentation at
+2560x1080 and 60 Hz. Each case ran BIOS-free, muted, at BelowNormal process
+priority, with one raster thread and only one game process at a time.
+
+Acceptance required positive player-car travel followed by the game's later
+`RESULT.bin.nz` transition, exactly one natural result, no developer-forced
+outcome marker, zero recognized errors/runtime faults, and a cooperative clean
+Direct-session shutdown. The strict no-launch audit returned:
+
+- 16/16 natural-finish passes and zero failures;
+- 85.590-286.250 m of authentic travel per route;
+- 59.5 FPS or better race-display minimum and 60.0 FPS average;
+- 59.8 FPS or better Direct-Vulkan minimum and 60.0 FPS average; and
+- zero forced outcomes, zero recognized faults, and no game process left
+  running after the campaign.
+
 ## What this does not prove
 
-This checkpoint proves route selection, state identity, race entry, and initial
-real movement. It does not claim that all 70 rows were driven to a natural
+The 70-row matrix proves route selection, state identity, race entry, and
+initial real movement. The separate natural-finish renewal proves complete
+results for all 16 retained Time Attack layout routes, but does not claim that
+all 70 direction/weather/time rows were individually driven to a natural
 finish, that every car/opponent/campaign branch was exercised, or that every
-visual, audio, controller, card, result, continuation, and save behavior is
-correct. Live Vulkan performance and high-refresh acceptance remain separate
-measured campaigns.
+visual, audio, controller, card, continuation, and save behavior is correct.
+High-refresh acceptance remains a separate measured campaign.
 
 No executable, game files, generated guest translations, logs, replay inputs,
 captures, card data, or custom music are published in this source checkpoint.
