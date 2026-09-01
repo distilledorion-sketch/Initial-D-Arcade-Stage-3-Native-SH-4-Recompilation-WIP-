@@ -1,5 +1,26 @@
 # Changelog
 
+## v2411-public-early-demo — 2026-08-31
+
+- Published the first Windows x64 public early-demo prerelease. The package
+  contains no game data, BIOS, extracted assets, card saves, custom music,
+  logs, or personal paths and accepts only matching user-owned CHD/PIC inputs.
+- Added a self-contained Python-free Windows setup/integrity flow with specific
+  missing, incorrect-revision, corrupt-input, and incomplete-extraction errors.
+- Added an XInput controller provider with persistent button/axis mappings while
+  retaining DirectInput wheel support and independent Xbox trigger axes.
+- Added automatic last-card selection, visible card-data storage, named card
+  creation, and a Yes/No unsaved-data warning before a card-triggered restart.
+- Replaced guessed custom-music cross-slot routing with exact opened-stream
+  replacement; clearing or disabling a slot restores the original game track.
+- Reworked renderer shutdown to stop new Vulkan presentation, wait for the
+  raster worker's explicit exit handshake, join it, and destroy the window only
+  afterward; removed the forced `TerminateProcess` fallback.
+- Kept 60 FPS as the safe default and labeled higher-refresh presentation as
+  experimental.
+- Documented a post-release controller defect: at least one Xbox controller is
+  not detected by v2411 despite the provider-neutral binding tests passing.
+
 ## v2396-wip — 2026-08-30
 
 - Removed the optional held-View host OST picker and kept song selection on a quick Change View press in the authentic opponent selector.

@@ -4,63 +4,139 @@
   <img src="docs/media/project-logo.png" alt="Initial D Arcade Stage Ver. 3 — Recompiled" width="900">
 </p>
 
-An experimental static ahead-of-time recompilation project for the NAOMI 2 release of *Initial D Arcade Stage 3* (GDS-0033).
+An experimental static ahead-of-time recompilation of the **NAOMI 2** release
+of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 
-> **Research status:** this is not an emulator, not a finished port, and not a playable game distribution. The public repository contains original clean-room infrastructure and progress evidence only. It contains no game image, BIOS, PIC/CHD data, extracted assets, memory snapshots, or generated game-code translation.
+> **Public early demo available:** this is unfinished playtest software, not a
+> finished port. Start with the default 60 FPS mode. The public download does
+> not include game data, a BIOS, card saves, custom music, logs, or extracted
+> assets. You must provide your own legally obtained matching game files.
+
+[**Download Public Early Demo v2411 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2411-public-early-demo)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
-## What works today (2026-08-30)
+## What this project is
 
-- A Python SH-4 decoder/code generator covers the instruction families exercised by the current static-AOT path, including FPSCR-aware floating-point register width and bank handling.
-- Native C++ execution cold-boots, advances through targeted menu and loading paths, enters live races, drives through normal JVS/physics input, and reaches tested result/save flows with direct translated-function dispatch and no interpreter or JIT fallback.
-- The submitted ELAN stream, CH2 DMA, render-complete interrupts, retained scenes, and native presentation path now advance continuously instead of stalling at the earlier frame-lifecycle frontier.
-- The Naomi 2 renderer handles the observed opaque, translucent, modifier-volume, punch-through, fog, blend, texture, and user-tile-clip cases used by the current scenes.
-- A missing course environment/path lookup was traced to two ISO9660-truncated files. A source-safe tool now restores their logical names from a user's own dump and verifies exact hashes.
-- The renderer now preserves the tested HUD, mirror placement, projection, car geometry, texture mapping, and translucent/modifier-volume behavior through targeted menu and race scenes.
-- A persistent renderer worker pool and Vulkan pipeline prewarming remove the measured CPU thread-creation jitter and cold race-entry pipeline compilation stalls.
-- The private integration build keeps game logic, physics, timers, input, and audio on the authentic 60 Hz guest cadence while presenting distinct interpolated motion at 120 Hz. On the fixed `k_ez` regression route, v2374 produced exactly 120 new motion samples in all 23 complete two-second race intervals, with no repeated moving-race endpoints and no faults.
-- A guest-side cold-start hotspot was traced to the game's canonical byte-wise object clear. The private integration now bulk-clears only proven ordinary-main-RAM ranges while preserving one guest memory cycle per byte, final SH-4 registers/flags, and the original fallback for every other mapping.
-- AICA/ARM7 processing produces sustained non-silent output and selects the tested race music stream; automated QA runs use a deliberate null audio sink.
-- Keyboard/JVS controls, digital shifter routes, no-card operation, and a disposable-card insert/load/save/reload path pass focused tests.
-- The private launcher performs BIOS-free setup from user-owned inputs, reports missing/corrupt inputs with normal Windows errors, and requires no separate Python installation. Card files and custom race-music mappings are managed in user-visible folders.
-- The F1 settings UI now covers video, controls/key binding, force-feedback strength, HUD layout, card selection/insertion, and 13 custom race-music slots. Quick View Change on the authentic opponent selector cycles entry 0/no music and songs 1–13; a replacement displays its sanitized filename and follows the game’s real stream start/stop commands.
-- Whole-route QA has loaded all 48 defined route/branch targets and produced real movement for all 32 rival profiles. All 16 Time Trial layouts and all 32 rival profiles now have natural, game-owned result evidence.
-- v2391 removed an independent preview limiter that could discard valid authentic 60 Hz scenes before 120 Hz interpolation. The measured four-course priority matrix holds 119.8–120.0 FPS minimum presentation with zero repeated endpoints during accepted moving intervals.
-- v2396 fixed an inline-COMDAT linkage trap in the host asset loader, synchronized opponent-menu custom titles with the selected race stream, and added a build gate that rejects stale translated owners. The standalone audit again reports zero firmware callbacks, firmware objects, or firmware input contracts.
-- Cross-machine N70 validation reproduced an identical rendered-frame SHA-256: `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
-- Private integration tests cover ELAN command/VRAM classification, JVS identity and EEPROM behavior, Maple VBlank/reset behavior, Naomi system-ROM write protection, Flycast-derived AICA SGC/mailbox behavior, and PVR twiddled texture layout.
+- A native static-AOT recompilation of the original SH-4 program.
+- A native NAOMI 2 runtime with Flycast-derived hardware knowledge where noted.
+- A Vulkan renderer for the game's submitted ELAN/PVR work.
+- A BIOS-free executable path with no SH-4 interpreter or JIT fallback.
+
+It is **not** a Dreamcast port and the released product does **not** run the
+game through a NAOMI 2 BIOS. The setup utility uses a matching CHD and security
+PIC only to verify and locally extract the data required by the recompilation.
+
+## Quick start
+
+1. Download and extract `Public.Early.Demo.zip` from the
+   [v2411 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2411-public-early-demo).
+2. Place your own matching files in the included `game files` folder:
+   - `gds-0033.chd`
+   - `317-0384-com.pic`
+3. Run `Initial D Arcade Stage 3 Recompiled.exe`.
+
+The Windows launcher checks each input, explains which file is missing or
+incorrect, extracts the required files, and repairs an incomplete setup.
+Python is not required. Allow roughly 1.3 GB of temporary free space during
+first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
+
+Public ZIP SHA-256:
+`FE0DC457D40FD1D5E7B9AE472848533BEC933F70343159F8955ADF8FE6C2930A`
+
+## Current v2411 features
+
+- BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
+- Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
+  presentation that keeps gameplay, physics, timers, input, and audio on the
+  original 60 Hz guest cadence.
+- Output resolution, widescreen, antialiasing, texture filtering, fullscreen,
+  V-sync, FPS counter, and live HUD-position settings.
+- An F1 menu with Video, Controls, HUD, Card, and Music pages.
+- Keyboard, Xbox/XInput, and DirectInput wheel paths with persistent remapping;
+  Xbox triggers are independent accelerator/brake axes.
+- Adjustable force-feedback strength for supported DirectInput wheels.
+- Native ARM7/AICA audio and exact-slot optional MP3/WAV/FLAC race-music
+  replacement. Clearing a replacement restores the original game track and no
+  original asset is overwritten.
+- Card creation/selection in the visible `card data` folder. The last selected
+  card is loaded on the next start, and changing cards displays an unsaved-data
+  restart warning.
+- A self-contained, Python-free setup and integrity checker for user-owned
+  inputs.
+- Cooperative renderer shutdown: the program stops new Vulkan presentation,
+  joins the raster worker, and only then destroys its window.
+
+## Verified progress
+
+- All 48 defined route/branch targets have loaded and all 32 rival profiles
+  have produced real movement through normal guest physics/input.
+- All 16 unique Time Attack layouts and all 32 Legend rival profiles have
+  separate natural, game-owned result evidence.
+- A 70-row Time Attack/Bunta condition matrix has passing route-load/movement
+  evidence. This is mixed-checkpoint evidence, not yet a complete Bunta matrix
+  rerun on one v2411 executable.
+- The fixed `k_ez` regression route produced 120 distinct motion samples in
+  each of 23 complete two-second race intervals, with no repeated moving-race
+  endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
+  presentation in its accepted moving windows.
+- v2411 offline checks cover controller axis/button normalization, exact custom
+  music routing, presentation interpolation, ELAN/card/AICA behavior, offscreen
+  Vulkan, card-eject classification, translation integrity, link freshness,
+  and the no-firmware product boundary.
+- A cross-machine renderer replay produced the same accepted frame SHA-256:
+  `34D6B91C0550A5CC2A60D4B1F8930812908CEA6DCD6C354749A0881BE426D9E2`.
+
+These are targeted engineering results, not proof that every game combination
+is complete.
 
 ![Intro shot progression](docs/media/native-intro-strip.png)
 
-## What does not work yet
+## Known early-build limitations
 
-- This is not a finished or publicly playable game package, and it must not be treated as whole-game completion.
-- Every visual combination, weather condition, long campaign permutation, and card-error branch has not yet been exhaustively validated. The 32/32 natural-rival milestone closes opponent result coverage, not those broader combinations.
-- Some synchronous guest asset/music loading still pauses creation of new game scenes before car motion begins. The fixed presenter maintains cadence during static transitions, and the proven `k_ez` cold-race hotspot is removed, but other courses still require the same validation.
-- Physical wheel force feedback and audible end-user audio acceptance still need hardware validation even though the software paths and automated checks advance.
-- Unlimited presentation rate independent of gameplay is not complete. The validated high-rate target is currently 120 FPS with original guest timing.
-- Long-run determinism, broader clean-machine packaging, crash diagnostics, and remaining presentation polish are still open.
-- The public repository deliberately omits private generated game code, captures, and all legally restricted inputs, so it is not a standalone game build.
+- This is not release-quality or whole-game complete. Visual, audio, timing,
+  transition, controller, card, and course-specific defects may remain.
+- **Use 60 FPS first.** Higher-refresh presentation is experimental and may
+  expose jitter, clipping, flicker, or unstable performance on unverified
+  content and hardware.
+- Unlimited presentation rate is not finished.
+- Every car/course/weather/day/night combination, long campaign permutation,
+  Bunta condition, and error branch has not been exhaustively rerun on v2411.
+- **Known v2411 defect:** at least one Xbox controller is not detected by the
+  public demo, so controller play/remapping must not yet be considered working
+  for every user. Keyboard remains the current fallback while the XInput
+  discovery/launcher path is repaired. Wheel/force-feedback behavior and
+  audible end-user audio also need broader hardware acceptance.
+- The cooperative shutdown path passes source and offscreen checks, but a full
+  live Vulkan/WSI stress pass remains deliberately pending after earlier host
+  black-screen incidents. Please close the game normally and report the newest
+  logs if a failure occurs.
+- Clean-machine packaging needs broader community testing.
+
+When reporting a problem, include the mode, course/opponent, direction,
+weather/time choice, display resolution, FPS mode, controller, exact point of
+failure, and the newest logs. Do not upload game files, extracted assets, card
+data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the current source-safe checkpoint](docs/CURRENT_CHECKPOINT_V2396_2026-08-30.md)
-for the latest measured results, and [ROADMAP.md](ROADMAP.md) for ordered
-acceptance criteria.
+[the v2411 checkpoint](docs/CURRENT_CHECKPOINT_V2411_2026-08-31.md) for the
+current release facts, and [ROADMAP.md](ROADMAP.md) for the ordered acceptance
+criteria.
 
 ## Repository contents
 
-- `translator/` — general SH-4 instruction decoding and C++ statement generation.
-- `src/runtime/` — selected clean-room runtime snapshots for ELAN and JVS work.
+- `translator/` — general SH-4 instruction decoding and C++ generation.
+- `src/runtime/` — selected source-safe runtime snapshots for ELAN and JVS.
 - `tests/` — public tests that require no game data.
+- `tools/` — source-safe utilities that operate only on user-provided inputs.
 - `docs/` — architecture, media, and validation notes.
 
-The renderer snapshot is included to show the real integration work, while the
-complete private runtime and generated translation units remain intentionally
-absent. The preparation utility also contains no game data: it operates only
-on user-supplied legally owned inputs.
+The Git source tree intentionally omits game images, BIOS/PIC/CHD data,
+extracted assets, cards, logs, memory captures, and generated game translation
+units. The GitHub prerelease supplies the Windows launcher/runtime but still
+contains none of those user-owned inputs.
 
-## Run the public checks
+## Run the public source checks
 
 Python translator tests:
 
@@ -72,15 +148,17 @@ Native ELAN classifier smoke test:
 
 ```bash
 cmake -S . -B build
-cmake --build build
-ctest --test-dir build --output-on-failure
+cmake --build build --config Release
+ctest --test-dir build -C Release --output-on-failure
 ```
 
-No proprietary input is needed for either check.
+No proprietary input is needed for either check. See [BUILDING.md](BUILDING.md)
+for the boundary between the public source checks and the downloadable demo.
 
 ## Project boundary
 
-The private integration build is a native static-AOT recompilation of the
-NAOMI 2 game. A Dreamcast port is explicitly outside the project scope.
-
-This independent research project is not affiliated with or endorsed by Sega, Kodansha, Shuichi Shigeno, or the original developers and publishers. All referenced names and trademarks belong to their respective owners.
+This independent preservation/interoperability research project is not
+affiliated with or endorsed by Sega, Kodansha, Shuichi Shigeno, or the original
+developers and publishers. All referenced names, artwork, music, game data,
+and trademarks belong to their respective owners. Only test with material you
+are legally permitted to use; never submit those inputs to this repository.

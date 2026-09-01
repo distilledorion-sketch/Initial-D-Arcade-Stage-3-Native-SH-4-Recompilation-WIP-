@@ -2,6 +2,33 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
+## Published checkpoint — v2411 public early demo
+
+- A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
+  extracts required data locally, and launches the BIOS-free static-AOT path
+  without requiring Python.
+- The release contains no game input, BIOS, extracted asset, card, custom
+  music, log, or personal path.
+- Video, HUD, card, music, keyboard, XInput, DirectInput, and force-feedback
+  controls are exposed through the F1 settings UI.
+- A public report confirms that at least one Xbox controller is not detected;
+  controller discovery is therefore not an accepted v2411 feature yet.
+
+Checkpoint result: suitable for cautious public testing at the default 60 FPS,
+not release-ready.
+
+## P0 — Repair controller discovery and prove host-safe lifecycle
+
+- Reproduce the v2411 Xbox-controller discovery failure outside the full game.
+- Validate XInput DLL discovery, slot enumeration, Auto-device selection,
+  reconnect behavior, axis/button capture, and launcher setting propagation.
+- Complete a conservative live Vulkan close/restart stress pass only after the
+  offline shutdown gates remain green.
+
+Acceptance: supported controllers are detected and remappable on a clean
+machine, and repeated normal close/restart cycles leave no live renderer/audio
+worker, display-driver failure, black screen, or host freeze.
+
 ## Validated checkpoint — Targeted complete race path
 
 - Targeted intro, menu, course-loading, live-race, result, and disposable-card save transitions now advance through the static native path.
@@ -55,9 +82,9 @@ validated.
 ## P2 — Whole-game coverage and regression testing
 
 - Cover every car, course, mode, results/continue flow, save/configuration path, and long run.
-- Finish the seven remaining natural rival-result proofs; current evidence is
-  48/48 target loads, 32/32 rival movement, 16/16 natural Time Trial results,
-  and 25/32 natural rival results.
+- Preserve the completed natural-result ledger—48/48 target loads, 32/32 rival
+  movement, 16/16 Time Attack layouts, and 32/32 rival profiles—while rerunning
+  the broader mode/condition matrix on one current executable.
 - Eliminate unresolved indirect targets and compatibility-only diagnostics.
 - Add deterministic public tests for every source-safe subsystem.
 
@@ -68,7 +95,8 @@ runtime, with no unresolved translated target.
 ## P2 — Productization and release packaging
 
 - Reproducible build orchestration that accepts only user-supplied legally owned inputs.
-- Clear asset extraction boundary, configuration UI, controller mapping, crash diagnostics, and release packaging.
+- Broaden clean-machine acceptance for the current asset extraction boundary,
+  configuration UI, controller mapping, crash diagnostics, and release package.
 - Performance profiling and native hot-path optimization after correctness gates pass.
 
 Acceptance: clean-machine documentation and packaging that never redistributes third-party game content.
