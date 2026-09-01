@@ -157,8 +157,11 @@ Public ZIP SHA-256:
   2560x1080 BIOS-free attract run. Twelve captured scene points covered both
   the initial narrow-road matte and later changing-zoom car close-ups; the
   masks reached both output edges while Hor+ world rendering and unstretched
-  UI remained intact. The final build passed the complete product suite and
-  exited with no process or Direct-session marker left behind.
+  UI remained intact. Six matched 640x480 scenes are byte-identical to v2448,
+  proving native presentation is unchanged. A normal visible Direct run without
+  capture readback held 119.5–120.5 FPS after warm-up and exited without a
+  fault, process, or Direct-session marker. The final build also passed the
+  complete product suite.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then

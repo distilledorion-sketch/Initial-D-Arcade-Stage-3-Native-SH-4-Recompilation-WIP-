@@ -42,7 +42,16 @@ small correction. All high-volume course and car projection remains on the GPU.
   later changing-zoom car close-ups reached the real left and right edges.
 - Hor+ world rendering remained visible in the intended centre band and the UI
   remained unstretched.
-- Both bounded runs closed cooperatively with exit code 0. No game process or
+- A separate native-resolution A/B captured scenes 3300, 3360, 3420, 3480,
+  3540, and 3600 from the unchanged v2448 executable and final v2449. All six
+  complete 640x480 BMP files had matching SHA-256 values, proving byte-exact
+  native presentation across fixed and changing camera zoom.
+- A normal visible Direct-Vulkan run on the main monitor used a 2560x1080
+  internal render with no diagnostic GPU readback. After warm-up, presentation
+  remained between 119.5 and 120.5 FPS with a 120.0 Vulkan average. Moving
+  attract buckets produced approximately 239–241 distinct frames per two
+  seconds; static boot/menu periods correctly contained cadence repeats.
+- All bounded runs closed cooperatively with exit code 0. No game process or
   unclean Direct-Vulkan marker remained.
 - The complete controller, attached-Xbox, Windows audio endpoint, AICA,
   custom-music, interpolation, Direct-session, card, ELAN, offscreen Vulkan,

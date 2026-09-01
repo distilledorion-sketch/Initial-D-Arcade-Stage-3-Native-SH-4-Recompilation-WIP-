@@ -12,6 +12,9 @@
   native 4:3 placement remains unchanged.
 - Passed two BIOS-free attract captures across scenes 3300..3630, including
   camera cuts whose focal length changes during the matte animation.
+- Matched six v2448/v2449 640x480 captures byte-for-byte and completed a normal
+  visible 2560x1080 Direct run at 119.5–120.5 FPS after warm-up with no
+  diagnostic readback or recognized fault.
 - Passed the complete controller, real-Xbox, audio, music, card, interpolation,
   ELAN, Vulkan, timing, lifecycle, translation, freshness, and standalone
   no-firmware suite with cooperative exit and no stale process/session marker.
