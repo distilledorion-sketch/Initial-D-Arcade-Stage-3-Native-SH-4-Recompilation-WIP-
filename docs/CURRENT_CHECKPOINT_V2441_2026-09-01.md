@@ -56,12 +56,17 @@ Conservative CPU-only cold-boot probes also passed two real route families:
 - Shomaru dry/night Bunta loaded segmented `n_sy2` course geometry, the forward
   condition mesh, night environment, no rain, and the Bunta rival package;
   normal guest input/physics advanced 5.097 m.
+- Usui right/wet/night Time Attack loaded `s_nm2`, the reverse condition mesh,
+  all three right-direction guest flags, night environment, and rain; normal
+  guest input/physics advanced 9.008 m.
 
 Each probe ran Below Normal with Vulkan disabled and one offscreen preview
 frame per second, then used cooperative close after movement and exited 0. The
 route-evidence parser was corrected to recognize Shomaru's authentic segmented
 `*_pol_a/b/c.tbl` geometry without treating its separate condition mesh as the
-primary course.
+primary course. The runner also now derives Left=0/Right=1 from the explicit
+label when a retained manifest predates the generator's numeric direction
+column.
 
 Executable SHA-256:
 `78FFA018D058744A5AA5AAF5F5580C09F313CB8F5725A744AD0BFBCD6E30C6DD`

@@ -13,10 +13,14 @@
 - Passed the complete offline correctness, input, audio, card, interpolation,
   lifecycle, link-freshness, timing, and BIOS-free standalone suite.
 - Passed conservative CPU-only cold-boot/movement probes for Myogi Time Attack
-  and Shomaru Bunta, each with correct assets/conditions and cooperative exit.
+  (left/dry/day), Usui Time Attack (right/wet/night), and Shomaru Bunta, each
+  with correct assets/conditions and cooperative exit.
 - Corrected the private route-evidence parser to recognize the segmented
   `*_pol_a/b/c.tbl` geometry used by Shomaru while still excluding condition
   meshes from primary-course identification.
+- Made the private runner compatible with retained manifests that predate the
+  numeric direction column by deriving the generator's exact Left=0/Right=1
+  mapping from the explicit label.
 - Kept v2415 as the current downloadable public early demo; v2441 is an
   integration checkpoint pending broader live route and hardware acceptance.
 
