@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2411 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2411-public-early-demo)
+[**Download Public Early Demo v2413 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2413-steering-smoothing)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public.Early.Demo.zip` from the
-   [v2411 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2411-public-early-demo).
+1. Download and extract `Public.Early.Demo.v2413.zip` from the
+   [v2413 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2413-steering-smoothing).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`FE0DC457D40FD1D5E7B9AE472848533BEC933F70343159F8955ADF8FE6C2930A`
+`08EA0678658AB154B0EFEFD56D326740B89F7467D6692BDE47D94DD7A4CDB830`
 
-## Current v2411 features
+## Current v2413 features
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -56,6 +56,8 @@ Public ZIP SHA-256:
 - Keyboard, Xbox/XInput, and DirectInput wheel paths with persistent remapping;
   Xbox triggers are independent accelerator/brake axes.
 - Adjustable force-feedback strength for supported DirectInput wheels.
+- Live 0–100% Steering Smoothing for controllers and wheels; 0% preserves the
+  original unfiltered response and the chosen value is saved.
 - Native ARM7/AICA audio and exact-slot optional MP3/WAV/FLAC race-music
   replacement. Clearing a replacement restores the original game track and no
   original asset is overwritten.
@@ -75,12 +77,13 @@ Public ZIP SHA-256:
   separate natural, game-owned result evidence.
 - A 70-row Time Attack/Bunta condition matrix has passing route-load/movement
   evidence. This is mixed-checkpoint evidence, not yet a complete Bunta matrix
-  rerun on one v2411 executable.
+  rerun on one v2413 executable.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
   presentation in its accepted moving windows.
-- v2411 offline checks cover controller axis/button normalization, exact custom
+- v2413 offline checks cover controller discovery/remapping policy, axis/button
+  normalization and capture while the F1 menu is paused, exact custom
   music routing, presentation interpolation, ELAN/card/AICA behavior, offscreen
   Vulkan, card-eject classification, translation integrity, link freshness,
   and the no-firmware product boundary.
@@ -101,12 +104,9 @@ is complete.
   content and hardware.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on v2411.
-- **Known v2411 defect:** at least one Xbox controller is not detected by the
-  public demo, so controller play/remapping must not yet be considered working
-  for every user. Keyboard remains the current fallback while the XInput
-  discovery/launcher path is repaired. Wheel/force-feedback behavior and
-  audible end-user audio also need broader hardware acceptance.
+  Bunta condition, and error branch has not been exhaustively rerun on v2413.
+- Controller, wheel/force-feedback, and audible end-user audio behavior need
+  broader physical-hardware acceptance.
 - The cooperative shutdown path passes source and offscreen checks, but a full
   live Vulkan/WSI stress pass remains deliberately pending after earlier host
   black-screen incidents. Please close the game normally and report the newest
@@ -119,7 +119,7 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2411 checkpoint](docs/CURRENT_CHECKPOINT_V2411_2026-08-31.md) for the
+[the v2413 checkpoint](docs/CURRENT_CHECKPOINT_V2413_2026-08-31.md) for the
 current release facts, and [ROADMAP.md](ROADMAP.md) for the ordered acceptance
 criteria.
 

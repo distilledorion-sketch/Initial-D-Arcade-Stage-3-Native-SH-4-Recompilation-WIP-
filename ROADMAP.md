@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Published checkpoint — v2411 public early demo
+## Published checkpoint — v2413 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -11,17 +11,21 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   music, log, or personal path.
 - Video, HUD, card, music, keyboard, XInput, DirectInput, and force-feedback
   controls are exposed through the F1 settings UI.
-- A public report confirms that at least one Xbox controller is not detected;
-  controller discovery is therefore not an accepted v2411 feature yet.
+- The Controls page includes XInput-first selection, wireless reconnect scan,
+  keyboard/controller/wheel remapping, force-feedback strength, and saved
+  0–100% steering smoothing.
+- The complete controller and offscreen regression suite passes; broad physical
+  controller/wheel coverage remains an acceptance target.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.
 
-## P0 — Repair controller discovery and prove host-safe lifecycle
+## P0 — Complete physical-input and host-safe lifecycle acceptance
 
-- Reproduce the v2411 Xbox-controller discovery failure outside the full game.
-- Validate XInput DLL discovery, slot enumeration, Auto-device selection,
-  reconnect behavior, axis/button capture, and launcher setting propagation.
+- Validate controller and wheel selection, remapping, menu navigation, steering,
+  smoothing, independent triggers/pedals, shifts, View, Start, Coin, and FFB.
+- Preserve the passing discovery, ordering, reconnect, paused-menu capture,
+  smoothing, and launcher-setting regressions.
 - Complete a conservative live Vulkan close/restart stress pass only after the
   offline shutdown gates remain green.
 

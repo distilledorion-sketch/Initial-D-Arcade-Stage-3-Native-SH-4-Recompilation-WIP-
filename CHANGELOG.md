@@ -1,5 +1,27 @@
 # Changelog
 
+## v2413-steering-smoothing — 2026-08-31
+
+- Added a saved 0–100% Steering Smoothing slider to F1 > Controls for XInput
+  controllers and DirectInput wheels; 0% is an exact bypass.
+- Kept steering filtering on the authentic 60 Hz cabinet input cadence so the
+  setting remains independent from presentation FPS.
+- Passed the complete offline controller, music, interpolation, ELAN, card,
+  AICA, Vulkan, lifecycle, translation, freshness, and no-firmware suite.
+- Published a re-audited 14-file public ZIP containing no game data, BIOS,
+  PIC, CHD, extracted assets, cards, custom music, logs, or personal paths.
+
+## v2412-controller-fix — 2026-08-31
+
+- Improved controller selection, wireless reconnect discovery, and remapping
+  while the F1 menu is open.
+- Kept XInput and DirectInput providers explicitly labeled and independently
+  mapped.
+- Passed the full offline suite, linked-owner freshness, standalone product
+  audit, and public-package content audit.
+- Published a re-audited 14-file public ZIP containing no game data, BIOS,
+  PIC, CHD, extracted assets, cards, custom music, logs, or personal paths.
+
 ## v2411-public-early-demo — 2026-08-31
 
 - Published the first Windows x64 public early-demo prerelease. The package
@@ -18,8 +40,6 @@
   afterward; removed the forced `TerminateProcess` fallback.
 - Kept 60 FPS as the safe default and labeled higher-refresh presentation as
   experimental.
-- Documented a post-release controller defect: at least one Xbox controller is
-  not detected by v2411 despite the provider-neutral binding tests passing.
 
 ## v2396-wip — 2026-08-30
 
