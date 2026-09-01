@@ -14,7 +14,8 @@
   lifecycle, link-freshness, timing, and BIOS-free standalone suite.
 - Passed conservative CPU-only cold-boot/movement probes for Myogi Time Attack
   (left/dry/day), Usui Time Attack (right/wet/night), and Shomaru Bunta, each
-  with correct assets/conditions and cooperative exit.
+  plus Tsuchisaka Bunta, each with correct assets/conditions and cooperative
+  exit.
 - Corrected the private route-evidence parser to recognize the segmented
   `*_pol_a/b/c.tbl` geometry used by Shomaru while still excluding condition
   meshes from primary-course identification.

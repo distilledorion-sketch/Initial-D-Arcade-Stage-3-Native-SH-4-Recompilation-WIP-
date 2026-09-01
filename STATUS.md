@@ -37,6 +37,9 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 - A complementary Usui right/wet/night Time Attack probe loaded the expected
   course, reverse condition geometry, direction identity `1,1,1`, night
   environment, and rain; it advanced 9.008 m and exited cooperatively with 0.
+- Tsuchisaka dry/night Bunta likewise loaded `k_tu2`, its forward condition
+  geometry, night/no-rain environment, and the Bunta rival package; it advanced
+  6.302 m and exited cooperatively with 0.
 - v2440 native executable SHA-256: `7FB61B45A0137F8FCE4A9A6CD36200B212F7DFDC6717D851739AD9CBB4D798BC` (binary intentionally not published).
 - The complete offline suite passed CPU/Vulkan pixel comparison, topology,
   projection, ELAN lighting, environment mapping, homogeneous near clipping,

@@ -59,6 +59,9 @@ Conservative CPU-only cold-boot probes also passed two real route families:
 - Usui right/wet/night Time Attack loaded `s_nm2`, the reverse condition mesh,
   all three right-direction guest flags, night environment, and rain; normal
   guest input/physics advanced 9.008 m.
+- Tsuchisaka dry/night Bunta loaded `k_tu2`, its forward condition mesh,
+  night/no-rain environment, and the Bunta rival package; normal guest
+  input/physics advanced 6.302 m.
 
 Each probe ran Below Normal with Vulkan disabled and one offscreen preview
 frame per second, then used cooperative close after movement and exited 0. The
