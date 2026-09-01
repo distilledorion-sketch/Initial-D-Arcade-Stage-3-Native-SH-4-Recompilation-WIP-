@@ -23,6 +23,11 @@
   eight Bunta courses. Every check matched its requested state, reached real
   movement, logged zero recognized faults, and exited cooperatively; strict
   no-launch reanalysis returned 70 passes, zero failures, and zero missing.
+- Began exact-v2449 natural-result renewal for the 32 retained Legend/Bunta
+  rival profiles. Sakamoto and Wataru passed first: each target moved before a
+  natural game-owned result, received no requested/applied QA outcome after
+  its target gate armed, held at least 59.6 FPS in the accepted race samples,
+  reported zero recognized errors/runtime faults, and exited cooperatively.
 
 ## Unreleased v2448 honest-FPS checkpoint — 2026-09-01
 

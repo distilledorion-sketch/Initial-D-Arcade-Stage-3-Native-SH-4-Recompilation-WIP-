@@ -31,6 +31,9 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   all 62 defined Time Attack direction/weather/time rows and all eight Bunta
   courses. Every row reached real movement, reported zero recognized faults,
   and exited cooperatively; strict no-launch reanalysis returned 70/70.
+- Final-v2449 target-gated rival-result renewal has begun with Sakamoto and
+  Wataru passing naturally. This is 2/32 current-build profiles; the historical
+  32/32 accepted ledger is intentionally not promoted to a same-build claim.
 
 Checkpoint result: the newest Direct performance run and v2449 attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, and the
