@@ -2,6 +2,23 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
+## Current integration checkpoint — v2440 GPU presentation
+
+- Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
+  when explicitly selected.
+- Projection, ELAN lighting, normalized depth, static geometry/topology, and
+  per-object uniform data now use GPU-side work or bounded persistent mapped
+  streams instead of per-frame CPU staging copies.
+- A compatible Safe-mode BGRA readback can be copied directly into a Win32
+  32-bit DIB; diagnostics retain exact RGB24 output.
+- An interrupted Direct session leaves a marker that forces the next launch
+  back to Safe presentation.
+- One live 2560x1080 RX 9070 XT run sustained 119.7–120.3 FPS through a heavy
+  course and result transition, then exited normally and removed the marker.
+
+Checkpoint result: the newest Direct run is host-clean and meets its measured
+120 Hz target; broader route and cross-driver stress is still required.
+
 ## Published checkpoint — v2415 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
@@ -34,6 +51,8 @@ not release-ready.
   smoothing, and launcher-setting regressions.
 - Complete a conservative live Vulkan close/restart stress pass only after the
   offline shutdown gates remain green.
+- Preserve the passing Direct-session marker lifecycle and v2440 clean live
+  shutdown while extending the matrix across more hardware and restart cycles.
 
 Acceptance: supported controllers are detected and remappable on a clean
 machine, and repeated normal close/restart cycles leave no live renderer/audio
