@@ -8,3 +8,10 @@ target_compile_features(native_elan_bridge_test PRIVATE cxx_std_17)
 target_include_directories(native_elan_bridge_test PRIVATE src/runtime)
 
 add_test(NAME native_elan_bridge_classifier COMMAND native_elan_bridge_test)
+
+add_executable(native_controller_bindings_test
+    tests/native_controller_bindings_test.cpp)
+target_compile_features(native_controller_bindings_test PRIVATE cxx_std_17)
+target_include_directories(native_controller_bindings_test PRIVATE src/runtime)
+
+add_test(NAME native_controller_bindings COMMAND native_controller_bindings_test)

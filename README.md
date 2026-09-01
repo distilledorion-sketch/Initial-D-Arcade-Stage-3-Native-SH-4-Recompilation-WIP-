@@ -144,7 +144,7 @@ Python translator tests:
 python -m unittest discover -s tests -v
 ```
 
-Native ELAN classifier smoke test:
+Native ELAN classifier and controller/smoothing tests:
 
 ```bash
 cmake -S . -B build

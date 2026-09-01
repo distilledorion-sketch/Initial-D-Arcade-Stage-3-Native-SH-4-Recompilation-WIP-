@@ -10,7 +10,7 @@ Requirements: Python 3.10 or newer.
 python -m unittest discover -s tests -v
 ```
 
-## Native command-classifier test
+## Native runtime tests
 
 Requirements: CMake 3.20 or newer and a C++17 compiler.
 
@@ -19,6 +19,10 @@ cmake -S . -B build
 cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
+
+This builds the public ELAN command-classifier check and the provider-neutral
+controller normalization, binding-capture, arcade-range, and steering-smoothing
+test.
 
 ## Public demo versus the source checks
 

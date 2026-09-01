@@ -6,8 +6,14 @@ These files are selected from the private integration tree to show the real clea
 - `native_elan_decode.h` tracks persistent ELAN state and decodes linked scene structures.
 - `native_elan_framebuffer.h` contains the diagnostic ELAN renderer used for the progress captures.
 - `jvs_837_13551.h` models the cabinet-facing JVS/Maple protocol boundary.
+- `native_controller_bindings.h` contains provider-neutral controller binding,
+  axis normalization, capture, arcade-range conversion, and the v2413
+  presentation-rate-independent steering filter.
 
-Only `native_elan_bridge.h` is compiled by the standalone public smoke test. The decoder/renderer snapshots refer to support headers in the private integration tree and are included for review, not as a claim that this repository is a complete runtime.
+`native_elan_bridge.h` and `native_controller_bindings.h` are compiled by the
+standalone public checks. The decoder/renderer snapshots refer to support
+headers in the private integration tree and are included for review, not as a
+claim that this repository is a complete runtime.
 
 The private v2217 integration tree has advanced beyond these selected snapshots
 with targeted menu-to-race/result/save execution, corrected HUD and mirror
