@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2444 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2444-audio-card-portability)
+[**Download Public Early Demo v2445 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2445-direct-persistence)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public Early Demo v2444.zip` from the
-   [v2444 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2444-audio-card-portability).
+1. Download and extract `Public Early Demo v2445.zip` from the
+   [v2445 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2445-direct-persistence).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`BEFE5D96AD8467C63E2A767B920AC523447ED42C3C849A3B817E051456E24515`
+`301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`
 
-## Current integration progress (v2444 WIP)
+## Current integration progress (v2445 WIP)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -80,7 +80,8 @@ Public ZIP SHA-256:
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
 - Direct Vulkan presentation now bypasses the CPU/GDI display copy when the
   user explicitly selects it. A clean-session marker automatically falls back
-  to Safe presentation after an interrupted Direct session.
+  to Safe presentation after an interrupted Direct session. v2445 carries the
+  selected Direct/Safe choice through the Windows launcher after restart.
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
   previous per-frame CPU staging copies.
@@ -133,6 +134,10 @@ Public ZIP SHA-256:
   card, offscreen Vulkan, timing, lifecycle, translation, freshness, and
   standalone no-firmware suite. The clean public ZIP contains 14 audited files
   and no game data, BIOS, cards, music, logs, captures, or private paths.
+- The v2445 launcher checkpoint maps the saved F1 Direct choice to the native
+  swapchain path and Safe to the bounded GPU-readback path through one tested
+  helper. Direct and Safe no-launch validation both passed, all maintained
+  launchers parsed cleanly, and the native v2444 executable was unchanged.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -158,7 +163,7 @@ is complete.
   content and hardware.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
-  Bunta condition, and error branch has not been exhaustively rerun on v2444.
+  Bunta condition, and error branch has not been exhaustively rerun on v2445.
 - Physical Xbox discovery now has a product-shared hardware acceptance result;
   live axis/button movement, multiple controller models, wheels/force-feedback,
   and audible end-user audio behavior still need broader acceptance.
@@ -174,8 +179,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2444 integration/public checkpoint](docs/CURRENT_CHECKPOINT_V2444_2026-09-01.md)
-for the latest source/runtime and release facts, and [ROADMAP.md](ROADMAP.md) for the
+[the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
+for the latest launcher/release facts,
+[the v2444 integration checkpoint](docs/CURRENT_CHECKPOINT_V2444_2026-09-01.md)
+for the current native-runtime acceptance, and [ROADMAP.md](ROADMAP.md) for the
 ordered acceptance criteria.
 
 ## Repository contents
@@ -183,7 +190,8 @@ ordered acceptance criteria.
 - `translator/` — general SH-4 instruction decoding and C++ generation.
 - `src/runtime/` — selected source-safe runtime snapshots for ELAN and JVS.
 - `tests/` — public tests that require no game data.
-- `tools/` — source-safe utilities that operate only on user-provided inputs.
+- `tools/` — source-safe utilities and the versioned Windows launcher; setup
+  tools operate only on user-provided inputs.
 - `docs/` — architecture, media, and validation notes.
 
 The Git source tree intentionally omits game images, BIOS/PIC/CHD data,

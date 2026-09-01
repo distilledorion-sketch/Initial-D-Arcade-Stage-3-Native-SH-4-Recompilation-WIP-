@@ -7,6 +7,8 @@
 - Tests that run without game content, including Windows-only product-shared
   XInput discovery and silent audio-endpoint probes.
 - Original project documentation, hashes, diagrams, and a limited set of progress captures.
+- The source-safe Windows launcher and public default settings, including the
+  tested Direct/Safe Vulkan presentation mapping.
 
 ## Intentionally excluded
 
