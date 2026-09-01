@@ -59,11 +59,11 @@ small correction. All high-volume course and car projection remains on the GPU.
   standalone suite passed.
 - The standalone audit found zero firmware callbacks, firmware AOT objects,
   firmware input contracts, or cached firmware translations.
-- Conservative BIOS-free route renewal on this exact executable passed 18
-  Time Attack checks: one left and one right condition on each of all nine
-  course families, including Akina Snow. Each had the expected course,
-  condition, time/weather state, three-field direction identity, real player
-  movement, zero recognized faults, and cooperative exit code 0.
+- Conservative BIOS-free route renewal on this exact executable passed all 62
+  defined Time Attack checks across all nine course families, including Akina
+  Snow. Each had the expected course, condition, time/weather state,
+  three-field direction identity, real player movement, zero recognized
+  faults, and cooperative exit code 0.
 - All eight Bunta courses passed on the same executable with the expected
   game-fixed night/dry state, 480 AI-driving polls per route, real movement,
   zero recognized faults, and cooperative exit code 0. No live Vulkan WSI was
@@ -75,7 +75,8 @@ This accepts one exact attract sequence and its observed zoom variants; it is
 not whole-game visual certification. Remaining cars, courses, modes,
 weather/time combinations, transition overlays, high-refresh visual behavior,
 physical wheels/controllers, audio listening, and cross-driver shutdown stress
-still require systematic same-build coverage. The current-build condition
-ledger is 26/70; the remaining 44 permutations are retained as mixed-build
-evidence until renewed on v2449. No v2449 binary or game-derived capture is
-published in this source checkpoint.
+still require systematic same-build coverage beyond route entry and initial
+movement. The current-build route-state ledger is 70/70, but this does not
+replace full-race, result, persistence, campaign, visual, audio, hardware, or
+live-renderer acceptance. No v2449 binary or game-derived capture is published
+in this source checkpoint.
