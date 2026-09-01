@@ -79,10 +79,32 @@ checkpoint. No game data, firmware, PIC/CHD input, extracted asset, card save,
 custom music, capture, log, personal path, or generated game translation unit
 is included in this repository update.
 
+## Direct 120 Hz acceptance update
+
+Four fresh current-build Direct-Vulkan processes covered Myogi, Akina, and
+Akagi at 640x480 plus Akagi at the requested 2560x1080 ultrawide target. Each
+used authentic 60 Hz guest/gameplay timing with distinct generated
+presentation phases, one raster thread, Below Normal process priority, and a
+cooperative window close.
+
+| Route | Target | Complete steady samples | Display min / avg | Vulkan min / avg | Generated min | Moving repeats | Faults |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Myogi left/dry/day | 640x480 | 23 | 120.0 / 120.017 | 120.0 / 120.0 | 120 | 0 | 0 |
+| Akina route | 640x480 | 34 | 119.0 / 119.971 | 119.0 / 119.967 | 119 | 0 | 0 |
+| Akagi left/dry/day | 640x480 | 35 | 119.9 / 120.011 | 119.9 / 120.0 | 120 | 0 | 0 |
+| Akagi left/dry/day | 2560x1080 | 35 | 120.0 / 120.0 | 120.0 / 120.0 | 120 | 0 | 0 |
+
+The 2560x1080 run used anisotropic 16x filtering. Its midpoint-plus-authentic
+worker pair averaged about 16.665 ms. Every process exited with code 0, removed
+its direct-session marker, and left no game process behind. The analyzer used
+for this evidence excludes deliberate F1 pauses, the race-loading ramp, TIME
+UP, and result/menu transitions from moving-race statistics; a deterministic
+10-assertion contract protects those boundaries.
+
 ## Current boundary
 
 The public v2415 package remains the cautious playtest download at 60 FPS.
-v2441 improves a measured CPU preparation path, but 120 Hz is still
-experimental, uncapped presentation is unfinished, and exhaustive route,
-controller/wheel, audio, card-error, clean-machine, and cross-driver acceptance
-remains open.
+v2441 now has fresh targeted 120 Hz Direct-Vulkan acceptance at native and
+ultrawide targets in addition to its complete offline suite. Broader
+whole-game, physical-hardware, clean-machine, and cross-driver acceptance is
+still required before replacing the public checkpoint.

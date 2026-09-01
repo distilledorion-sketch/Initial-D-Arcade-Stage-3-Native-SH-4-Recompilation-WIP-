@@ -104,11 +104,17 @@ Public ZIP SHA-256:
   the no-firmware product boundary, cooperative QA shutdown, and single-instance
   enforcement.
 - The v2441 integration build passed the same complete offline suite, including
-  a new BGR24/BGRA32 presenter channel-accuracy test. In the preceding v2440
-  live RX 9070 XT Direct Vulkan run, a 75,000–127,000-vertex course/race
-  sequence sustained 119.7–120.3 visible presents per second, generated
-  distinct intermediate motion, crossed into the result/continue transition,
-  and then completed every cooperative shutdown phase with exit code 0.
+  a new BGR24/BGRA32 presenter channel-accuracy test. Four fresh v2441
+  Direct-Vulkan route runs then completed cooperative shutdown with exit code
+  0 and zero moving-race repeats. The exact 2560x1080 Akagi target sustained
+  120.0 FPS minimum/average for both display and Vulkan across 35 steady
+  two-second samples, with 120 distinct generated motion samples minimum per
+  bucket. Myogi and Akina/Akagi 640x480 controls measured 119.0–120.0 FPS
+  minimum and also recorded zero steady-race repeats.
+- In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
+  75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
+  presents per second, crossed into the result/continue transition, and then
+  completed every cooperative shutdown phase with exit code 0.
 - During that live run the Direct path reduced sampled renderer/process CPU
   demand from roughly 1.56 host cores in Safe/GDI presentation to 0.2–1.2
   cores depending on scene load. Memory and handle counts stabilized, and the
