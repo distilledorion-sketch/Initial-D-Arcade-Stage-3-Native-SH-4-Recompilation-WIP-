@@ -27,10 +27,15 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 - The complete offline suite, including physical Xbox discovery, audio,
   music, card, interpolation, Vulkan, lifecycle, and standalone no-firmware
   checks, remains green.
+- Conservative final-v2449 route renewal passes 18 Time Attack checks (both
+  directions across all nine course families) and all eight Bunta courses.
+  All 26 selected rows reached real movement, reported zero recognized faults,
+  and exited cooperatively; 44 condition permutations remain to renew.
 
 Checkpoint result: the newest Direct performance run and v2449 attract runs are
-host-clean, the cinematic widescreen defect is regression-protected, and
-broader route/cross-driver/visual stress is still required.
+host-clean, the cinematic widescreen defect is regression-protected, and every
+course family plus every Bunta course now has current-build movement proof.
+Broader condition/cross-driver/visual stress is still required.
 
 ## Published checkpoint — v2445 public early demo
 
@@ -128,6 +133,8 @@ validated.
 - Preserve the completed natural-result ledger—48/48 target loads, 32/32 rival
   movement, 16/16 Time Attack layouts, and 32/32 rival profiles—while rerunning
   the broader mode/condition matrix on one current executable.
+- Complete the remaining 44 rows of the 70-row v2449 Time Attack/Bunta
+  condition matrix; 26 selected rows are currently renewed and passing.
 - Eliminate unresolved indirect targets and compatibility-only diagnostics.
 - Add deterministic public tests for every source-safe subsystem.
 

@@ -18,6 +18,10 @@
 - Passed the complete controller, real-Xbox, audio, music, card, interpolation,
   ELAN, Vulkan, timing, lifecycle, translation, freshness, and standalone
   no-firmware suite with cooperative exit and no stale process/session marker.
+- Renewed 26 route checks on the exact final v2449 executable: left and right
+  Time Attack coverage for all nine course families plus all eight Bunta
+  courses. Every check matched its requested state, reached real movement,
+  logged zero recognized faults, and exited cooperatively.
 
 ## Unreleased v2448 honest-FPS checkpoint — 2026-09-01
 

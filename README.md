@@ -101,10 +101,13 @@ Public ZIP SHA-256:
   have produced real movement through normal guest physics/input.
 - All 16 unique Time Attack layouts and all 32 Legend rival profiles have
   separate natural, game-owned result evidence.
-- A 70-row Time Attack/Bunta condition matrix has passing route-load/movement
-  evidence. This is mixed-checkpoint evidence, not yet a complete matrix rerun
-  on one v2415 executable. v2415 separately passed CPU-only same-build probes
-  for Myogi Time Attack plus the Shomaru and Tsuchisaka Bunta routes.
+- The 70-row Time Attack/Bunta condition ledger retains passing route-load and
+  movement evidence. On the exact final v2449 executable, 26 selected rows are
+  now freshly current: a left/right Time Attack pair for each of all nine
+  course families plus all eight Bunta courses. Every selected row matched its
+  requested course, condition, time/weather state, and movement requirements;
+  Time Attack direction was independently proven by three agreeing selector
+  fields. All runs reported zero recognized faults and exited cooperatively.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
@@ -162,6 +165,10 @@ Public ZIP SHA-256:
   capture readback held 119.5–120.5 FPS after warm-up and exited without a
   fault, process, or Direct-session marker. The final build also passed the
   complete product suite.
+- Conservative BIOS-free v2449 route renewal now covers 18 Time Attack rows
+  (left and right on every course family, including Akina Snow) and all eight
+  Bunta courses. These 26 current-build checks reached real race movement and
+  shut down cleanly; the remaining 44 condition rows still need v2449 renewal.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
