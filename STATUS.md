@@ -32,6 +32,14 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
   output edges while the Hor+ world and UI placement remained unchanged. The
   process exited cooperatively with code 0; no game process or Direct-session
   marker remained.
+- Six matched native-resolution scenes from 3300 through 3600 have identical
+  whole-BMP SHA-256 values between v2448 and v2449, demonstrating byte-for-byte
+  640x480 preservation despite routing the two mask quads through CPU
+  projection.
+- A normal visible 2560x1080 Direct-Vulkan v2449 attract run without diagnostic
+  readback held 119.5–120.5 FPS after warm-up (120.0 Vulkan average). During
+  moving attract scenes, two-second buckets produced approximately 239–241
+  distinct frames; the run logged no recognized faults and closed cleanly.
 - The final v2449 executable SHA-256 is
   `1B1E1990A588DE804CCB6FF19D0D920F60E3EAC038655EA79D39780E5270F479`.
   It passed the complete controller, attached-Xbox, audio endpoint, AICA,
