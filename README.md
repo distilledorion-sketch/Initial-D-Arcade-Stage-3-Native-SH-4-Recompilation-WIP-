@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`
 
-## Current integration progress (v2440 WIP)
+## Current integration progress (v2441 WIP)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -79,6 +79,9 @@ Public ZIP SHA-256:
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
   previous per-frame CPU staging copies.
+- Exact-matched static course/car batches retain their immutable topology
+  eligibility summaries, avoiding repeated full-array scans on each 120 Hz
+  presentation phase.
 
 ## Verified progress
 
@@ -100,11 +103,12 @@ Public ZIP SHA-256:
   Vulkan, card-eject classification, translation integrity, link freshness,
   the no-firmware product boundary, cooperative QA shutdown, and single-instance
   enforcement.
-- The v2440 integration build passed the same complete offline suite and a live
-  RX 9070 XT Direct Vulkan run. A 75,000–127,000-vertex course/race sequence
-  sustained 119.7–120.3 visible presents per second, generated distinct
-  intermediate motion, crossed into the result/continue transition, and then
-  completed every cooperative shutdown phase with exit code 0.
+- The v2441 integration build passed the same complete offline suite, including
+  a new BGR24/BGRA32 presenter channel-accuracy test. In the preceding v2440
+  live RX 9070 XT Direct Vulkan run, a 75,000–127,000-vertex course/race
+  sequence sustained 119.7–120.3 visible presents per second, generated
+  distinct intermediate motion, crossed into the result/continue transition,
+  and then completed every cooperative shutdown phase with exit code 0.
 - During that live run the Direct path reduced sampled renderer/process CPU
   demand from roughly 1.56 host cores in Safe/GDI presentation to 0.2–1.2
   cores depending on scene load. Memory and handle counts stabilized, and the
@@ -141,7 +145,7 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2440 integration checkpoint](docs/CURRENT_CHECKPOINT_V2440_2026-09-01.md)
+[the v2441 integration checkpoint](docs/CURRENT_CHECKPOINT_V2441_2026-09-01.md)
 for the latest source/runtime facts, [the v2415 checkpoint](docs/CURRENT_CHECKPOINT_V2415_2026-08-31.md)
 for the current public-release facts, and [ROADMAP.md](ROADMAP.md) for the
 ordered acceptance criteria.

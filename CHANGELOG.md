@@ -1,5 +1,20 @@
 # Changelog
 
+## v2441-static-topology-cache — 2026-09-01
+
+- Cached immutable connector, fan, point-validity, and UV-readiness summaries
+  beside exact-matched static Vulkan points and packed topology.
+- Kept the established full validation/rebuild path for changed, animated,
+  screen-space, diagnostic, modifier, and unsupported geometry.
+- Added an explicit presenter contract test proving BGR24 and direct BGRA32
+  output decode pixel-identically to the ordinary RGB diagnostic result.
+- Reduced median topology preparation by 35.9% and the complete controlled
+  16,384-vertex static-reuse frame by 9.6% across seven fresh-process samples.
+- Passed the complete offline correctness, input, audio, card, interpolation,
+  lifecycle, link-freshness, timing, and BIOS-free standalone suite.
+- Kept v2415 as the current downloadable public early demo; v2441 is an
+  integration checkpoint pending broader live route and hardware acceptance.
+
 ## v2440-gpu-presentation — 2026-09-01
 
 - Moved PVR depth normalization into the Vulkan vertex shader.
