@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2441 WIP
+Integration checkpoint: v2442 WIP
 Public checkpoint: v2415 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -14,7 +14,7 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | ELAN 3D path | Submitted links, CH2 DMA, completion interrupts, persistent state, materials, instances, lighting, textures, culling, depth, and retained presentation scenes advance continuously through tested races | Untested cars, courses, weather, and scene combinations still need systematic comparison |
 | PVR rendering | Native handling exists for observed opaque/translucent lists, fog, modifier volumes, punch alpha, blend modes, texture layouts, autosort, tile clipping, tested HUD placement, and mirrors | Remaining combinations and presentation edge cases need scene-by-scene validation |
 | Course environment maps | Missing logical lookup paths were recovered from two exact user-owned ISO files; rainbow/static maps are corrected | Other courses and weather conditions are not yet audited |
-| JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, adjustable FFB, and saved 0–100% steering smoothing pass focused tests | Physical controller, wheel, and FFB acceptance across hardware remains open |
+| JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, controller-operated F1 navigation, adjustable FFB, and saved 0–100% steering smoothing pass focused tests. A product-shared no-window probe found a real attached Xbox controller through `xinput1_4.dll` | Live physical axis/button movement, multiple controller models, wheels, and FFB acceptance remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2441 2560x1080 Akagi run held 120.0 FPS minimum/average with 120 generated samples minimum and zero moving-race repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
@@ -23,6 +23,20 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 
 ## Strongest accepted evidence
 
+- v2442 native executable SHA-256: `B56F179C53D3238A6BF311F4E351F2AEE674C8E58397776445DC6F11120C046C` (binary intentionally not published).
+- The product and hardware probe now share one XInput runtime loader and state
+  normalizer. On the current Windows host the probe loaded `xinput1_4.dll`,
+  found one real controller in slot 0, and mapped its neutral sample to steering
+  32768, accelerator 0, and brake 0.
+- F1 controller navigation and binding capture continue to run while guest
+  execution is paused. Axis capture now accepts deliberate 35% travel instead
+  of requiring more than half travel, while button edges retain priority.
+- v2442 passed controller normalization/capture, product-shared hardware probe,
+  custom music, interpolation, Direct-session marker, ELAN/card/offscreen
+  Vulkan, guest timing, 14 controller/music policies, 31 lifecycle policies,
+  link freshness, translation integrity, and standalone no-firmware checks.
+  The standalone audit again found zero firmware callbacks, AOT objects, input
+  contracts, or cached firmware translations.
 - v2441 native executable SHA-256: `78FFA018D058744A5AA5AAF5F5580C09F313CB8F5725A744AD0BFBCD6E30C6DD` (binary intentionally not published).
 - Seven fresh-process samples of the warmed 16,384-vertex reuse case reduced
   median batch-loop time from 0.089 ms to 0.066 ms, topology time from 0.064 ms

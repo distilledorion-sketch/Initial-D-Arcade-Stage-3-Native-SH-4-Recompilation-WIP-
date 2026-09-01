@@ -44,7 +44,7 @@ first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 Public ZIP SHA-256:
 `8CA9D017EA5BCFE8EB58245D162D89A22D75267BC6D3BABAD76D922E283B2E8E`
 
-## Current integration progress (v2441 WIP)
+## Current integration progress (v2442 WIP)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -55,6 +55,10 @@ Public ZIP SHA-256:
 - An F1 menu with Video, Controls, HUD, Card, and Music pages.
 - Keyboard, Xbox/XInput, and DirectInput wheel paths with persistent remapping;
   Xbox triggers are independent accelerator/brake axes.
+- The F1 Controls page now accepts D-pad/left-stick navigation and A/B actions,
+  and deliberate 35% axis travel is sufficient for remapping. The same shared
+  XInput loader used by the product passed a no-window probe against a real
+  attached Xbox controller on Windows.
 - Adjustable force-feedback strength for supported DirectInput wheels.
 - Live 0–100% Steering Smoothing for controllers and wheels; 0% preserves the
   original unfiltered response and the chosen value is saved.
@@ -111,6 +115,13 @@ Public ZIP SHA-256:
   two-second samples, with 120 distinct generated motion samples minimum per
   bucket. Myogi and Akina/Akagi 640x480 controls measured 119.0–120.0 FPS
   minimum and also recorded zero steady-race repeats.
+- The v2442 controller checkpoint preserved that renderer/runtime base and
+  passed the complete offline suite. Its product-shared XInput probe loaded
+  `xinput1_4.dll`, found the attached controller in slot 0, converted its
+  neutral state to centered steering and released pedals, and left no game or
+  Vulkan process running. Axis/button capture, lower-travel axis remapping,
+  controller menu navigation, music, card, interpolation, lifecycle, link
+  freshness, and the no-firmware boundary all passed their focused checks.
 - In the preceding v2440 live RX 9070 XT Direct Vulkan run, a
   75,000–127,000-vertex course/race sequence sustained 119.7–120.3 visible
   presents per second, crossed into the result/continue transition, and then
@@ -137,8 +148,9 @@ is complete.
 - Unlimited presentation rate is not finished.
 - Every car/course/weather/day/night combination, long campaign permutation,
   Bunta condition, and error branch has not been exhaustively rerun on v2415.
-- Controller, wheel/force-feedback, and audible end-user audio behavior need
-  broader physical-hardware acceptance.
+- Physical Xbox discovery now has a product-shared hardware acceptance result;
+  live axis/button movement, multiple controller models, wheels/force-feedback,
+  and audible end-user audio behavior still need broader acceptance.
 - The cooperative shutdown path passes source and offscreen checks, but a full
   live Vulkan/WSI stress pass remains deliberately pending after earlier host
   black-screen incidents. Please close the game normally and report the newest
@@ -151,7 +163,7 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2441 integration checkpoint](docs/CURRENT_CHECKPOINT_V2441_2026-09-01.md)
+[the v2442 integration checkpoint](docs/CURRENT_CHECKPOINT_V2442_2026-09-01.md)
 for the latest source/runtime facts, [the v2415 checkpoint](docs/CURRENT_CHECKPOINT_V2415_2026-08-31.md)
 for the current public-release facts, and [ROADMAP.md](ROADMAP.md) for the
 ordered acceptance criteria.
