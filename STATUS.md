@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2440 WIP
+Integration checkpoint: v2441 WIP
 Public checkpoint: v2415 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -17,12 +17,29 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, adjustable FFB, and saved 0–100% steering smoothing pass focused tests | Physical controller, wheel, and FFB acceptance across hardware remains open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload on a tested Legend flow | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
-| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, and Direct Vulkan display are active. The v2440 live course/result run held 119.7–120.3 FPS with distinct intermediate motion | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
+| Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. The v2440 live course/result run held 119.7–120.3 FPS with distinct intermediate motion; v2441 reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
 | Distribution | A BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs and performs verification/extraction locally | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2441 native executable SHA-256: `78FFA018D058744A5AA5AAF5F5580C09F313CB8F5725A744AD0BFBCD6E30C6DD` (binary intentionally not published).
+- Seven fresh-process samples of the warmed 16,384-vertex reuse case reduced
+  median batch-loop time from 0.089 ms to 0.066 ms, topology time from 0.064 ms
+  to 0.041 ms, and complete synthetic frame time from 0.696 ms to 0.629 ms.
+- v2441 passed the complete v2440 offline suite plus an explicit BGR24/BGRA32
+  presenter channel-accuracy contract. Its standalone audit remains at zero
+  firmware callbacks, AOT objects, input contracts, and cached translations.
+- v2441 CPU-only cold-boot probes passed Myogi left/dry/day Time Attack with
+  9.548 m of player movement and Shomaru dry/night Bunta with 5.097 m. Both
+  identified the expected course/condition/environment assets and exited 0
+  through cooperative close without creating a Vulkan WSI surface.
+- A complementary Usui right/wet/night Time Attack probe loaded the expected
+  course, reverse condition geometry, direction identity `1,1,1`, night
+  environment, and rain; it advanced 9.008 m and exited cooperatively with 0.
+- Tsuchisaka dry/night Bunta likewise loaded `k_tu2`, its forward condition
+  geometry, night/no-rain environment, and the Bunta rival package; it advanced
+  6.302 m and exited cooperatively with 0.
 - v2440 native executable SHA-256: `7FB61B45A0137F8FCE4A9A6CD36200B212F7DFDC6717D851739AD9CBB4D798BC` (binary intentionally not published).
 - The complete offline suite passed CPU/Vulkan pixel comparison, topology,
   projection, ELAN lighting, environment mapping, homogeneous near clipping,

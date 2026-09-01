@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2440 GPU presentation
+## Current integration checkpoint — v2441 static topology cache
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -15,9 +15,16 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   back to Safe presentation.
 - One live 2560x1080 RX 9070 XT run sustained 119.7–120.3 FPS through a heavy
   course and result transition, then exited normally and removed the marker.
+- v2441 retains immutable topology eligibility summaries for exact-matched
+  static geometry. In the controlled 16,384-vertex reuse case this reduced
+  median topology preparation by 35.9% and complete frame time by 9.6%.
+- The complete offline suite, including direct BGR24/BGRA32 channel validation,
+  remains green. The live 120 Hz and clean-exit result above is from v2440;
+  v2441 still needs broader live acceptance rather than another forced launch.
 
-Checkpoint result: the newest Direct run is host-clean and meets its measured
-120 Hz target; broader route and cross-driver stress is still required.
+Checkpoint result: the newest Direct run is host-clean, the bounded v2441 CPU
+optimization is measured and regression-clean, and broader route/cross-driver
+stress is still required.
 
 ## Published checkpoint — v2415 public early demo
 

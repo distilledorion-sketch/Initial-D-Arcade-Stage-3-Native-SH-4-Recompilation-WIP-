@@ -1,5 +1,30 @@
 # Changelog
 
+## v2441-static-topology-cache — 2026-09-01
+
+- Cached immutable connector, fan, point-validity, and UV-readiness summaries
+  beside exact-matched static Vulkan points and packed topology.
+- Kept the established full validation/rebuild path for changed, animated,
+  screen-space, diagnostic, modifier, and unsupported geometry.
+- Added an explicit presenter contract test proving BGR24 and direct BGRA32
+  output decode pixel-identically to the ordinary RGB diagnostic result.
+- Reduced median topology preparation by 35.9% and the complete controlled
+  16,384-vertex static-reuse frame by 9.6% across seven fresh-process samples.
+- Passed the complete offline correctness, input, audio, card, interpolation,
+  lifecycle, link-freshness, timing, and BIOS-free standalone suite.
+- Passed conservative CPU-only cold-boot/movement probes for Myogi Time Attack
+  (left/dry/day), Usui Time Attack (right/wet/night), and Shomaru Bunta, each
+  plus Tsuchisaka Bunta, each with correct assets/conditions and cooperative
+  exit.
+- Corrected the private route-evidence parser to recognize the segmented
+  `*_pol_a/b/c.tbl` geometry used by Shomaru while still excluding condition
+  meshes from primary-course identification.
+- Made the private runner compatible with retained manifests that predate the
+  numeric direction column by deriving the generator's exact Left=0/Right=1
+  mapping from the explicit label.
+- Kept v2415 as the current downloadable public early demo; v2441 is an
+  integration checkpoint pending broader live route and hardware acceptance.
+
 ## v2440-gpu-presentation — 2026-09-01
 
 - Moved PVR depth normalization into the Vulkan vertex shader.
