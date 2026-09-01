@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2448 WIP
+Integration checkpoint: v2449 WIP
 Public checkpoint: v2445 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -12,7 +12,7 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Native boot/runtime | BIOS-free static translated execution cold-boots and advances tested menu, loading, live-race, result, and save paths; 48/48 route/branch targets load | Remaining long campaign permutations and error branches are not complete |
 | Deterministic replay | N70 accepted 70/70 with `unimplemented=0`, `FPSCR=0`, no fault/watchdog, and cross-machine identical frame hash | Uses private user-owned replay/input state that cannot be published |
 | ELAN 3D path | Submitted links, CH2 DMA, completion interrupts, persistent state, materials, instances, lighting, textures, culling, depth, and retained presentation scenes advance continuously through tested races | Untested cars, courses, weather, and scene combinations still need systematic comparison |
-| PVR rendering | Native handling exists for observed opaque/translucent lists, fog, modifier volumes, punch alpha, blend modes, texture layouts, autosort, tile clipping, tested HUD placement, and mirrors | Remaining combinations and presentation edge cases need scene-by-scene validation |
+| PVR rendering | Native handling exists for observed opaque/translucent lists, fog, modifier volumes, punch alpha, blend modes, texture layouts, autosort, tile clipping, tested HUD placement, mirrors, and exact widescreen expansion of authored attract cinematic mattes | Remaining combinations and presentation edge cases need scene-by-scene validation |
 | Course environment maps | Missing logical lookup paths were recovered from two exact user-owned ISO files; rainbow/static maps are corrected | Other courses and weather conditions are not yet audited |
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, controller-operated F1 navigation, adjustable FFB, and saved 0–100% steering smoothing pass focused tests. A product-shared no-window probe found a real attached Xbox controller through `xinput1_4.dll` | Live physical axis/button movement, multiple controller models, wheels, and FFB acceptance remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
@@ -23,6 +23,21 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 
 ## Strongest accepted evidence
 
+- v2449 identifies the attract sequence's authored black cinematic mattes by
+  exact four-vertex mesh/material state and then requires projected native
+  x=0..640 coverage before expanding them about the output centre. This keeps
+  the fix out of HUD, cars, roads, and other presentation panels.
+- A BIOS-free 2560x1080 attract acceptance captured twelve points from scene
+  3300 through 3630. The initial and changing-zoom matte families reached both
+  output edges while the Hor+ world and UI placement remained unchanged. The
+  process exited cooperatively with code 0; no game process or Direct-session
+  marker remained.
+- The final v2449 executable SHA-256 is
+  `1B1E1990A588DE804CCB6FF19D0D920F60E3EAC038655EA79D39780E5270F479`.
+  It passed the complete controller, attached-Xbox, audio endpoint, AICA,
+  custom-music, interpolation, Direct-session, card, ELAN, offscreen Vulkan,
+  guest-timing, lifecycle, link-freshness, translation-integrity, and
+  standalone no-firmware suite.
 - v2448 distinguishes swapchain output (`OUT`) from genuinely distinct output
   (`NEW`) in the in-game FPS overlay. Both counters are sampled on the
   presentation thread and published atomically; authentic 60 Hz endpoints and
@@ -179,15 +194,15 @@ menu-to-race and result/save paths, presents retained NAOMI 2 scenes
 continuously, and is available as a public early-demo prerelease that prepares
 data from matching user-owned inputs without a BIOS or Python installation.
 
-The latest visual root cause was external asset preparation: two logical course
-lookup names were absent because their ISO9660 physical names are truncated.
-The null table pointer made the guest compositor read unrelated low-memory bytes
-as selectors. Restoring the two exact files from the user's own dump changed
-the invalid selector record to the expected course record and removed the
-alternating rainbow/static environment maps. Subsequent integration work also
-corrected the tested HUD projection, mirror placement, RX-7 geometry/texture
-failures, and renderer lifecycle defects. This does not imply that all graphics
-or gameplay paths are complete.
+Recent visual work separated two different causes. Missing ISO9660-truncated
+course lookup names were restored from the user's own dump, removing the
+alternating rainbow/static environment maps. A later BIOS-free attract capture
+proved that two authored black cinematic mattes were still fixed to the
+centred 640x480 viewport at 2560x1080. v2449 expands only the exact full-native-
+width matte mesh to the output edges and passed both fixed-zoom and changing-
+zoom captures. Earlier work also corrected tested HUD projection, mirror
+placement, RX-7 geometry/texture failures, and renderer lifecycle defects. This
+does not imply that all graphics or gameplay paths are complete.
 
 The current priority frontier is isolating remaining terrain/HUD edge artifacts,
 reducing remaining CPU command preparation, broad physical-input acceptance,
