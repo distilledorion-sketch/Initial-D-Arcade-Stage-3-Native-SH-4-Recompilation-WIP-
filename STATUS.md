@@ -225,6 +225,14 @@ results/persistence, cars/opponents, visual and audible correctness, campaign
 branches, hardware breadth, and repeated live-renderer stress rather than
 route-state renewal.
 
+Exact final-v2449 full-race renewal has also started for the retained rival
+ledger. Sakamoto and Wataru are the first 2/32 target profiles renewed: both
+moved through ordinary guest physics/input and reached a natural game-owned
+result, with zero target outcome requests after the target gate armed, zero
+recognized errors/runtime faults, 59.6 FPS or better race/Vulkan minima, and
+cooperative clean shutdown. The older accepted 32/32 ledger remains useful
+historical evidence, but it is not being presented as a same-build v2449 pass.
+
 ## Definition of release-ready
 
 The downloadable build is an early playtest, not a finished release. The

@@ -99,8 +99,9 @@ Public ZIP SHA-256:
 
 - All 48 defined route/branch targets have loaded and all 32 rival profiles
   have produced real movement through normal guest physics/input.
-- All 16 unique Time Attack layouts and all 32 Legend rival profiles have
-  separate natural, game-owned result evidence.
+- All 16 unique Time Attack layouts and all 32 retained rival profiles (30
+  Legend plus two Bunta profiles) have separate natural, game-owned result
+  evidence across the historical accepted ledger.
 - The complete 70-row Time Attack/Bunta condition matrix now passes on the
   exact final v2449 executable: 62 Time Attack direction/weather/time rows and
   all eight Bunta courses. Every row matched its requested course, condition,
@@ -112,6 +113,15 @@ Public ZIP SHA-256:
   Direct Vulkan at 60 Hz. Every route showed authentic movement before the
   result, no forced outcome, zero recognized errors/runtime faults, a 59.8 FPS
   or better Vulkan minimum, and cooperative clean-session shutdown.
+- Exact final-v2449 rival-result renewal is now underway rather than being
+  inferred from that historical mixed-checkpoint ledger. Sakamoto and Wataru
+  both reached positive player travel before a natural, game-owned result;
+  prerequisite opponents alone used the disposable-card QA outcome helper.
+  After each target armed, the log recorded zero requested or applied helper
+  outcomes. Both runs held 59.6 FPS or better race/Vulkan minima, reported zero
+  recognized errors/runtime faults, and shut down cooperatively. This is 2/32
+  profiles renewed on the final executable, not yet a whole-ledger same-build
+  claim.
 - The fixed `k_ez` regression route produced 120 distinct motion samples in
   each of 23 complete two-second race intervals, with no repeated moving-race
   endpoints. A four-course priority matrix measured 119.8–120.0 FPS minimum
@@ -220,8 +230,10 @@ for the latest launcher/release facts,
 [the v2449 integration checkpoint](docs/CURRENT_CHECKPOINT_V2449_CINEMATIC_MASK_2026-09-01.md)
 for the current native-runtime acceptance,
 [the v2449 route-matrix checkpoint](docs/CURRENT_CHECKPOINT_V2449_ROUTE_MATRIX_2026-09-01.md)
-for the complete same-build condition ledger, and [ROADMAP.md](ROADMAP.md) for
-the ordered acceptance criteria.
+for the complete same-build condition ledger,
+[the v2449 rival-result renewal checkpoint](docs/CURRENT_CHECKPOINT_V2449_RIVAL_RENEWAL_2026-09-01.md)
+for the current same-build target-gated ledger, and [ROADMAP.md](ROADMAP.md)
+for the ordered acceptance criteria.
 
 ## Repository contents
 
