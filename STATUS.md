@@ -30,6 +30,10 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 - v2441 passed the complete v2440 offline suite plus an explicit BGR24/BGRA32
   presenter channel-accuracy contract. Its standalone audit remains at zero
   firmware callbacks, AOT objects, input contracts, and cached translations.
+- v2441 CPU-only cold-boot probes passed Myogi left/dry/day Time Attack with
+  9.548 m of player movement and Shomaru dry/night Bunta with 5.097 m. Both
+  identified the expected course/condition/environment assets and exited 0
+  through cooperative close without creating a Vulkan WSI surface.
 - v2440 native executable SHA-256: `7FB61B45A0137F8FCE4A9A6CD36200B212F7DFDC6717D851739AD9CBB4D798BC` (binary intentionally not published).
 - The complete offline suite passed CPU/Vulkan pixel comparison, topology,
   projection, ELAN lighting, environment mapping, homogeneous near clipping,

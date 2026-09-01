@@ -12,6 +12,11 @@
   16,384-vertex static-reuse frame by 9.6% across seven fresh-process samples.
 - Passed the complete offline correctness, input, audio, card, interpolation,
   lifecycle, link-freshness, timing, and BIOS-free standalone suite.
+- Passed conservative CPU-only cold-boot/movement probes for Myogi Time Attack
+  and Shomaru Bunta, each with correct assets/conditions and cooperative exit.
+- Corrected the private route-evidence parser to recognize the segmented
+  `*_pol_a/b/c.tbl` geometry used by Shomaru while still excluding condition
+  meshes from primary-course identification.
 - Kept v2415 as the current downloadable public early demo; v2441 is an
   integration checkpoint pending broader live route and hardware acceptance.
 
