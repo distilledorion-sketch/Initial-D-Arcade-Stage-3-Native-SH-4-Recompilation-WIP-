@@ -1,7 +1,7 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2445 WIP
+Integration checkpoint: v2446 WIP
 Public checkpoint: v2445 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
@@ -23,18 +23,23 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 
 ## Strongest accepted evidence
 
-- Eight route results now carry the exact v2444 executable SHA-256 and pass
-  the corrected schema-4 evidence policy: Myogi left/dry/day, Usui
-  right/wet/night, Akagi left/dry/day, Akina right/wet/night, and Bunta on
-  Irohazaka, Happogahara, Shomaru, and Tsuchisaka. Every row proves the
-  expected primary course, exact condition mesh, time/weather assets, real
-  player movement, zero recognized fault markers, and cooperative exit.
-- The route analyzer now treats the exact left/right condition mesh as
-  authoritative when an optional selector diagnostic is absent, but fails
-  closed on missing, partial, or contradictory direction evidence. Its 18
-  focused contracts pass. The six retained same-hash logs were upgraded
-  offline without launching a game process; Akagi and Akina were also rerun
-  fresh and passed.
+- v2446 extends the developer-only course-selector snapshot to segmented
+  primary tables. Its native executable SHA-256 is
+  `BB453D859F3D7DFD505CAC24501E16B7D17DEBC44ED0B2A7D557574923CB58C8`.
+  Product behavior is unchanged unless QA explicitly enables the diagnostic.
+- The corrected evidence policy recognizes `_etc_f` as dry and `_etc_r` as
+  wet/snow; neither token proves direction. Time Attack direction requires
+  three independent guest selector fields matching the manifest. All 20
+  focused contracts pass, including missing, partial, and contradictory
+  fail-closed cases.
+- Akina Snow left/snow/night and Happogahara left/dry/night pass on v2446 with
+  the expected primary course, condition/time/weather assets, independent
+  `0,0,0` direction identity, real player movement, zero recognized fault
+  markers, and cooperative exit code 0.
+- On exact v2444/schema-5 evidence, all eight Bunta routes plus Myogi
+  left/dry/day and Usui right/wet/night pass. Four segmented Time Attack logs
+  remain correctly marked direction-unverified under v2444 instead of being
+  accepted from a condition token alone.
 - v2445 public ZIP SHA-256: `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`; audited size is 18,565,971 bytes.
 - The versioned launcher maps Direct to the optimized native Vulkan swapchain
   path and Safe to the bounded GPU-readback/Win32 path. Both modes passed the
@@ -167,10 +172,11 @@ broad physical-input acceptance, repeated cross-driver shutdown validation,
 whole-game same-build coverage, remaining visual/audio defects, synchronous
 transition latency, broader clean-machine packaging, and eventually uncapped
 presentation that stays independent from guest gameplay timing. The measured
-high-refresh routes do not make 120 Hz a whole-game validated mode. Eight of
-the 70 retained Time Attack/Bunta route rows now have exact v2444/schema-4
-proof; the remainder still require same-build renewal before the matrix can be
-called current-build complete.
+high-refresh routes do not make 120 Hz a whole-game validated mode. The
+70-row ledger is currently mixed-build: ten rows have accepted v2444/schema-5
+proof and two segmented Time Attack rows have accepted v2446/schema-5 proof.
+The remainder still require one-build renewal before the matrix can be called
+current-build complete.
 
 ## Definition of release-ready
 

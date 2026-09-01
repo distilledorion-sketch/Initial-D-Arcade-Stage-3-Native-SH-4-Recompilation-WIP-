@@ -1,5 +1,9 @@
 # v2445 route-evidence QA checkpoint — 2026-09-01
 
+> Superseded: broader course evidence disproved this checkpoint's interim
+> interpretation of `_etc_f`/`_etc_r`. See
+> [the v2446 correction](CURRENT_CHECKPOINT_V2446_ROUTE_QA_2026-09-01.md).
+
 This checkpoint changes QA policy and evidence handling only. The distributed
 native executable remains the accepted BIOS-free v2444 binary packaged by the
 v2445 launcher release.
@@ -11,7 +15,8 @@ time/weather assets, and real player motion, then exited cooperatively with no
 fault marker. The matrix nevertheless marked them failed because their guest
 paths did not emit an optional three-field course-selector diagnostic.
 
-The validator now accepts an exact condition mesh as direction proof:
+This checkpoint temporarily accepted an exact condition mesh as direction
+proof:
 
 - left requires `_etc_f`;
 - right requires `_etc_r`;
@@ -36,15 +41,14 @@ advanced 8.612 m and 8.083 m respectively, produced no recognized fault, and
 closed normally with exit code 0. Six other exact-build rows were then parsed
 again offline, with the game-process count remaining zero before and after.
 
-Current exact-build/schema-4 coverage is eight accepted routes:
-
-- Time Attack: Myogi left/dry/day, Usui right/wet/night, Akagi left/dry/day,
-  and Akina right/wet/night.
-- Bunta Challenge: Irohazaka, Happogahara, Shomaru, and Tsuchisaka.
+The accepted count in this superseded checkpoint must not be used as current
+direction coverage. The underlying course, condition, movement, fault, and
+cooperative-exit observations remain useful; direction was reclassified under
+the stricter schema-5 policy.
 
 ## Remaining work
 
-The retained matrix has 70 rows. Sixty-two still need exact-build renewal.
+The retained matrix has 70 rows and still needs one-build renewal.
 These are load/condition/movement checks, not claims that every race has been
 driven to a natural finish or that every visual/audio frame is final. Live
 Direct-Vulkan acceptance remains separate from conservative CPU-preview route

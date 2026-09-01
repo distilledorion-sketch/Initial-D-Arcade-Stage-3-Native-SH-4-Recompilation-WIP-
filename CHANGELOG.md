@@ -2,19 +2,23 @@
 
 ## Unreleased route-evidence QA — 2026-09-01
 
-- Corrected a private matrix false negative for Time Attack guest paths that
-  load the exact left/right condition mesh but do not emit the optional
-  three-field selector diagnostic.
-- Kept validation fail-closed when a condition mesh is missing or contradicts
-  the requested side, when only part of a selector identity is present, or
-  when a complete identity disagrees with the manifest.
+- Corrected the interim route-evidence interpretation after broader course
+  coverage proved `_etc_f` means dry and `_etc_r` means wet/snow, rather than
+  left and right.
+- Extended the developer-only selector snapshot to the segmented `_pol_a.tbl`
+  course format, while leaving ordinary product launches unchanged.
+- Kept direction validation fail-closed when the three independent selector
+  fields are missing, partial, or disagree with the manifest.
 - Normalized mixed-generation CSV rows before export so newer evidence columns
   cannot be silently discarded by the first legacy object in the collection.
 - Added a no-launch evidence reanalysis mode which accepts only logs already
   tied to the exact executable SHA-256.
-- Revalidated eight v2444 Time Attack/Bunta movement routes as schema-4 PASS,
-  with zero fault markers and zero game processes created by the offline
-  schema upgrade.
+- Passed 20 route-policy contracts and the complete v2446 BIOS-free product,
+  controller, audio, card, renderer, timing, lifecycle, freshness, and
+  standalone suites.
+- Revalidated Akina Snow left/snow/night and Happogahara left/dry/night with
+  exact course/condition assets, independent `0,0,0` direction identities,
+  real movement, no recognized faults, and cooperative exit code 0.
 
 ## v2445-direct-persistence — 2026-09-01
 
