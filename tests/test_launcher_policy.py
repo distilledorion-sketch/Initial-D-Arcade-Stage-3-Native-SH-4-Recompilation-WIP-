@@ -41,6 +41,22 @@ class LauncherPolicyTests(unittest.TestCase):
         self.assertNotIn("C:\\Users\\", LAUNCHER)
         self.assertNotIn("Claude_Handoffs", LAUNCHER)
 
+    def test_moved_card_diagnostic_does_not_contaminate_card_path(self):
+        self.assertIn(
+            'Write-Verbose "Repaired moved card setting: $portableCardPath"',
+            LAUNCHER,
+        )
+        self.assertNotIn(
+            'Write-Output "Repaired moved card setting: $portableCardPath"',
+            LAUNCHER,
+        )
+
+    def test_extracted_files_get_content_retry_before_chd_setup(self):
+        integrity = LAUNCHER.split("$gameFilesReady = Test-Idas3GameFiles", 1)[1]
+        integrity = integrity.split("if (-not $ValidateOnly", 1)[0]
+        self.assertIn("-FullHash -Quiet", integrity)
+        self.assertIn("Start-Sleep -Milliseconds 200", integrity)
+
 
 if __name__ == "__main__":
     unittest.main()

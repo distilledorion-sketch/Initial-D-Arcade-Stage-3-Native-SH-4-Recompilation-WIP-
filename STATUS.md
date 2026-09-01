@@ -225,8 +225,9 @@ results/persistence, cars/opponents, visual and audible correctness, campaign
 branches, hardware breadth, and repeated live-renderer stress rather than
 route-state renewal.
 
-Exact-v2453 full-race renewal now has 7/32 retained rival profiles: Evo 5,
-Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Sudo rematch, and Wataru.
+Exact-v2453 full-race renewal now has 9/32 retained rival profiles: Evo 5,
+Evo 6, Keisuke rematch, Kyoko, Ryosuke rematch, Sakamoto, Smiley, Sudo rematch,
+and Wataru.
 Each moved through ordinary guest physics/input and reached a natural
 game-owned result, with zero target outcome requests after the target gate
 armed, zero recognized fault signals, 60.0 FPS average display/Direct Vulkan
