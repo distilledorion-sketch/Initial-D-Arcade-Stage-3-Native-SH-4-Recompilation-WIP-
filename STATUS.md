@@ -75,16 +75,15 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
   three independent guest selector fields matching the manifest. All 20
   focused contracts pass, including missing, partial, and contradictory
   fail-closed cases.
-- Seven Time Attack rows pass on exact v2446/schema-5 evidence: Akagi
-  left/dry/day, Akina right/wet/night, Akina Snow left/snow/night, Happogahara
-  left/dry/night, Irohazaka left/dry/day, Shomaru left/dry/day, and Tsuchisaka
-  left/dry/day. Each has the expected course/condition/time/weather assets,
-  three-field direction identity, real player movement, zero recognized fault
-  markers, and cooperative exit code 0.
-- On exact v2444/schema-5 evidence, all eight Bunta routes plus Myogi
-  left/dry/day and Usui right/wet/night pass. Four segmented Time Attack logs
-  remain correctly marked direction-unverified under v2444 instead of being
-  accepted from a condition token alone.
+- Exact final-v2449/schema-5 evidence now accepts 18 Time Attack rows: one left
+  and one right condition on each of all nine course families, including Akina
+  Snow. Every row has the expected course/condition/time/weather assets, three
+  agreeing direction fields, real player movement, zero recognized faults,
+  and cooperative exit code 0.
+- All eight Bunta routes also pass on the same final v2449 executable. Each
+  loaded its game-fixed night/dry course state, applied 480 AI-driving polls,
+  reached measurable player movement, reported zero recognized faults, and
+  exited cooperatively.
 - v2445 public ZIP SHA-256: `301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`; audited size is 18,565,971 bytes.
 - The versioned launcher maps Direct to the optimized native Vulkan swapchain
   path and Safe to the bounded GPU-readback/Win32 path. Both modes passed the
@@ -218,11 +217,11 @@ repeated cross-driver shutdown validation, whole-game same-build coverage,
 remaining visual/audio defects, synchronous transition latency, broader
 clean-machine packaging, and eventually uncapped presentation that stays
 independent from guest gameplay timing. The measured high-refresh routes do
-not make 120 Hz a whole-game validated mode. The 70-row ledger is currently
-mixed-build: ten rows have accepted v2444/schema-5 proof and seven Time Attack
-rows have accepted v2446/schema-5 proof. Together they represent all nine
-course families, but the remainder still require one-build renewal before the
-matrix can be called current-build complete.
+not make 120 Hz a whole-game validated mode. The 70-row ledger is still
+mixed-build, but 26 rows are now exact final-v2449 evidence: 18 Time Attack
+checks covering both directions on every course family and all eight Bunta
+routes. The remaining 44 condition permutations require v2449 renewal before
+the matrix can be called current-build complete.
 
 ## Definition of release-ready
 
