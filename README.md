@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2456 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2456-direct-vulkan-retry)
+[**Download Public Early Demo v2457 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2457-direct-authoritative)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public.Early.Demo.v2456.zip` from the
-   [v2456 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2456-direct-vulkan-retry).
+1. Download and extract `Public.Early.Demo.v2457.zip` from the
+   [v2457 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2457-direct-authoritative).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`F5A101272EC7B8EFB04C89EAD4ADBCC2F84CD5CB74C12DE2B94C7C9109398B88`
+`5E6785CAC48C1BFEA6509E0AAADF28C9B2F1639969806A85093D103081346A2C`
 
-## Current integration progress (v2456 WIP and public early demo)
+## Current integration progress (v2457 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -87,11 +87,10 @@ Public ZIP SHA-256:
   renderer drain as a normal close.
 - Bounded Vulkan acquire, graphics-fence, presentation-fence, and startup
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
-- Direct Vulkan presentation now bypasses the CPU/GDI display copy when the
-  user explicitly selects it. A clean-session marker automatically falls back
-  to Safe presentation after an interrupted Direct session. v2456 no longer
-  mistakes the current healthy process's own marker for an earlier crash, and
-  a genuinely stale marker offers an explicit Direct retry after restart.
+- Direct Vulkan presentation bypasses the CPU/GDI display copy when the user
+  selects it. v2457 treats that saved choice as authoritative: a stale or
+  unavailable diagnostic marker neither prompts nor silently changes the
+  renderer to Safe. Safe remains the first-run default and a manual option.
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
   previous per-frame CPU staging copies.
@@ -185,6 +184,14 @@ Public ZIP SHA-256:
   BIOS, PIC, cards, music, logs, captures, private racing paths, generated guest
   translations, or private host paths. Live acceptance of the corrected F1
   Direct-retry flow remains pending and is not claimed by this checkpoint.
+- The v2457 Direct-authoritative checkpoint passed compilation, a 34-case
+  restart/shutdown suite, 20 route-parser checks, 15 controller/music checks,
+  an exact synthetic learned-path round trip, link-freshness checks, and the
+  standalone no-firmware audit. A live isolated updater acceptance selected
+  v2456 from an older installation, verified GitHub's asset digest, installed
+  it, preserved user data, and confirmed that an already-current installation
+  is not offered the same update. No live Direct-renderer run is claimed for
+  v2457.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -249,8 +256,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2456 public checkpoint](docs/CURRENT_CHECKPOINT_V2456_DIRECT_VULKAN_RETRY_2026-09-01.md)
+[the v2457 public checkpoint](docs/CURRENT_CHECKPOINT_V2457_DIRECT_AUTHORITATIVE_2026-09-01.md)
 for the latest Direct-Vulkan/release facts,
+[the v2456 public checkpoint](docs/CURRENT_CHECKPOINT_V2456_DIRECT_VULKAN_RETRY_2026-09-01.md)
+for the preceding Direct-Vulkan retry facts,
 [the v2454 public checkpoint](docs/CURRENT_CHECKPOINT_V2454_CARD_REINSERT_UPDATER_2026-09-01.md)
 for the preceding card/updater facts,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)

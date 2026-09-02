@@ -67,7 +67,7 @@ class LauncherPolicyTests(unittest.TestCase):
         update_call = LAUNCHER.index("Invoke-Idas3UpdateCheck")
         setup_call = LAUNCHER.index("function Find-GameInputFile")
         self.assertLess(update_call, setup_call)
-        self.assertIn("$ProductVersion = 2456", LAUNCHER)
+        self.assertIn("$ProductVersion = 2457", LAUNCHER)
         self.assertIn("[switch]$SkipUpdateCheck", LAUNCHER)
 
     def test_update_prompt_includes_version_date_and_automatic_choice(self):

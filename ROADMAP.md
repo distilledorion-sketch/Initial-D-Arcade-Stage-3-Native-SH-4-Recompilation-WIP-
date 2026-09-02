@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2456 Direct-Vulkan retry
+## Current integration checkpoint — v2457 Direct-authoritative Vulkan
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -11,9 +11,10 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   streams instead of per-frame CPU staging copies.
 - A compatible Safe-mode BGRA readback can be copied directly into a Win32
   32-bit DIB; diagnostics retain exact RGB24 output.
-- An interrupted Direct session leaves a marker that returns the next launch
-  to Safe presentation. v2456 distinguishes that stale marker from the current
-  healthy process's active marker and offers an explicit Direct retry.
+- A saved Direct selection is authoritative. v2457 automatically clears a
+  stale diagnostic marker when possible and proceeds with Direct even when
+  marker maintenance is unavailable; it neither prompts nor forces Safe.
+  Safe remains the first-run default and a manual selection.
 - One live 2560x1080 RX 9070 XT run sustained 119.7–120.3 FPS through a heavy
   course and result transition, then exited normally and removed the marker.
 - v2441 retains immutable topology eligibility summaries for exact-matched
@@ -44,11 +45,12 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
 entire route-state matrix has exact-v2449 movement proof, and nine natural
-rival results now have strict exact-v2453 evidence. v2456 corrects the Direct
-retry policy offline, but live acceptance is still required. Full-race,
+rival results now have strict exact-v2453 evidence. v2457 protects the saved
+Direct choice in offline policy tests; a live Direct-renderer acceptance run
+for this exact build is not claimed. Full-race,
 cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 
-## Published checkpoint — v2456 public early demo
+## Published checkpoint — v2457 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -67,10 +69,13 @@ cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 - The product rejects concurrent instances, Windows QA shutdown is
   cooperative-only, and route-only coverage defaults to no Vulkan WSI.
 - The saved Direct/Safe Vulkan presentation choice survives launcher restart;
-  a current Direct session is no longer falsely locked out, and a stale marker
-  can be retried explicitly. The public ZIP was re-audited with no game data,
+  Direct is not silently replaced by Safe because of stale or unavailable
+  marker state. The public ZIP was re-audited with no game data,
   firmware, cards, music, captures, learned paths, generated guest code, or
   private paths.
+- The live updater acceptance verified release selection, GitHub's SHA-256,
+  installation, user-data preservation, and current-version suppression in an
+  isolated folder without starting the game.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.
