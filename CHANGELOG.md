@@ -1,5 +1,26 @@
 # Changelog
 
+## v2459-post-result-translation — 2026-09-01
+
+- Accepted the ordered learned-path correction in a bounded Akina Time Attack
+  run: it passed the previous 663.071 m stall, reached 1,488.022 m and a
+  natural result, averaged 60.0 FPS during the race, and generated zero
+  repeated presentation frames.
+- Added the analyzer-verified 0C18FE40 SH-4 helper reached by the post-result
+  card flow. The function covers 28 reachable instructions with one normal
+  return and no unknown opcode or unsafe control edge.
+- Repeated the same bounded route on the v2459 executable. The post-result/card
+  path reported zero recognized untranslated calls or runtime faults, used no
+  forced result, exited cooperatively, and left no game process.
+- Retained the canonical `Initial D Arcade Stage 3 Recompiled` folder, main
+  executable, and runtime names plus merge-based updates. The real v2459
+  archive passed both the current installer and the exact updater/installer
+  shipped in v2457 while preserving user and destination-only data.
+- Passed 18 public source tests, Windows updater and relocated-launcher tests,
+  private path-cache/route/controller/music/shutdown checks, translation and
+  link-freshness verification, and the standalone no-firmware audit.
+
+
 ## v2458-merged-update-naming — 2026-09-01
 
 - Changed fresh archives to contain one top-level folder named

@@ -58,7 +58,7 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
-$ProductVersion = 2458
+$ProductVersion = 2459
 $canonicalRuntimeName = 'Initial D Arcade Stage 3 Recompiled Runtime.exe'
 $canonicalExecutable = Join-Path $buildRoot $canonicalRuntimeName
 $legacyExecutable = Join-Path $buildRoot 'demo.exe'
@@ -97,10 +97,10 @@ if (-not $ValidateOnly) {
     }
 }
 
-# v2458 is a transition package: it includes the old runtime name so v2457's
-# already-installed updater can verify the archive, plus the canonical name
-# used from this launch onward.  Remove only a byte-identical legacy duplicate;
-# an unrelated or locally modified demo.exe is deliberately preserved.
+# Transition archives include the old runtime name so an updater installed
+# before v2458 can verify the archive, plus the canonical name used from this
+# launch onward. Remove only a byte-identical legacy duplicate; an unrelated
+# or locally modified demo.exe is deliberately preserved.
 if (-not $PSBoundParameters.ContainsKey('Exe') -and
     (Test-Path -LiteralPath $canonicalExecutable -PathType Leaf) -and
     (Test-Path -LiteralPath $legacyExecutable -PathType Leaf)) {
