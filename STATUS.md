@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2458 WIP
-Public checkpoint: v2458 Windows x64 early-demo prerelease
+Integration checkpoint: v2459 WIP
+Public checkpoint: v2459 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -19,9 +19,29 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. v2457 treats a saved Direct choice as authoritative: a stale or unavailable diagnostic marker does not prompt or force Safe; Safe remains the first-run default and a manual choice | Repeated live close/restart stress across more GPUs/drivers remains open; no live Direct-renderer run is claimed for v2457 |
-| Distribution | The v2458 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2459 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
+
+- v2459 native executable SHA-256:
+  `C31ACF51EFB3DE210381E9754B4D3C702C770EC1CD7258DA2CD663E607CF0C5E`.
+  Its analyzer-verified post-result helper contains 28 reachable SH-4
+  instructions, one normal return, and no unknown opcode or unsafe control
+  edge. Compilation, 34 restart/shutdown policies, 20 route-parser policies,
+  15 controller/music policies, learned-path regression, link freshness, and
+  the standalone no-firmware audit pass.
+- A bounded offscreen v2459 Akina Time Attack run passed the earlier 663.071 m
+  learned-path stall, reached 1,488.022 m and a natural result, and reported
+  race display minimum/average of 59.8/60.0 FPS. It generated no repeated
+  presentation frames, used no forced result, recorded zero recognized errors
+  or runtime faults, exited cooperatively, and left no game process.
+- v2459 public ZIP SHA-256:
+  `B42F76F6D15D6CDE1014B94390755F336B263997ADF7AC73ED5F69C9DB39D5B2`;
+  audited size is 23,813,057 bytes. Its 18 entries contain no game data, BIOS,
+  PIC, cards, music, logs, captures, learned paths, generated guest-code
+  source, or private paths. Current-installer and exact-v2457-updater
+  acceptances both preserved user data, selected the canonical folder/runtime,
+  migrated the byte-identical legacy name, and launched no game process.
 
 - v2458 native executable SHA-256:
   `5636197D7CA5D3DEDEAA2FA7F016A2C6899516D5C8D30A74AD150636E53C49A2`.

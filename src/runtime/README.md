@@ -22,7 +22,7 @@ decoder/renderer snapshots refer to support
 headers in the private integration tree and are included for review, not as a
 claim that this repository is a complete runtime.
 
-The private v2458 integration tree has advanced beyond these selected snapshots
+The private v2459 integration tree has advanced beyond these selected snapshots
 with targeted menu-to-race/result/save execution, corrected HUD and mirror
 projection, additional PVR list features, native AICA/Maple/JVS/card tests,
 persistent renderer workers, Vulkan pipeline prewarming, fixed 60 Hz retained
