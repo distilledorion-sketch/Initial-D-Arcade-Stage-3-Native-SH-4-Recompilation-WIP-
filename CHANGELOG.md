@@ -1,5 +1,29 @@
 # Changelog
 
+## v2461-rts-delay-slot-correctness — 2026-09-01
+
+- Repaired 67 analyzer-proven non-NOP SH-4 RTS delay-slot instructions across
+  60 translated functions. A second fixed-point audit reports zero remaining
+  proven omissions; ambiguous legacy function-boundary mismatches remain
+  untouched.
+- Passed the complete private offline suite: 34 shutdown policies, 20 route
+  parser policies, 15 controller/music checks, learned-path regression,
+  translated-source checks, 116-object link freshness, and standalone
+  no-firmware verification.
+- Ran a no-BIOS, muted, offscreen, single-worker Akina Time Attack gate at
+  strict 60 Hz simulation and presentation. It traveled 1,488.022 m, reached
+  one genuine result with no forced result, averaged 60.0 FPS game output,
+  reported zero untranslated calls or runtime faults, and exited
+  cooperatively.
+- Made the private QA course-path input explicit, extension-validated, hashed,
+  forwarded, and recorded so a missing path cannot silently weaken a driving
+  gate. No learned course path is published.
+- Kept the canonical folder/main/runtime names. The real v2461 archive passed
+  the current installer and exact-v2457 updater/installer merge acceptances,
+  preserved user and destination-only files, and launched no game.
+- Passed 18 public source tests, Windows updater and relocated-launcher tests,
+  and all four native public smoke tests.
+
 ## v2460-historical-target-closure — 2026-09-01
 
 - Audited all retained untranslated-target logs against the current compiled

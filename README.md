@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2460 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2460-historical-target-closure)
+[**Download Public Early Demo v2461 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2461-rts-delay-slot-correctness)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2460.zip` from
-   the [v2460 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2460-historical-target-closure).
+1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2461.zip` from
+   the [v2461 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2461-rts-delay-slot-correctness).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`7FAE695DA3449FB261B95E1256A60E75F3A12FA9BFAE44FF3B09BFF221D71F03`
+`1B0ABCFDEFAF3F2A3E4CAC46D738259FF09AA4747AB825266A681097104AFAC5`
 
-## Current integration progress (v2460 WIP and public early demo)
+## Current integration progress (v2461 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -78,7 +78,7 @@ Public ZIP SHA-256:
   checkbox enables verified automatic installs on future launches. Updates
   preserve game files, cards, music, logs, and user settings and roll back if
   installation fails.
-- v2460 archives extract into one `Initial D Arcade Stage 3 Recompiled`
+- v2461 archives extract into one `Initial D Arcade Stage 3 Recompiled`
   folder. Updates merge into the existing installation: new product files are
   added, versioned product files are replaced, and destination-only files plus
   user data remain untouched. The main entry point is
@@ -214,6 +214,14 @@ Public ZIP SHA-256:
   zero untranslated calls, runtime faults, or repeated frames; both exited
   cooperatively and left no game process. The real archive passed current and
   exact-v2457 merge-update acceptance without launching the game.
+- The v2461 checkpoint repaired 67 analyzer-proven non-NOP instructions that
+  legacy translated functions placed after an early C++ return instead of in
+  the SH-4 RTS delay slot. A fixed-point audit now reports zero proven
+  omissions. The complete offline suite passed, and a strict 60/60 Hz Akina
+  Time Attack gate followed its verified private course path for 1,488.022 m,
+  reached one genuine result with no forced result, reported zero untranslated
+  calls or runtime faults, and exited cooperatively. The path itself is not
+  published.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -278,8 +286,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
+[the v2461 public checkpoint](docs/CURRENT_CHECKPOINT_V2461_RTS_DELAY_SLOT_CORRECTNESS_2026-09-01.md)
+for the latest runtime, correctness, updater, and package facts,
 [the v2460 public checkpoint](docs/CURRENT_CHECKPOINT_V2460_HISTORICAL_TARGET_CLOSURE_2026-09-01.md)
-for the latest runtime, updater, naming, and package facts,
+for the preceding target-closure facts,
 [the v2459 public checkpoint](docs/CURRENT_CHECKPOINT_V2459_POST_RESULT_TRANSLATION_2026-09-01.md)
 for the preceding post-result facts,
 [the v2458 public checkpoint](docs/CURRENT_CHECKPOINT_V2458_MERGED_UPDATE_NAMING_2026-09-01.md)
