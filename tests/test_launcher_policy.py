@@ -12,6 +12,12 @@ LAUNCHER = (ROOT / "tools" / "windows" / "Play Demo.ps1").read_text(
 PUBLIC_SETTINGS = (
     ROOT / "tools" / "windows" / "idas3_user_settings_public.ini"
 ).read_text(encoding="utf-8")
+UPDATER = (ROOT / "tools" / "windows" / "UpdateSupport.ps1").read_text(
+    encoding="utf-8"
+)
+INSTALLER = (ROOT / "tools" / "windows" / "Install Update.ps1").read_text(
+    encoding="utf-8"
+)
 
 
 class LauncherPolicyTests(unittest.TestCase):
@@ -56,6 +62,37 @@ class LauncherPolicyTests(unittest.TestCase):
         integrity = integrity.split("if (-not $ValidateOnly", 1)[0]
         self.assertIn("-FullHash -Quiet", integrity)
         self.assertIn("Start-Sleep -Milliseconds 200", integrity)
+
+    def test_launcher_checks_for_updates_before_game_setup(self):
+        update_call = LAUNCHER.index("Invoke-Idas3UpdateCheck")
+        setup_call = LAUNCHER.index("function Find-GameInputFile")
+        self.assertLess(update_call, setup_call)
+        self.assertIn("$ProductVersion = 2454", LAUNCHER)
+        self.assertIn("[switch]$SkipUpdateCheck", LAUNCHER)
+
+    def test_update_prompt_includes_version_date_and_automatic_choice(self):
+        self.assertIn('"Update $($Update.VersionLabel) is available"', UPDATER)
+        self.assertIn('"Released $($Update.ReleaseDateText)', UPDATER)
+        self.assertIn("Automatically install future updates", UPDATER)
+        self.assertIn("User deferred $($update.VersionLabel)", UPDATER)
+
+    def test_updater_verifies_github_digest_and_package_version(self):
+        self.assertIn("sha256:", UPDATER.lower())
+        self.assertIn("Get-FileHash -LiteralPath $ZipPath -Algorithm SHA256", UPDATER)
+        self.assertIn("PRODUCT_VERSION.txt", UPDATER)
+        self.assertIn("Unsafe path in update package", UPDATER)
+
+    def test_installer_preserves_user_owned_data_and_has_rollback(self):
+        for directory in ("game files", "card data", "custom music", "logs"):
+            self.assertIn(directory, INSTALLER)
+        self.assertIn("idas3_user_settings.ini", INSTALLER)
+        self.assertIn("idas3_launcher_update_settings.json", INSTALLER)
+        self.assertIn("$rollback", INSTALLER)
+
+    def test_update_sources_contain_no_private_absolute_path(self):
+        for source in (UPDATER, INSTALLER):
+            self.assertNotIn("C:\\Users\\", source)
+            self.assertNotIn("Claude_Handoffs", source)
 
 
 if __name__ == "__main__":

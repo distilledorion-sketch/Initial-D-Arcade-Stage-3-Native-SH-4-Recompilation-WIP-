@@ -1,5 +1,30 @@
 # Changelog
 
+## v2454-card-reinsert-updater — 2026-09-01
+
+- Separated an ejected card's front-sensor/removal state from the next
+  insertion request so a result screen cannot see the same card return before
+  it acknowledges physical removal.
+- Automatically queues the selected exact 207-byte saved card after a normal
+  eject and exposes it only at the next real card prompt/capture boundary.
+- Expanded the card-device test to 27 exact protocol transactions covering
+  early reinsert requests, empty-reader status, delayed capture, automatic
+  second reinsert, and initialization cleanup.
+- Completed a bounded Bunta save/eject/reinsert run on the exact v2454
+  executable with a 207-byte persisted card, zero recognized faults,
+  cooperative exit, and no leftover process.
+- Added a launcher-time GitHub release check that shows the newer version and
+  release date with Yes/No choices and an optional automatic-update checkbox.
+- Added SHA-256 verification, ZIP path/version validation, external in-place
+  installation, preservation of game files/cards/music/logs/settings, and
+  rollback on install failure. Network/update failures fall back to launching
+  the installed version.
+- Added Windows updater and moved-launcher acceptance jobs to public CI and
+  expanded the static launcher policy tests.
+- Re-audited a 17-file Windows x64 public ZIP containing no game data, BIOS,
+  PIC, extracted assets, cards, custom music, logs, captures, generated guest
+  translations, or private paths.
+
 ## Unreleased v2453 exact rival-result renewal — 2026-09-01
 
 - Corrected developer-only natural-detour attempt bookkeeping so a retry win

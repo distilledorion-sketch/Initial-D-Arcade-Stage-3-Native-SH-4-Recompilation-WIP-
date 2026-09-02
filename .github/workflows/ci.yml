@@ -23,3 +23,14 @@ jobs:
         run: cmake --build build --config Release
       - name: Run native smoke test
         run: ctest --test-dir build -C Release --output-on-failure
+
+  windows-launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test verified update and rollback policy
+        shell: powershell
+        run: .\tools\qa\test_windows_updater.ps1
+      - name: Test launcher relocation and integrity retry
+        shell: powershell
+        run: .\tools\qa\test_windows_launcher_relocation.ps1

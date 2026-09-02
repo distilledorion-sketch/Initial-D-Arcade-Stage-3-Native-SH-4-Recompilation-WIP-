@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2445 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2445-direct-persistence)
+[**Download Public Early Demo v2454 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2454-card-reinsert-updater)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public Early Demo v2445.zip` from the
-   [v2445 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2445-direct-persistence).
+1. Download and extract `Public Early Demo v2454.zip` from the
+   [v2454 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2454-card-reinsert-updater).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`301741FEF79AC86CF56F85E9BC19E30D6DC4290833AE3CDF55596C4042F0BB0E`
+`041CBA8943BF7DF43F61B9843FC81C93C5C8107E2FAAF16E16CFA45B69B317AD`
 
-## Current integration progress (v2453 WIP; public demo remains v2445)
+## Current integration progress (v2454 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -69,6 +69,15 @@ Public ZIP SHA-256:
   card is loaded on the next start, and changing cards displays an unsaved-data
   restart warning. Managed selections now remain portable when the extracted
   demo folder is moved or renamed.
+- Post-race ejection now reports the required empty-reader/removal state before
+  queuing the selected saved card for the next prompt. A bounded Bunta result
+  run wrote exactly 207 bytes and crossed this reinsert transition with zero
+  recognized runtime faults.
+- The Windows launcher checks GitHub releases before starting the game. Newer
+  versions are shown with their release date and Yes/No choices; an optional
+  checkbox enables verified automatic installs on future launches. Updates
+  preserve game files, cards, music, logs, and user settings and roll back if
+  installation fails.
 - A self-contained, Python-free setup and integrity checker for user-owned
   inputs.
 - Cooperative renderer shutdown: the program stops new Vulkan presentation,
@@ -161,6 +170,13 @@ Public ZIP SHA-256:
   swapchain path and Safe to the bounded GPU-readback path through one tested
   helper. Direct and Safe no-launch validation both passed, all maintained
   launchers parsed cleanly, and the native v2444 executable was unchanged.
+- The v2454 card/updater checkpoint passed 27 exact card-device transactions,
+  the complete offline product suite, updater selection/digest/extraction/
+  preservation/rollback tests, and the moved-launcher test. Its 17-file public
+  ZIP was then extracted and re-audited with no game data, BIOS, card, music,
+  log, capture, or private path. Bunta win and loss post-result runs plus a
+  three-minute no-input attract run all exited cooperatively without a
+  recognized crash or untranslated-runtime fault.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -225,8 +241,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
+[the v2454 public checkpoint](docs/CURRENT_CHECKPOINT_V2454_CARD_REINSERT_UPDATER_2026-09-01.md)
+for the latest card/updater/release facts,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
-for the latest launcher/release facts,
+for the preceding launcher facts,
 [the v2449 integration checkpoint](docs/CURRENT_CHECKPOINT_V2449_CINEMATIC_MASK_2026-09-01.md)
 for the current native-runtime acceptance,
 [the v2449 route-matrix checkpoint](docs/CURRENT_CHECKPOINT_V2449_ROUTE_MATRIX_2026-09-01.md)
