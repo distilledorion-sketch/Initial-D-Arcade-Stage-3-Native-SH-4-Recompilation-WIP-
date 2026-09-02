@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2454 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2454-card-reinsert-updater)
+[**Download Public Early Demo v2456 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2456-direct-vulkan-retry)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public Early Demo v2454.zip` from the
-   [v2454 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2454-card-reinsert-updater).
+1. Download and extract `Public.Early.Demo.v2456.zip` from the
+   [v2456 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2456-direct-vulkan-retry).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`041CBA8943BF7DF43F61B9843FC81C93C5C8107E2FAAF16E16CFA45B69B317AD`
+`F5A101272EC7B8EFB04C89EAD4ADBCC2F84CD5CB74C12DE2B94C7C9109398B88`
 
-## Current integration progress (v2454 WIP and public early demo)
+## Current integration progress (v2456 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -89,8 +89,9 @@ Public ZIP SHA-256:
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
 - Direct Vulkan presentation now bypasses the CPU/GDI display copy when the
   user explicitly selects it. A clean-session marker automatically falls back
-  to Safe presentation after an interrupted Direct session. v2445 carries the
-  selected Direct/Safe choice through the Windows launcher after restart.
+  to Safe presentation after an interrupted Direct session. v2456 no longer
+  mistakes the current healthy process's own marker for an earlier crash, and
+  a genuinely stale marker offers an explicit Direct retry after restart.
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
   previous per-frame CPU staging copies.
@@ -177,6 +178,13 @@ Public ZIP SHA-256:
   log, capture, or private path. Bunta win and loss post-result runs plus a
   three-minute no-input attract run all exited cooperatively without a
   recognized crash or untranslated-runtime fault.
+- The v2456 Direct-Vulkan retry checkpoint passed compilation, a 33-case
+  restart/shutdown suite, 20 route-parser checks, 15 controller/music checks,
+  an exact synthetic learned-path round trip, link-freshness checks, and the
+  standalone no-firmware audit. The audited 17-file ZIP contains no game data,
+  BIOS, PIC, cards, music, logs, captures, private racing paths, generated guest
+  translations, or private host paths. Live acceptance of the corrected F1
+  Direct-retry flow remains pending and is not claimed by this checkpoint.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -241,8 +249,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
+[the v2456 public checkpoint](docs/CURRENT_CHECKPOINT_V2456_DIRECT_VULKAN_RETRY_2026-09-01.md)
+for the latest Direct-Vulkan/release facts,
 [the v2454 public checkpoint](docs/CURRENT_CHECKPOINT_V2454_CARD_REINSERT_UPDATER_2026-09-01.md)
-for the latest card/updater/release facts,
+for the preceding card/updater facts,
 [the v2445 public checkpoint](docs/CURRENT_CHECKPOINT_V2445_2026-09-01.md)
 for the preceding launcher facts,
 [the v2449 integration checkpoint](docs/CURRENT_CHECKPOINT_V2449_CINEMATIC_MASK_2026-09-01.md)

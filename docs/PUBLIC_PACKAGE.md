@@ -25,7 +25,7 @@
 The Git source package documents and tests the engineering work but cannot boot
 the game by itself. The separate Windows prerelease includes the native runtime
 and local setup tools, but still contains no user-owned game inputs. That
-boundary is intentional. The v2454 public ZIP adds `PRODUCT_VERSION.txt` and
-the two updater helpers; it contains 17 audited files in total. Update packages
+boundary is intentional. The v2456 public ZIP retains `PRODUCT_VERSION.txt`
+and the two updater helpers; it contains 17 audited files in total. Update packages
 preserve `game files`, `card data`, `custom music`, `logs`, the user settings
 INI, and the automatic-update preference.
