@@ -67,8 +67,18 @@ class LauncherPolicyTests(unittest.TestCase):
         update_call = LAUNCHER.index("Invoke-Idas3UpdateCheck")
         setup_call = LAUNCHER.index("function Find-GameInputFile")
         self.assertLess(update_call, setup_call)
-        self.assertIn("$ProductVersion = 2457", LAUNCHER)
+        self.assertIn("$ProductVersion = 2458", LAUNCHER)
         self.assertIn("[switch]$SkipUpdateCheck", LAUNCHER)
+
+    def test_canonical_main_and_runtime_names_are_migration_safe(self):
+        self.assertIn("Initial D Arcade Stage 3 Recompiled Runtime.exe", LAUNCHER)
+        self.assertIn("$legacyExecutable = Join-Path $buildRoot 'demo.exe'", LAUNCHER)
+        self.assertIn("$PSBoundParameters.ContainsKey('Exe')", LAUNCHER)
+        self.assertIn("if ($canonicalHash -eq $legacyHash)", LAUNCHER)
+        self.assertIn("Initial D Arcade Stage 3 Recompiled.exe", UPDATER)
+        self.assertIn("Initial D Arcade Stage 3 Recompiled Runtime.exe", UPDATER)
+        self.assertIn("Initial D Arcade Stage 3 Recompiled.exe", INSTALLER)
+        self.assertIn("Initial D Arcade Stage 3 Recompiled Runtime.exe", INSTALLER)
 
     def test_update_prompt_includes_version_date_and_automatic_choice(self):
         self.assertIn('"Update $($Update.VersionLabel) is available"', UPDATER)
@@ -88,6 +98,8 @@ class LauncherPolicyTests(unittest.TestCase):
         self.assertIn("idas3_user_settings.ini", INSTALLER)
         self.assertIn("idas3_launcher_update_settings.json", INSTALLER)
         self.assertIn("$rollback", INSTALLER)
+        self.assertIn("Merge updates never delete unknown destination files", INSTALLER)
+        self.assertIn("if ($canonicalHash -eq $legacyHash)", INSTALLER)
 
     def test_update_sources_contain_no_private_absolute_path(self):
         for source in (UPDATER, INSTALLER):

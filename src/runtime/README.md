@@ -22,14 +22,15 @@ decoder/renderer snapshots refer to support
 headers in the private integration tree and are included for review, not as a
 claim that this repository is a complete runtime.
 
-The private v2457 integration tree has advanced beyond these selected snapshots
+The private v2458 integration tree has advanced beyond these selected snapshots
 with targeted menu-to-race/result/save execution, corrected HUD and mirror
 projection, additional PVR list features, native AICA/Maple/JVS/card tests,
 persistent renderer workers, Vulkan pipeline prewarming, fixed 60 Hz retained
 presentation during guest loads, distinct 120 Hz presentation accounting,
 exact authored-cinematic-matte widescreen handling, and asset-lineage
 validation. It also includes developer-only persisted Time Attack input-path
-QA and a Direct-authoritative renderer policy that never silently changes a
+QA, ordered learned-path controller selection across adjacent switchbacks, and
+a Direct-authoritative renderer policy that never silently changes a
 saved Direct choice to Safe because of diagnostic marker state; no learned path
 data is published. These components will be moved into this public tree only when they
 can be separated cleanly from generated game code and private captures without

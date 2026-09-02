@@ -58,15 +58,25 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
-$ProductVersion = 2457
-$currentExecutable = Join-Path $buildRoot 'demo.exe'
+$ProductVersion = 2458
+$canonicalRuntimeName = 'Initial D Arcade Stage 3 Recompiled Runtime.exe'
+$canonicalExecutable = Join-Path $buildRoot $canonicalRuntimeName
+$legacyExecutable = Join-Path $buildRoot 'demo.exe'
+$currentExecutable = if (Test-Path -LiteralPath $canonicalExecutable `
+        -PathType Leaf) {
+    $canonicalExecutable
+} else {
+    # Compatibility with installations created before the polished runtime
+    # name was introduced.  Verified updates install the canonical file.
+    $legacyExecutable
+}
 $exe = if ($Exe) {
     (Resolve-Path -LiteralPath $Exe).Path
 } else {
     $currentExecutable
 }
 
-# A launcher-side updater can replace the product before demo.exe starts and
+# A launcher-side updater can replace the product before the native runtime starts and
 # therefore does not need to modify a running game process. Source-tree tests
 # keep UpdateSupport beside this file; packaged builds place it under tools.
 if (-not $ValidateOnly) {
@@ -84,6 +94,27 @@ if (-not $ValidateOnly) {
             # when necessary, installs in place, then relaunches once.
             return
         }
+    }
+}
+
+# v2458 is a transition package: it includes the old runtime name so v2457's
+# already-installed updater can verify the archive, plus the canonical name
+# used from this launch onward.  Remove only a byte-identical legacy duplicate;
+# an unrelated or locally modified demo.exe is deliberately preserved.
+if (-not $PSBoundParameters.ContainsKey('Exe') -and
+    (Test-Path -LiteralPath $canonicalExecutable -PathType Leaf) -and
+    (Test-Path -LiteralPath $legacyExecutable -PathType Leaf)) {
+    try {
+        $canonicalHash = (Get-FileHash -LiteralPath $canonicalExecutable `
+            -Algorithm SHA256).Hash
+        $legacyHash = (Get-FileHash -LiteralPath $legacyExecutable `
+            -Algorithm SHA256).Hash
+        if ($canonicalHash -eq $legacyHash) {
+            [System.IO.File]::Delete($legacyExecutable)
+            Write-Verbose "Removed byte-identical legacy runtime: $legacyExecutable"
+        }
+    } catch {
+        Write-Verbose "Legacy runtime cleanup deferred: $($_.Exception.Message)"
     }
 }
 

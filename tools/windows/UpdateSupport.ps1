@@ -238,8 +238,14 @@ function Expand-Idas3VerifiedUpdatePackage {
     $packageRoots = @(Get-ChildItem -LiteralPath $rootFull -Recurse -File `
         -Filter 'PRODUCT_VERSION.txt' | ForEach-Object {
             $candidate = $_.Directory.FullName
-            if ((Test-Path -LiteralPath (Join-Path $candidate 'demo.exe') `
-                    -PathType Leaf) -and
+            $canonicalRuntime = Join-Path $candidate `
+                'Initial D Arcade Stage 3 Recompiled Runtime.exe'
+            $legacyRuntime = Join-Path $candidate 'demo.exe'
+            $mainLauncher = Join-Path $candidate `
+                'Initial D Arcade Stage 3 Recompiled.exe'
+            if (((Test-Path -LiteralPath $canonicalRuntime -PathType Leaf) -or
+                 (Test-Path -LiteralPath $legacyRuntime -PathType Leaf)) -and
+                (Test-Path -LiteralPath $mainLauncher -PathType Leaf) -and
                 (Test-Path -LiteralPath (Join-Path $candidate 'Play Demo.ps1') `
                     -PathType Leaf)) { $candidate }
         } | Select-Object -Unique)

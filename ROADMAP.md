@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2457 Direct-authoritative Vulkan
+## Current integration checkpoint — v2458 ordered path and merged updates
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -39,18 +39,19 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   32/32 accepted ledger is intentionally not promoted to a same-build claim.
 - Developer-only persisted Time Attack path capture/playback now has a
   validated binary format and live-control-clock recovery policy. No learned
-  input data is published. Live validation past the existing 663 m route stall
-  remains an open QA gate.
+  input data is published. v2458 prevents a later spatially adjacent
+  switchback from overriding the ordered controller; live validation past the
+  existing 663 m route stall remains an open QA gate.
 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
 entire route-state matrix has exact-v2449 movement proof, and nine natural
-rival results now have strict exact-v2453 evidence. v2457 protects the saved
+rival results now have strict exact-v2453 evidence. v2458 retains the saved
 Direct choice in offline policy tests; a live Direct-renderer acceptance run
 for this exact build is not claimed. Full-race,
 cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 
-## Published checkpoint — v2457 public early demo
+## Published checkpoint — v2458 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -76,6 +77,10 @@ cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 - The live updater acceptance verified release selection, GitHub's SHA-256,
   installation, user-data preservation, and current-version suppression in an
   isolated folder without starting the game.
+- The requested folder/main/runtime names and merge semantics pass against the
+  real v2458 archive. An additional acceptance used the exact v2457-shipped
+  updater and installer, proving existing users can cross the naming change
+  while keeping user and destination-only files.
 
 Checkpoint result: suitable for cautious public testing at the default 60 FPS,
 not release-ready.

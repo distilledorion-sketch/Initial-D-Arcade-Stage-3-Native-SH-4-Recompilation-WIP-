@@ -47,7 +47,11 @@ try {
         [int]$matches.number -ne $ExpectedVersion) {
         throw "Staged package version '$marker' does not match v$ExpectedVersion."
     }
-    foreach ($required in @('demo.exe', 'Play Demo.ps1')) {
+    $mainExecutableName = 'Initial D Arcade Stage 3 Recompiled.exe'
+    $runtimeExecutableName =
+        'Initial D Arcade Stage 3 Recompiled Runtime.exe'
+    foreach ($required in @(
+        $mainExecutableName, $runtimeExecutableName, 'Play Demo.ps1')) {
         if (-not (Test-Path -LiteralPath (Join-Path $source $required) `
                 -PathType Leaf)) {
             throw "Staged package is missing $required."
@@ -101,9 +105,31 @@ try {
             [int]$matches.number -ne $ExpectedVersion) {
             throw 'Installed version marker verification failed.'
         }
-        if (-not (Test-Path -LiteralPath (Join-Path $destination 'demo.exe') `
+        $installedRuntime = Join-Path $destination $runtimeExecutableName
+        if (-not (Test-Path -LiteralPath $installedRuntime `
                 -PathType Leaf)) {
             throw 'Installed executable verification failed.'
+        }
+
+        # Merge updates never delete unknown destination files.  The sole
+        # migration exception is the old product-controlled runtime name, and
+        # even that is removed only when it is byte-identical to the newly
+        # verified canonical runtime.  Preserve a rollback copy first.
+        $legacyRuntime = Join-Path $destination 'demo.exe'
+        if (Test-Path -LiteralPath $legacyRuntime -PathType Leaf) {
+            $canonicalHash = (Get-FileHash -LiteralPath $installedRuntime `
+                -Algorithm SHA256).Hash
+            $legacyHash = (Get-FileHash -LiteralPath $legacyRuntime `
+                -Algorithm SHA256).Hash
+            if ($canonicalHash -eq $legacyHash) {
+                $legacyBackup = Join-Path $rollback 'demo.exe'
+                if (-not (Test-Path -LiteralPath $legacyBackup `
+                        -PathType Leaf)) {
+                    Copy-Item -LiteralPath $legacyRuntime `
+                        -Destination $legacyBackup -Force
+                }
+                [System.IO.File]::Delete($legacyRuntime)
+            }
         }
     } catch {
         foreach ($backupFile in Get-ChildItem -LiteralPath $rollback -Recurse -File) {

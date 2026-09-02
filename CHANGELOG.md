@@ -1,5 +1,29 @@
 # Changelog
 
+## v2458-merged-update-naming — 2026-09-01
+
+- Changed fresh archives to contain one top-level folder named
+  `Initial D Arcade Stage 3 Recompiled` and renamed the native helper to
+  `Initial D Arcade Stage 3 Recompiled Runtime.exe`. The root entry point
+  remains `Initial D Arcade Stage 3 Recompiled.exe`.
+- Made the update contract explicitly merge-based: add new product files,
+  replace versioned product files, preserve game files/cards/music/logs/
+  settings/update preference and unrelated destination-only files, and roll
+  back replaced or created product files after failure.
+- Added one v2458-only byte-identical `demo.exe` compatibility copy so the
+  updater already installed by v2457 can accept the renamed layout. The new
+  installer/launcher removes it only when its SHA-256 equals the canonical
+  runtime; a modified or unrelated file is preserved.
+- Passed the real transition with the exact updater and installer shipped in
+  v2457, plus current installer, nested-folder, rollback, merge-preservation,
+  and launcher migration checks. None of these tests launched the game.
+- Corrected learned Time Attack path control so a spatially nearby future
+  switchback cannot override the ordered cursor. A synthetic parallel-road
+  regression reproduces the Akina 663 m failure shape and now passes.
+- Passed compilation, 34 restart/shutdown, 20 route-parser, 15
+  controller/music, link-freshness, translation-source, and standalone
+  no-firmware checks. A live v2458 race run is not claimed by this checkpoint.
+
 ## v2457-direct-authoritative — 2026-09-01
 
 - Made a saved Direct Vulkan selection authoritative. A stale diagnostic

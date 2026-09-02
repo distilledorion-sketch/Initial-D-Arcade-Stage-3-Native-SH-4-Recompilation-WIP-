@@ -28,6 +28,8 @@ try {
         -Destination (Join-Path $resolvedTestRoot 'Play Demo.ps1')
 
     foreach ($path in @(
+        (Join-Path $resolvedTestRoot `
+            'Initial D Arcade Stage 3 Recompiled Runtime.exe'),
         (Join-Path $resolvedTestRoot 'demo.exe'),
         (Join-Path $gameRoot 'idas3_main_0C020000.bin'),
         (Join-Path $gameRoot '.idas3_extraction_complete.json'))) {
@@ -61,6 +63,9 @@ function Test-Idas3GameFiles {
     if ($result.Status -ne 'READY') {
         throw "Relocated launcher did not recover to READY: $($result.Status)"
     }
+    if (Test-Path -LiteralPath (Join-Path $resolvedTestRoot 'demo.exe')) {
+        throw 'Launcher did not retire the byte-identical legacy runtime.'
+    }
     $calls = @(Get-Content -LiteralPath $tracePath)
     if ($calls.Count -ne 2 -or $calls[0] -ne 'fast' -or
         $calls[1] -ne 'full') {
@@ -71,6 +76,7 @@ function Test-Idas3GameFiles {
         Status = 'PASS'
         RelocatedBuild = $true
         IntegritySequence = $calls -join ' -> '
+        LegacyRuntimeMigrated = $true
         GameProcessStarted = $false
     }
 } finally {
