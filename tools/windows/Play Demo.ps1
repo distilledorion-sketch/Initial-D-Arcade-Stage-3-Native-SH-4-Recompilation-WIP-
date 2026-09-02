@@ -20,7 +20,7 @@ param(
     [ValidateSet('On', 'Off')]
     [string]$VSync = 'On',
     [ValidateSet('Safe', 'Direct')]
-    [string]$VulkanPresentation = 'Safe',
+    [string]$VulkanPresentation = 'Direct',
     [ValidateSet('On', 'Off')]
     [string]$FpsCounter = 'On',
     [ValidateSet('Off', '2x', '4x')]

@@ -23,7 +23,7 @@ INSTALLER = (ROOT / "tools" / "windows" / "Install Update.ps1").read_text(
 class LauncherPolicyTests(unittest.TestCase):
     def test_presentation_mode_is_a_validated_launcher_parameter(self):
         self.assertIn("[ValidateSet('Safe', 'Direct')]", LAUNCHER)
-        self.assertIn("[string]$VulkanPresentation = 'Safe'", LAUNCHER)
+        self.assertIn("[string]$VulkanPresentation = 'Direct'", LAUNCHER)
 
     def test_saved_f1_choice_is_loaded_unless_command_line_overrides_it(self):
         self.assertIn(
@@ -40,8 +40,8 @@ class LauncherPolicyTests(unittest.TestCase):
         )
         self.assertIn("$env:IDAS3_NATIVE_VULKAN_OFFSCREEN", LAUNCHER)
 
-    def test_public_default_remains_safe(self):
-        self.assertIn("VulkanPresentation=Safe", PUBLIC_SETTINGS)
+    def test_public_default_uses_direct_vulkan(self):
+        self.assertIn("VulkanPresentation=Direct", PUBLIC_SETTINGS)
 
     def test_launcher_contains_no_private_absolute_path(self):
         self.assertNotIn("C:\\Users\\", LAUNCHER)
