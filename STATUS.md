@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2453 WIP
-Public checkpoint: v2445 Windows x64 early-demo prerelease
+Integration checkpoint: v2454 WIP
+Public checkpoint: v2454 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -16,13 +16,33 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Course environment maps | Missing logical lookup paths were recovered from two exact user-owned ISO files; rainbow/static maps are corrected | Other courses and weather conditions are not yet audited |
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, controller-operated F1 navigation, adjustable FFB, and saved 0–100% steering smoothing pass focused tests. A product-shared no-window probe found a real attached Xbox controller through `xinput1_4.dll` | Live physical axis/button movement, multiple controller models, wheels, and FFB acceptance remain open |
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
-| Card | No-card operation works; a disposable 207-byte card passes insert/load/save/reload; selected managed cards use a move-safe path under the local `card data` folder | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
+| Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
-| Distribution | The v2445 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, and persists the selected Direct/Safe Vulkan path | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2454 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified updates before launch | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2454 native executable SHA-256:
+  `4E9D607E2F475E38AF8A40BAF6DAE4D8F79CB62C57172D1BB0D1E6FCA065C013`.
+  Its exact card-device suite covers 27 transactions, including an early
+  reinsert request, authentic post-eject empty status, delayed selected-card
+  queue, and a second capture/read cycle.
+- A bounded v2454 Bunta result run wrote exactly 207 bytes, reported
+  `reinsert=queued source=post-eject-removal`, logged zero recognized faults,
+  and exited cooperatively with no remaining game process. Separate Bunta win
+  and loss continuations and a three-minute no-input attract run likewise
+  completed without a recognized crash or untranslated-runtime fault.
+- v2454 public ZIP SHA-256:
+  `041CBA8943BF7DF43F61B9843FC81C93C5C8107E2FAAF16E16CFA45B69B317AD`;
+  audited size is 18,575,765 bytes. Its 17 files include the version marker
+  and source-audited update helpers but no game data, BIOS, PIC, cards, custom
+  music, logs, captures, generated guest code, or private paths.
+- The updater selects the highest newer `vNNNN` prerelease, shows its version
+  and release date, supports optional automatic installs, requires GitHub's
+  SHA-256 asset digest, rejects traversal paths and mismatched version markers,
+  preserves user-owned folders/settings, and rolls back a failed install.
+  Offline update/install tests and the isolated moved-launcher test pass.
 - v2449 identifies the attract sequence's authored black cinematic mattes by
   exact four-vertex mesh/material state and then requires projected native
   x=0..640 coverage before expanding them about the output centre. This keeps
@@ -196,11 +216,13 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 ## Latest WIP truth
 
 The earlier linked-stream/frame-lifecycle and attract-mode-only blockers are no
-longer the active frontier. The v2445 package uses the v2444 native build,
+longer the active frontier. The v2454 package uses the v2454 native build,
 which advances targeted
 menu-to-race and result/save paths, presents retained NAOMI 2 scenes
 continuously, and is available as a public early-demo prerelease that prepares
 data from matching user-owned inputs without a BIOS or Python installation.
+It also repairs delayed card reuse after result-screen ejection and introduces
+a fail-safe GitHub release updater whose network failure cannot block launch.
 
 Recent visual work separated two different causes. Missing ISO9660-truncated
 course lookup names were restored from the user's own dump, removing the

@@ -36,7 +36,8 @@ param(
     [switch]$PresentationTrace,
     [switch]$DeveloperRaceOutcomes,
     [string]$RecordInputs = '',
-    [string]$PlaybackInputs = ''
+    [string]$PlaybackInputs = '',
+    [switch]$SkipUpdateCheck
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,11 +58,33 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
+$ProductVersion = 2454
 $currentExecutable = Join-Path $buildRoot 'demo.exe'
 $exe = if ($Exe) {
     (Resolve-Path -LiteralPath $Exe).Path
 } else {
     $currentExecutable
+}
+
+# A launcher-side updater can replace the product before demo.exe starts and
+# therefore does not need to modify a running game process. Source-tree tests
+# keep UpdateSupport beside this file; packaged builds place it under tools.
+if (-not $ValidateOnly) {
+    $updateSupport = @(
+        (Join-Path $PSScriptRoot 'tools\UpdateSupport.ps1'),
+        (Join-Path $PSScriptRoot 'UpdateSupport.ps1')
+    ) | Where-Object {
+        Test-Path -LiteralPath $_ -PathType Leaf
+    } | Select-Object -First 1
+    if ($updateSupport) {
+        . $updateSupport
+        if (Invoke-Idas3UpdateCheck -CurrentVersion $ProductVersion `
+                -BuildRoot $buildRoot -Skip:$SkipUpdateCheck) {
+            # The verified external installer waits for a packaged GUI parent
+            # when necessary, installs in place, then relaunches once.
+            return
+        }
+    }
 }
 
 function Find-GameInputFile {
