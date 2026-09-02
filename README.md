@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2457 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2457-direct-authoritative)
+[**Download Public Early Demo v2458 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2458-merged-update-naming)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Public.Early.Demo.v2457.zip` from the
-   [v2457 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2457-direct-authoritative).
+1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2458.zip` from
+   the [v2458 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2458-merged-update-naming).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`5E6785CAC48C1BFEA6509E0AAADF28C9B2F1639969806A85093D103081346A2C`
+`D2DA3CFA1113E9DDA7DE88C224C4E92DC4E73540C4F44868FBB10E4A6B89CD0F`
 
-## Current integration progress (v2457 WIP and public early demo)
+## Current integration progress (v2458 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -78,6 +78,12 @@ Public ZIP SHA-256:
   checkbox enables verified automatic installs on future launches. Updates
   preserve game files, cards, music, logs, and user settings and roll back if
   installation fails.
+- v2458 archives extract into one `Initial D Arcade Stage 3 Recompiled`
+  folder. Updates merge into the existing installation: new product files are
+  added, versioned product files are replaced, and destination-only files plus
+  user data remain untouched. The main entry point is
+  `Initial D Arcade Stage 3 Recompiled.exe`; the native helper is now
+  `Initial D Arcade Stage 3 Recompiled Runtime.exe`.
 - A self-contained, Python-free setup and integrity checker for user-owned
   inputs.
 - Cooperative renderer shutdown: the program stops new Vulkan presentation,
@@ -192,6 +198,13 @@ Public ZIP SHA-256:
   it, preserved user data, and confirmed that an already-current installation
   is not offered the same update. No live Direct-renderer run is claimed for
   v2457.
+- The v2458 merge/naming checkpoint passed the same complete private build
+  suite plus a parallel-switchback learned-path regression. The actual archive
+  passed isolated new-installer acceptance and an exact v2457-shipped-updater
+  transition: both found the nested product folder, preserved user data and
+  unrelated files, selected the renamed runtime, retired only the
+  byte-identical legacy name, and launched no game process. A live v2458 race
+  run is not claimed by this packaging checkpoint.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -256,8 +269,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
+[the v2458 public checkpoint](docs/CURRENT_CHECKPOINT_V2458_MERGED_UPDATE_NAMING_2026-09-01.md)
+for the latest updater, naming, and package facts,
 [the v2457 public checkpoint](docs/CURRENT_CHECKPOINT_V2457_DIRECT_AUTHORITATIVE_2026-09-01.md)
-for the latest Direct-Vulkan/release facts,
+for the preceding Direct-Vulkan/release facts,
 [the v2456 public checkpoint](docs/CURRENT_CHECKPOINT_V2456_DIRECT_VULKAN_RETRY_2026-09-01.md)
 for the preceding Direct-Vulkan retry facts,
 [the v2454 public checkpoint](docs/CURRENT_CHECKPOINT_V2454_CARD_REINSERT_UPDATER_2026-09-01.md)

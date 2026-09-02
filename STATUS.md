@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2457 WIP
-Public checkpoint: v2457 Windows x64 early-demo prerelease
+Integration checkpoint: v2458 WIP
+Public checkpoint: v2458 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -19,10 +19,29 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. v2457 treats a saved Direct choice as authoritative: a stale or unavailable diagnostic marker does not prompt or force Safe; Safe remains the first-run default and a manual choice | Repeated live close/restart stress across more GPUs/drivers remains open; no live Direct-renderer run is claimed for v2457 |
-| Distribution | The v2457 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified updates before launch | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2458 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2458 native executable SHA-256:
+  `5636197D7CA5D3DEDEAA2FA7F016A2C6899516D5C8D30A74AD150636E53C49A2`.
+  Compilation, the ordered-vs-spatial-switchback regression, 34
+  restart/shutdown policies, 20 route-parser policies, 15 controller/music
+  policies, link freshness, and the standalone no-firmware audit pass. No live
+  v2458 race acceptance is claimed by this package checkpoint.
+- v2458 public ZIP SHA-256:
+  `D2DA3CFA1113E9DDA7DE88C224C4E92DC4E73540C4F44868FBB10E4A6B89CD0F`;
+  audited size is 23,812,401 bytes. Its 18 entries include one byte-identical
+  `demo.exe` transition copy required by the updater already shipped in v2457.
+  On first v2458 launch it is retired only if it matches the canonical runtime.
+  No game data, BIOS, PIC, cards, music, logs, captures, learned paths,
+  generated guest code, or private paths are present.
+- The actual v2458 archive passed two isolated no-game-launch acceptances. The
+  current installer merged files, preserved protected and destination-only
+  data, migrated the name, and verified the runtime hash. Separately, the exact
+  updater and installer shipped in v2457 located the nested
+  `Initial D Arcade Stage 3 Recompiled` folder, installed v2458, preserved user
+  data, and handed off to the renamed runtime. Both left zero game processes.
 - v2457 native executable SHA-256:
   `CCDF9A0C3E195C8845CBFF0D8224D07854855D47CAC9DE4452F6598BB1581F94`.
   Compilation, 34 restart/shutdown policies, 20 route-parser policies, 15
