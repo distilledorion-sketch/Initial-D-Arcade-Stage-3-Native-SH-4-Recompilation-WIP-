@@ -1,5 +1,29 @@
 # Changelog
 
+## v2456-direct-vulkan-retry — 2026-09-01
+
+- Corrected the F1 Apply path so a healthy Direct-Vulkan process does not
+  mistake its own active clean-session marker for evidence of a previous
+  interrupted session.
+- Changed genuinely stale Direct markers from a permanent lockout into an
+  explicit Yes/No retry. Accepting removes the stale marker and restarts into
+  Direct presentation; declining retains Safe presentation.
+- Added a clear writable-folder error if the stale marker cannot be removed.
+- Added developer-only persisted Time Attack driving-path capture/playback for
+  bounded route QA. The binary format is validated; capture data is private,
+  user-derived test input and none is included in Git or the demo package.
+- Corrected learned-path recovery timing to use the live 60 Hz player-control
+  clock rather than the completed capture's final tick.
+- Updated the launcher's own product identity to v2456 so its GitHub check
+  cannot offer the currently installed release as a newer update.
+- Passed compilation, synthetic capture/playback, route-parser,
+  controller/music, restart/shutdown, link-freshness, and standalone
+  no-firmware checks. Live acceptance of the F1 Direct-retry flow and the
+  learned path beyond the existing 663 m stall remain open.
+- Re-audited a 17-file Windows x64 public ZIP containing no game data, BIOS,
+  PIC, extracted assets, cards, custom music, logs, captures, learned paths,
+  generated guest translations, or private host paths.
+
 ## v2454-card-reinsert-updater — 2026-09-01
 
 - Separated an ejected card's front-sensor/removal state from the next

@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2454 WIP
-Public checkpoint: v2454 Windows x64 early-demo prerelease
+Integration checkpoint: v2456 WIP
+Public checkpoint: v2456 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -18,11 +18,27 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
-| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. One sustained v2440 live Direct run completed exit code 0 and removed its session marker | Repeated live close/restart stress across more GPUs/drivers remains open |
-| Distribution | The v2454 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified updates before launch | Clean-machine coverage is limited and the release remains unfinished |
+| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session crash lock pass source/offscreen checks. v2456 distinguishes the active process's own Direct marker from a stale interrupted-session marker and offers an explicit retry for the latter | Repeated live close/restart stress across more GPUs/drivers and live acceptance of the new retry prompt remain open |
+| Distribution | The v2456 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified updates before launch | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
 
+- v2456 native executable SHA-256:
+  `767AA71205F9C45C722FB4857516A1B0AEC822CC64F8FCE8F865E4243E82B8EC`.
+  Compilation, 33 restart/shutdown policies, 20 route-parser policies, 15
+  controller/music policies, an exact synthetic learned-path round trip, link
+  freshness, and the standalone no-firmware audit pass. The audit reports zero
+  firmware callbacks, objects, input contracts, or cached translations.
+- v2456 public ZIP SHA-256:
+  `F5A101272EC7B8EFB04C89EAD4ADBCC2F84CD5CB74C12DE2B94C7C9109398B88`;
+  audited size is 18,577,242 bytes. Its 17 entries contain no game data, BIOS,
+  PIC, cards, custom music, logs, captures, learned racing paths, generated
+  guest code, or private paths.
+- The v2456 Direct-session policy does not interpret the current healthy
+  process's marker as a prior crash. A genuinely stale marker presents a
+  Yes/No Direct retry; accepting clears the stale marker before restart, while
+  declining keeps Safe presentation. The corrected UI path has not yet had a
+  live end-to-end acceptance run, so that result is not claimed.
 - v2454 native executable SHA-256:
   `4E9D607E2F475E38AF8A40BAF6DAE4D8F79CB62C57172D1BB0D1E6FCA065C013`.
   Its exact card-device suite covers 27 transactions, including an early
