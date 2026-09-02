@@ -1,5 +1,26 @@
 # Changelog
 
+## v2457-direct-authoritative — 2026-09-01
+
+- Made a saved Direct Vulkan selection authoritative. A stale diagnostic
+  session marker is cleared automatically when possible and no longer opens a
+  retry prompt or changes the renderer to Safe.
+- Continued with Direct if session-marker maintenance is unavailable instead
+  of silently overriding the user's renderer choice. Safe remains the
+  first-run default and is still available when explicitly selected.
+- Passed compilation, 34 restart/shutdown policies, 20 route-parser policies,
+  15 controller/music policies, synthetic path round-trip, link-freshness, and
+  standalone no-firmware checks. No live Direct-renderer run is claimed for
+  this checkpoint.
+- Completed an isolated live-GitHub updater acceptance: it selected the
+  expected newer release, required the published SHA-256, installed it while
+  preserving user-owned folders and settings, and did not offer the installed
+  current version again. The game was not launched during this test.
+- Updated the launcher's product identity to v2457 and re-audited a 17-file
+  Windows x64 public ZIP containing no game data, BIOS, PIC, extracted assets,
+  cards, custom music, logs, captures, learned paths, generated guest
+  translations, or private host paths.
+
 ## v2456-direct-vulkan-retry — 2026-09-01
 
 - Corrected the F1 Apply path so a healthy Direct-Vulkan process does not

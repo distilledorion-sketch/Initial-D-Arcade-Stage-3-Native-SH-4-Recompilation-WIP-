@@ -58,7 +58,7 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
-$ProductVersion = 2456
+$ProductVersion = 2457
 $currentExecutable = Join-Path $buildRoot 'demo.exe'
 $exe = if ($Exe) {
     (Resolve-Path -LiteralPath $Exe).Path
