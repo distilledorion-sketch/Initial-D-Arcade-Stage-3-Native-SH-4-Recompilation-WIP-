@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2461 RTS delay-slot correctness
+## Current integration checkpoint — v2462 Direct Vulkan and Unicode music
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -14,7 +14,7 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 - A saved Direct selection is authoritative. v2457 automatically clears a
   stale diagnostic marker when possible and proceeds with Direct even when
   marker maintenance is unavailable; it neither prompts nor forces Safe.
-  Safe remains the first-run default and a manual selection.
+  Fresh v2462 installs default to Direct; Safe remains a manual selection.
 - One live 2560x1080 RX 9070 XT run sustained 119.7–120.3 FPS through a heavy
   course and result transition, then exited normally and removed the marker.
 - v2441 retains immutable topology eligibility summaries for exact-matched
@@ -48,17 +48,21 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
   the complete offline suite passes, and a strict 60/60 Hz Akina Time Attack
   gate again reached 1,488.022 m and one genuine result without a forced
   outcome, recognized untranslated call, or runtime fault.
+- v2462 adds two exact binary-backed local BRAF tables and Unicode-safe Windows
+  custom-music discovery. Its complete offline suite and a 60-second muted
+  Safe-presentation boot gate pass with no recognized fault or repeated frame.
 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
 entire route-state matrix has exact-v2449 movement proof, and nine natural
 rival results now have strict exact-v2453 evidence. v2461 adds fixed-point RTS
 delay-slot correctness plus a full no-BIOS Akina Time Attack natural-result
-gate at strict 60/60 Hz; a live Direct-renderer acceptance run for this exact
-build is not claimed. Full-race,
+gate at strict 60/60 Hz; v2462 adds verified local BRAF and Unicode music-path
+correctness. A live Direct-renderer acceptance run for this exact build is not
+claimed. Full-race,
 cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 
-## Published checkpoint — v2461 public early demo
+## Published checkpoint — v2462 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -77,15 +81,15 @@ cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 - The product rejects concurrent instances, Windows QA shutdown is
   cooperative-only, and route-only coverage defaults to no Vulkan WSI.
 - The saved Direct/Safe Vulkan presentation choice survives launcher restart;
-  Direct is not silently replaced by Safe because of stale or unavailable
-  marker state. The public ZIP was re-audited with no game data,
+  fresh installs default to Direct and existing settings remain authoritative.
+  The public ZIP was re-audited with no game data,
   firmware, cards, music, captures, learned paths, generated guest code, or
   private paths.
 - The live updater acceptance verified release selection, GitHub's SHA-256,
   installation, user-data preservation, and current-version suppression in an
   isolated folder without starting the game.
 - The requested folder/main/runtime names and merge semantics pass against the
-  real v2461 archive. An additional acceptance used the exact v2457-shipped
+  real v2462 archive. An additional acceptance used the exact v2457-shipped
   updater and installer, proving existing users can cross the naming change
   while keeping user and destination-only files.
 

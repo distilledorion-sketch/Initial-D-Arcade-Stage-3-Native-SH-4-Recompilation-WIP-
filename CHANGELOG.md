@@ -1,5 +1,28 @@
 # Changelog
 
+## v2462-direct-vulkan-unicode-music — 2026-09-02
+
+- Made normal Direct Vulkan presentation the factory default for fresh public
+  installations while preserving each existing user's saved Direct/Safe
+  selection during an update.
+- Made custom-music discovery Unicode-safe on Windows. Japanese and other
+  native Unicode filenames are scanned as UTF-16 and stored as UTF-8 instead
+  of passing through a lossy ANSI conversion.
+- Added two exact binary-backed local SH-4 BRAF jump-table repairs. Both tables
+  remain inside their owning translated functions and pass the fail-closed
+  control-flow verifier; the fixed-point RTS audit still reports zero proven
+  non-NOP omissions.
+- Passed the complete private offline suite, including the new Unicode music
+  regression, 34 shutdown policies, 20 route-parser policies, 15
+  controller/music checks, translated-source validation, 116-object freshness,
+  and standalone no-firmware verification.
+- Ran a BIOS-free, muted, one-worker Safe-presentation boot gate for 60 seconds
+  at strict 60 Hz. It averaged 59.9 FPS output, generated zero repeated frames,
+  reported no untranslated/runtime/Vulkan faults, and exited cooperatively.
+- The real 18-file v2462 archive passed digest/version verification and an
+  isolated updater merge rehearsal while preserving game files, card data,
+  custom music, logs, user settings, and destination-only files.
+
 ## v2461-rts-delay-slot-correctness — 2026-09-01
 
 - Repaired 67 analyzer-proven non-NOP SH-4 RTS delay-slot instructions across

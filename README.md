@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2461 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2461-rts-delay-slot-correctness)
+[**Download Public Early Demo v2462 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2462-direct-vulkan-unicode-music)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2461.zip` from
-   the [v2461 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2461-rts-delay-slot-correctness).
+1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2462.zip` from
+   the [v2462 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2462-direct-vulkan-unicode-music).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`1B0ABCFDEFAF3F2A3E4CAC46D738259FF09AA4747AB825266A681097104AFAC5`
+`F00123E09C5B3A77A65D81A63BD363BE6404ADFEFB6F03F8913CE0E72AEBF1F1`
 
-## Current integration progress (v2461 WIP and public early demo)
+## Current integration progress (v2462 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -64,7 +64,8 @@ Public ZIP SHA-256:
   original unfiltered response and the chosen value is saved.
 - Native ARM7/AICA audio and exact-slot optional MP3/WAV/FLAC race-music
   replacement. Clearing a replacement restores the original game track and no
-  original asset is overwritten.
+  original asset is overwritten. v2462 scans native Windows Unicode filenames,
+  including Japanese track titles, without lossy ANSI path conversion.
 - Card creation/selection in the visible `card data` folder. The last selected
   card is loaded on the next start, and changing cards displays an unsaved-data
   restart warning. Managed selections now remain portable when the extracted
@@ -78,7 +79,7 @@ Public ZIP SHA-256:
   checkbox enables verified automatic installs on future launches. Updates
   preserve game files, cards, music, logs, and user settings and roll back if
   installation fails.
-- v2461 archives extract into one `Initial D Arcade Stage 3 Recompiled`
+- v2462 archives extract into one `Initial D Arcade Stage 3 Recompiled`
   folder. Updates merge into the existing installation: new product files are
   added, versioned product files are replaced, and destination-only files plus
   user data remain untouched. The main entry point is
@@ -93,10 +94,9 @@ Public ZIP SHA-256:
   renderer drain as a normal close.
 - Bounded Vulkan acquire, graphics-fence, presentation-fence, and startup
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
-- Direct Vulkan presentation bypasses the CPU/GDI display copy when the user
-  selects it. v2457 treats that saved choice as authoritative: a stale or
-  unavailable diagnostic marker neither prompts nor silently changes the
-  renderer to Safe. Safe remains the first-run default and a manual option.
+- Direct Vulkan presentation bypasses the CPU/GDI display copy and is the
+  factory default for fresh v2462 installations. A saved Direct/Safe choice
+  remains authoritative, and Safe remains a manual troubleshooting option.
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
   previous per-frame CPU staging copies.
@@ -286,8 +286,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2461 public checkpoint](docs/CURRENT_CHECKPOINT_V2461_RTS_DELAY_SLOT_CORRECTNESS_2026-09-01.md)
+[the v2462 public checkpoint](docs/CURRENT_CHECKPOINT_V2462_DIRECT_VULKAN_UNICODE_MUSIC_2026-09-02.md)
 for the latest runtime, correctness, updater, and package facts,
+[the v2461 public checkpoint](docs/CURRENT_CHECKPOINT_V2461_RTS_DELAY_SLOT_CORRECTNESS_2026-09-01.md)
+for the preceding return-delay-slot facts,
 [the v2460 public checkpoint](docs/CURRENT_CHECKPOINT_V2460_HISTORICAL_TARGET_CLOSURE_2026-09-01.md)
 for the preceding target-closure facts,
 [the v2459 public checkpoint](docs/CURRENT_CHECKPOINT_V2459_POST_RESULT_TRANSLATION_2026-09-01.md)

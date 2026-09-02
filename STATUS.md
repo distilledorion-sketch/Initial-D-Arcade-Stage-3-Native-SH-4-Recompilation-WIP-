@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
-Status date: 2026-09-01
-Integration checkpoint: v2461 WIP
-Public checkpoint: v2461 Windows x64 early-demo prerelease
+Status date: 2026-09-02
+Integration checkpoint: v2462 WIP
+Public checkpoint: v2462 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -15,13 +15,32 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | PVR rendering | Native handling exists for observed opaque/translucent lists, fog, modifier volumes, punch alpha, blend modes, texture layouts, autosort, tile clipping, tested HUD placement, mirrors, and exact widescreen expansion of authored attract cinematic mattes | Remaining combinations and presentation edge cases need scene-by-scene validation |
 | Course environment maps | Missing logical lookup paths were recovered from two exact user-owned ISO files; rainbow/static maps are corrected | Other courses and weather conditions are not yet audited |
 | JVS/input | 837-13551 identity/features, EEPROM, Maple VBlank/reset, keyboard routes, analog driving input, digital shifter routes, XInput-first device selection, hotplug rescan, paused-menu remapping, controller-operated F1 navigation, adjustable FFB, and saved 0–100% steering smoothing pass focused tests. A product-shared no-window probe found a real attached Xbox controller through `xinput1_4.dll` | Live physical axis/button movement, multiple controller models, wheels, and FFB acceptance remain open |
-| Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
+| Audio | Flycast-derived AICA SGC/mailbox tests pass; the ARM7/AICA path produces sustained non-silent samples; the product's 44.1 kHz stereo PCM format opens on the preferred Windows endpoint; 13 custom music mappings follow authentic stream commands; native Windows Unicode music filenames pass the v2462 regression | Audible end-user acceptance and exhaustive music/voice/effect coverage remain open |
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
-| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. v2457 treats a saved Direct choice as authoritative: a stale or unavailable diagnostic marker does not prompt or force Safe; Safe remains the first-run default and a manual choice | Repeated live close/restart stress across more GPUs/drivers remains open; no live Direct-renderer run is claimed for v2457 |
-| Distribution | The v2461 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
+| Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. Fresh v2462 installs default to Direct Vulkan while a saved Direct/Safe choice remains authoritative and Safe remains manually selectable | Repeated live close/restart stress across more GPUs/drivers remains open |
+| Distribution | The v2462 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, defaults fresh installs to Direct Vulkan, persists the selected Direct/Safe path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
+
+- v2462 native executable SHA-256:
+  `554621C84D0A6E4EA5BD7E331A3A15AEE8183337DBC5FEC73C26337247769FD8`.
+  The build passes the Unicode music regression, 34 shutdown policies, 20
+  route-parser policies, 15 controller/music checks, both binary-backed BRAF
+  repair checks, the zero-proven-RTS-omissions audit, 116-object freshness,
+  translated-source validation, and standalone no-firmware verification.
+- A bounded BIOS-free v2462 boot used muted Safe presentation, one raster
+  worker, Below Normal priority, and strict 60 Hz simulation/presentation for
+  60 seconds. It averaged 59.9 FPS output with zero repeated frames, reported
+  no untranslated/runtime/Vulkan faults, and exited cooperatively with no game
+  process remaining.
+- v2462 public ZIP SHA-256:
+  `F00123E09C5B3A77A65D81A63BD363BE6404ADFEFB6F03F8913CE0E72AEBF1F1`;
+  audited size is 24,078,735 bytes. Its 18 files contain no game data, BIOS,
+  PIC, cards, music, logs, captures, learned paths, generated guest-code
+  source, or private paths. A real updater rehearsal preserved mock user and
+  destination-only data, retained an existing Safe preference, and confirmed
+  the Direct default for a fresh install.
 
 - v2461 native executable SHA-256:
   `104B7A357D18450A890EBBE7549FF2B180ECDA84C6AD131E63B8849A07B4D12A`.

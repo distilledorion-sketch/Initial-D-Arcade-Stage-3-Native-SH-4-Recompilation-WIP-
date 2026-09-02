@@ -58,7 +58,7 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
-$ProductVersion = 2461
+$ProductVersion = 2462
 $canonicalRuntimeName = 'Initial D Arcade Stage 3 Recompiled Runtime.exe'
 $canonicalExecutable = Join-Path $buildRoot $canonicalRuntimeName
 $legacyExecutable = Join-Path $buildRoot 'demo.exe'
