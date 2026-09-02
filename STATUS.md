@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
 Status date: 2026-09-01
-Integration checkpoint: v2459 WIP
-Public checkpoint: v2459 Windows x64 early-demo prerelease
+Integration checkpoint: v2460 WIP
+Public checkpoint: v2460 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -19,9 +19,30 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. v2457 treats a saved Direct choice as authoritative: a stale or unavailable diagnostic marker does not prompt or force Safe; Safe remains the first-run default and a manual choice | Repeated live close/restart stress across more GPUs/drivers remains open; no live Direct-renderer run is claimed for v2457 |
-| Distribution | The v2459 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2460 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, persists the selected Direct/Safe Vulkan path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
+
+- v2460 native executable SHA-256:
+  `FCFBD471638FA7E7FB1643A9EFE5EF1FB95FC3847897434D8CF32EADA8037EE0`.
+  Four retained-log targets were added only after disassembly/CFG review found
+  bounded control flow and zero unknown instructions. The largest has 1,044
+  reachable instructions, one normal return, no BRAF/BSRF edge, no interior
+  translated entry, and a 32-byte boundary before the next function.
+  Compilation, 34 restart/shutdown policies, 20 route-parser policies, 15
+  controller/music policies, learned-path regression, translation-source and
+  116-object freshness checks, and the standalone no-firmware audit pass.
+- Separate no-BIOS, muted, offscreen 60 Hz v2460 Akina and Usui runs reached
+  49.037 m and 53.181 m of real movement. Both reported zero untranslated
+  calls, zero runtime faults, zero repeated presentation frames, cooperative
+  exit code 0, and no remaining game process.
+- v2460 public ZIP SHA-256:
+  `7FAE695DA3449FB261B95E1256A60E75F3A12FA9BFAE44FF3B09BFF221D71F03`;
+  audited size is 23,826,056 bytes. Its 18 files contain no game data, BIOS,
+  PIC, cards, music, logs, captures, learned paths, generated guest-code
+  source, or private paths. Current-installer and exact-v2457-updater
+  acceptances preserved user and destination-only data, used the canonical
+  folder/runtime, and launched no game process.
 
 - v2459 native executable SHA-256:
   `C31ACF51EFB3DE210381E9754B4D3C702C770EC1CD7258DA2CD663E607CF0C5E`.

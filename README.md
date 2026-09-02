@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2459 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2459-post-result-translation)
+[**Download Public Early Demo v2460 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2460-historical-target-closure)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2459.zip` from
-   the [v2459 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2459-post-result-translation).
+1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2460.zip` from
+   the [v2460 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2460-historical-target-closure).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`B42F76F6D15D6CDE1014B94390755F336B263997ADF7AC73ED5F69C9DB39D5B2`
+`7FAE695DA3449FB261B95E1256A60E75F3A12FA9BFAE44FF3B09BFF221D71F03`
 
-## Current integration progress (v2459 WIP and public early demo)
+## Current integration progress (v2460 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -78,7 +78,7 @@ Public ZIP SHA-256:
   checkbox enables verified automatic installs on future launches. Updates
   preserve game files, cards, music, logs, and user settings and roll back if
   installation fails.
-- v2459 archives extract into one `Initial D Arcade Stage 3 Recompiled`
+- v2460 archives extract into one `Initial D Arcade Stage 3 Recompiled`
   folder. Updates merge into the existing installation: new product files are
   added, versioned product files are replaced, and destination-only files plus
   user data remain untouched. The main entry point is
@@ -206,6 +206,14 @@ Public ZIP SHA-256:
   recognized untranslated calls or runtime faults. The real archive also
   passed current-installer and exact-v2457-updater merge acceptances without
   launching the game.
+- The v2460 checkpoint audited every retained runtime fault log against the
+  compiled dispatcher and added four genuine missing SH-4 targets while
+  rejecting null, odd, out-of-image, and corruption-derived addresses. The
+  complete offline suite passed. Separate no-BIOS, muted, offscreen 60 Hz
+  Akina and Usui runs reached 49.037 m and 53.181 m of authentic movement with
+  zero untranslated calls, runtime faults, or repeated frames; both exited
+  cooperatively and left no game process. The real archive passed current and
+  exact-v2457 merge-update acceptance without launching the game.
 - The earlier v2446/schema-5 checkpoint established independent three-field
   direction identity and stopped treating dry/wet condition meshes as road
   direction. The final-v2449 70/70 matrix below supersedes its mixed-build
@@ -270,8 +278,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2459 public checkpoint](docs/CURRENT_CHECKPOINT_V2459_POST_RESULT_TRANSLATION_2026-09-01.md)
+[the v2460 public checkpoint](docs/CURRENT_CHECKPOINT_V2460_HISTORICAL_TARGET_CLOSURE_2026-09-01.md)
 for the latest runtime, updater, naming, and package facts,
+[the v2459 public checkpoint](docs/CURRENT_CHECKPOINT_V2459_POST_RESULT_TRANSLATION_2026-09-01.md)
+for the preceding post-result facts,
 [the v2458 public checkpoint](docs/CURRENT_CHECKPOINT_V2458_MERGED_UPDATE_NAMING_2026-09-01.md)
 for the preceding naming-transition facts,
 [the v2457 public checkpoint](docs/CURRENT_CHECKPOINT_V2457_DIRECT_AUTHORITATIVE_2026-09-01.md)

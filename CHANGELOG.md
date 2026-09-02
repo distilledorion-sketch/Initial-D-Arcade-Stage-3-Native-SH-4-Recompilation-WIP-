@@ -1,5 +1,28 @@
 # Changelog
 
+## v2460-historical-target-closure — 2026-09-01
+
+- Audited all retained untranslated-target logs against the current compiled
+  runtime and dispatcher. Added four genuine missing SH-4 targets reached by
+  Akina and Usui paths while rejecting null, odd, out-of-image, and
+  corruption-derived addresses.
+- Required bounded CFGs and zero unknown instructions for every accepted
+  target. The 5,696-byte target also passed manual boundary review: 1,044
+  reachable instructions, one normal return, no BRAF/BSRF edge, no interior
+  translated entry, and a 32-byte gap before the next function.
+- Passed the complete private offline build suite, including 34 shutdown, 20
+  route-parser, 15 controller/music, translated-source, 116-object freshness,
+  and standalone no-firmware checks.
+- Ran separate no-BIOS, muted, offscreen 60 Hz Akina and Usui gates. They
+  reached 49.037 m and 53.181 m of authentic movement with zero untranslated
+  calls, runtime faults, or repeated frames, then exited cooperatively.
+- Kept the canonical `Initial D Arcade Stage 3 Recompiled` folder, main
+  executable, and native runtime names. The real v2460 archive passed both the
+  current installer and exact-v2457 updater/installer merge acceptances while
+  preserving user and destination-only files and launching no game.
+- Passed 18 public source tests, Windows updater tests, and relocated-launcher
+  acceptance.
+
 ## v2459-post-result-translation — 2026-09-01
 
 - Accepted the ordered learned-path correction in a bounded Akina Time Attack

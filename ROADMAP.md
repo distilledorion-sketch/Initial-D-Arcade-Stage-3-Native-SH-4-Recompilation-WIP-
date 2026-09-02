@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2459 post-result translation
+## Current integration checkpoint — v2460 historical target closure
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -47,13 +47,14 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
 entire route-state matrix has exact-v2449 movement proof, and nine natural
-rival results now have strict exact-v2453 evidence. v2459 adds live offscreen
-60 Hz acceptance for the corrected Akina learned path and post-result static
-translation; a live Direct-renderer acceptance run for this exact build is not
+rival results now have strict exact-v2453 evidence. v2460 adds retained-log
+closure for four genuine Akina/Usui SH-4 targets plus separate no-BIOS,
+offscreen 60 Hz movement acceptance on both routes; a live Direct-renderer
+acceptance run for this exact build is not
 claimed. Full-race,
 cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 
-## Published checkpoint — v2459 public early demo
+## Published checkpoint — v2460 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path
@@ -80,7 +81,7 @@ cross-driver, car/opponent, campaign, persistence, and visual stress remain.
   installation, user-data preservation, and current-version suppression in an
   isolated folder without starting the game.
 - The requested folder/main/runtime names and merge semantics pass against the
-  real v2459 archive. An additional acceptance used the exact v2457-shipped
+  real v2460 archive. An additional acceptance used the exact v2457-shipped
   updater and installer, proving existing users can cross the naming change
   while keeping user and destination-only files.
 
