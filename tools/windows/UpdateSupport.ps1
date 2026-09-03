@@ -21,6 +21,26 @@ function Write-Idas3UpdateLog {
     }
 }
 
+function Remove-Idas3UpdateWorkingDirectory {
+    param([Parameter(Mandatory = $true)][string]$WorkingRoot)
+    try {
+        $localData = [Environment]::GetFolderPath('LocalApplicationData')
+        if (-not $localData) { return }
+        $allowedBase = [System.IO.Path]::GetFullPath(
+            (Join-Path $localData 'InitialDAS3Recomp\updates'))
+        $allowedPrefix = $allowedBase.TrimEnd('\', '/') +
+            [System.IO.Path]::DirectorySeparatorChar
+        $resolved = [System.IO.Path]::GetFullPath($WorkingRoot)
+        if ($resolved.StartsWith(
+                $allowedPrefix, [StringComparison]::OrdinalIgnoreCase) -and
+            (Test-Path -LiteralPath $resolved -PathType Container)) {
+            [System.IO.Directory]::Delete($resolved, $true)
+        }
+    } catch {
+        # Cleanup must never turn an update failure into a launch failure.
+    }
+}
+
 function Get-Idas3AutomaticUpdatePreference {
     param([Parameter(Mandatory = $true)][string]$BuildRoot)
     $path = Join-Path $BuildRoot $script:Idas3UpdateSettingsName
@@ -129,6 +149,10 @@ function Show-Idas3UpdatePrompt {
     $form.FormBorderStyle = 'FixedDialog'
     $form.MaximizeBox = $false
     $form.MinimizeBox = $false
+    # The native splash waits for this script, so an ownerless modal hidden
+    # behind that splash looks like a frozen "Checking game files" window.
+    # Give the prompt its own taskbar presence and a bounded lifetime.
+    $form.ShowInTaskbar = $true
     $form.ClientSize = New-Object System.Drawing.Size(540, 245)
     $form.Font = New-Object System.Drawing.Font('Segoe UI', 10)
 
@@ -177,7 +201,26 @@ function Show-Idas3UpdatePrompt {
     $form.Controls.Add($no)
     $form.CancelButton = $no
 
+    $form.Add_FormClosing({
+        if (-not $form.Tag) { $form.Tag = 'no' }
+    })
+    $promptTimeout = New-Object System.Windows.Forms.Timer
+    $promptTimeout.Interval = 30000
+    $promptTimeout.Add_Tick({
+        $promptTimeout.Stop()
+        if (-not $form.Tag) {
+            $form.Tag = 'no'
+            $form.Close()
+        }
+    })
+    $form.Add_Shown({
+        $form.Activate()
+        $form.BringToFront()
+        $promptTimeout.Start()
+    })
     $form.ShowDialog() | Out-Null
+    $promptTimeout.Stop()
+    $promptTimeout.Dispose()
     return [pscustomobject]@{
         Install = $form.Tag -eq 'yes'
         AutomaticUpdates = $form.Tag -eq 'yes' -and $automatic.Checked
@@ -338,6 +381,7 @@ function Start-Idas3StagedUpdate {
     } catch {
         Write-Idas3UpdateLog -BuildRoot $BuildRoot `
             -Message "Update staging failed: $($_.Exception.Message)"
+        Remove-Idas3UpdateWorkingDirectory -WorkingRoot $workingRoot
         throw
     }
 }

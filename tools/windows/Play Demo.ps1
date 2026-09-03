@@ -43,12 +43,26 @@ param(
 $ErrorActionPreference = 'Stop'
 Import-Module Microsoft.PowerShell.Utility -ErrorAction Stop
 
+$script:launcherMutex = $null
+$script:launcherMutexAcquired = $false
+function Close-Idas3LauncherMutex {
+    if ($script:launcherMutexAcquired -and $script:launcherMutex) {
+        try { $script:launcherMutex.ReleaseMutex() } catch {}
+    }
+    $script:launcherMutexAcquired = $false
+    if ($script:launcherMutex) {
+        try { $script:launcherMutex.Dispose() } catch {}
+        $script:launcherMutex = $null
+    }
+}
+
 $launcherError = Join-Path $PSScriptRoot 'logs\launcher_error.txt'
 New-Item -ItemType Directory -Path (Split-Path -Parent $launcherError) `
     -Force | Out-Null
 Remove-Item -LiteralPath $launcherError -Force -ErrorAction SilentlyContinue
 trap {
     $message = $_.Exception.Message
+    Close-Idas3LauncherMutex
     [System.IO.File]::WriteAllText(
         $launcherError, $message, [System.Text.UTF8Encoding]::new($false))
     Write-Error $message
@@ -58,7 +72,28 @@ trap {
 $handoffRoot = $PSScriptRoot
 $buildRoot = $PSScriptRoot
 $logRoot = Join-Path $PSScriptRoot 'logs'
-$ProductVersion = 2462
+$mutexHasher = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $mutexSeed = [System.Text.Encoding]::UTF8.GetBytes(
+        [System.IO.Path]::GetFullPath($buildRoot).ToUpperInvariant())
+    $mutexId = -join ($mutexHasher.ComputeHash($mutexSeed) |
+        ForEach-Object { $_.ToString('x2') })
+} finally {
+    $mutexHasher.Dispose()
+}
+$script:launcherMutex = New-Object System.Threading.Mutex(
+    $false, "Local\IDAS3RecompLauncher_$mutexId")
+try {
+    $script:launcherMutexAcquired = $script:launcherMutex.WaitOne(0)
+} catch [System.Threading.AbandonedMutexException] {
+    # The prior launcher died without releasing the kernel object. Windows
+    # transfers ownership to this process, so continuing is safe.
+    $script:launcherMutexAcquired = $true
+}
+if (-not $script:launcherMutexAcquired) {
+    throw 'Initial D is already checking files or preparing an update for this installation.'
+}
+$ProductVersion = 2489
 $canonicalRuntimeName = 'Initial D Arcade Stage 3 Recompiled Runtime.exe'
 $canonicalExecutable = Join-Path $buildRoot $canonicalRuntimeName
 $legacyExecutable = Join-Path $buildRoot 'demo.exe'
@@ -74,6 +109,22 @@ $exe = if ($Exe) {
     (Resolve-Path -LiteralPath $Exe).Path
 } else {
     $currentExecutable
+}
+
+# Refuse a second native runtime before network or integrity work. The former
+# late check allowed a repeated click to query GitHub and walk every extracted
+# asset even though the game could not be started, and could stage an update
+# while the existing process still held product files open.
+$runtimeProcessNames = @(
+    [System.IO.Path]::GetFileNameWithoutExtension($canonicalExecutable),
+    [System.IO.Path]::GetFileNameWithoutExtension($legacyExecutable),
+    [System.IO.Path]::GetFileNameWithoutExtension($exe)
+) | Where-Object { $_ } | Select-Object -Unique
+$existing = @($runtimeProcessNames | ForEach-Object {
+    Get-Process -Name $_ -ErrorAction SilentlyContinue
+})
+if ($existing.Count -ne 0) {
+    throw "The native recomp is already running (PID $($existing.Id -join ', '))."
 }
 
 # A launcher-side updater can replace the product before the native runtime starts and
@@ -92,6 +143,7 @@ if (-not $ValidateOnly) {
                 -BuildRoot $buildRoot -Skip:$SkipUpdateCheck) {
             # The verified external installer waits for a packaged GUI parent
             # when necessary, installs in place, then relaunches once.
+            Close-Idas3LauncherMutex
             return
         }
     }
@@ -178,16 +230,18 @@ if (-not (Test-Path -LiteralPath $integrityTool -PathType Leaf)) {
 $gameFilesReady = Test-Idas3GameFiles -Root $gameFilesRoot -Quiet
 if (-not $gameFilesReady) {
     # A just-started GUI launcher, antivirus scanner, or indexer can briefly
-    # disturb the metadata-only pass.  If the extracted layout is present,
-    # retry against file content before incorrectly falling back to CHD setup.
+    # disturb the first pass. If the extracted layout is present, retry after
+    # a short delay before incorrectly falling back to CHD setup. The normal
+    # validator already hashes every asset whose size/timestamp metadata
+    # changed; forcing a full hash of all 2,196 assets here made one transient
+    # failure create a needless CPU/disk burst on every affected launch.
     $manifest = Join-Path $gameFilesRoot '.idas3_extraction_complete.json'
     $hostfs = Join-Path $gameFilesRoot 'driveA\HOSTFS'
     if ($main -and (Test-Path -LiteralPath $main -PathType Leaf) -and
         (Test-Path -LiteralPath $manifest -PathType Leaf) -and
         (Test-Path -LiteralPath $hostfs -PathType Container)) {
         Start-Sleep -Milliseconds 200
-        $gameFilesReady = Test-Idas3GameFiles -Root $gameFilesRoot `
-            -FullHash -Quiet
+        $gameFilesReady = Test-Idas3GameFiles -Root $gameFilesRoot -Quiet
     }
 }
 if (-not $ValidateOnly -and -not $gameFilesReady) {
@@ -208,6 +262,7 @@ if (-not $ValidateOnly -and -not $gameFilesReady) {
 # Choices made through the in-game F1 menu persist here. Explicit command-line
 # parameters always win, which keeps diagnostic launches deterministic.
 $settingsPath = Join-Path $buildRoot 'idas3_user_settings.ini'
+$gameDifficulty = 'Normal'
 if (Test-Path -LiteralPath $settingsPath) {
     $saved = @{}
     foreach ($line in Get-Content -LiteralPath $settingsPath) {
@@ -245,6 +300,10 @@ if (Test-Path -LiteralPath $settingsPath) {
         $saved.CardImage) {
         $CardImage = $saved.CardImage
     }
+    if ($saved.Difficulty -in @(
+            'VeryEasy', 'Easy', 'Normal', 'Hard', 'VeryHard')) {
+        $gameDifficulty = $saved.Difficulty
+    }
 }
 
 if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
@@ -260,22 +319,19 @@ if (-not $driveARoot -or
 }
 
 if ($ValidateOnly) {
-    [pscustomobject]@{
+    $validation = [pscustomobject]@{
         Executable = $exe
         MainProgram = $main
         Platform = 'Native NAOMI 2 services'
         VulkanPresentation = $VulkanPresentation
         VulkanOffscreenFlag = Get-VulkanOffscreenFlag $VulkanPresentation
+        Difficulty = $gameDifficulty
         DriveA = $driveARoot
         Status = $(if ($gameFilesReady) { 'READY' } else { 'NEEDS SETUP' })
     }
+    Close-Idas3LauncherMutex
+    $validation
     return
-}
-
-$processName = [System.IO.Path]::GetFileNameWithoutExtension($exe)
-$existing = Get-Process -Name $processName -ErrorAction SilentlyContinue
-if ($existing) {
-    throw "The native recomp is already running (PID $($existing.Id -join ', '))."
 }
 
 foreach ($name in @(
@@ -497,6 +553,7 @@ $env:IDAS3_NATIVE_SUPERSAMPLE = switch ($AntiAliasing) {
     default { '1.0' }
 }
 $env:IDAS3_NATIVE_TEXTURE_FILTERING = $TextureFiltering
+$env:IDAS3_GAME_DIFFICULTY = $gameDifficulty
 $env:IDAS3_NATIVE_INPUT_DEVICE = $(
     if ($saved -and $saved.InputDevice) { $saved.InputDevice } else { '0' })
 $env:IDAS3_NATIVE_FFB_STRENGTH = $(
@@ -638,3 +695,4 @@ Write-Output "card_inserted_at_start=$selectedCardExists"
 if (-not $selectedCardExists) {
     Write-Output 'card_hint=The selected slot is empty. Choose NO at the card prompt to issue and save a new card here automatically.'
 }
+Close-Idas3LauncherMutex

@@ -12,7 +12,7 @@ of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 > not include game data, a BIOS, card saves, custom music, logs, or extracted
 > assets. You must provide your own legally obtained matching game files.
 
-[**Download Public Early Demo v2462 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2462-direct-vulkan-unicode-music)
+[**Download Public Early Demo v2489 for Windows x64**](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2489-verified-vulkan-checkpoint)
 
 ![Native intro progress](docs/media/native-intro-full.gif)
 
@@ -29,8 +29,8 @@ PIC only to verify and locally extract the data required by the recompilation.
 
 ## Quick start
 
-1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2462.zip` from
-   the [v2462 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2462-direct-vulkan-unicode-music).
+1. Download and extract `Initial.D.Arcade.Stage.3.Recompiled.v2489.zip` from
+   the [v2489 prerelease](https://github.com/distilledorion-sketch/Initial-D-Arcade-Stage-3-Native-SH-4-Recompilation-WIP-/releases/tag/v2489-verified-vulkan-checkpoint).
 2. Place your own matching files in the included `game files` folder:
    - `gds-0033.chd`
    - `317-0384-com.pic`
@@ -42,9 +42,9 @@ Python is not required. Allow roughly 1.3 GB of temporary free space during
 first-run extraction. A NAOMI 2 BIOS is neither required nor accepted.
 
 Public ZIP SHA-256:
-`F00123E09C5B3A77A65D81A63BD363BE6404ADFEFB6F03F8913CE0E72AEBF1F1`
+`6AF00678196E9E54AC1C625866D08D2CD9855D0F43866B5DE1EDCBD7DCE0EF93`
 
-## Current integration progress (v2462 WIP and public early demo)
+## Current integration progress (v2489 WIP and public early demo)
 
 - BIOS-free translated SH-4 boot, menu, race, result, and tested save flows.
 - Vulkan rendering with an authentic 60 Hz mode plus experimental 90/120 Hz
@@ -79,7 +79,7 @@ Public ZIP SHA-256:
   checkbox enables verified automatic installs on future launches. Updates
   preserve game files, cards, music, logs, and user settings and roll back if
   installation fails.
-- v2462 archives extract into one `Initial D Arcade Stage 3 Recompiled`
+- v2489 archives extract into one `Initial D Arcade Stage 3 Recompiled`
   folder. Updates merge into the existing installation: new product files are
   added, versioned product files are replaced, and destination-only files plus
   user data remain untouched. The main entry point is
@@ -95,7 +95,7 @@ Public ZIP SHA-256:
 - Bounded Vulkan acquire, graphics-fence, presentation-fence, and startup
   upload waits; no queue-idle, device-idle, or infinite fence wait remains.
 - Direct Vulkan presentation bypasses the CPU/GDI display copy and is the
-  factory default for fresh v2462 installations. A saved Direct/Safe choice
+  factory default for fresh v2489 installations. A saved Direct/Safe choice
   remains authoritative, and Safe remains a manual troubleshooting option.
 - GPU projection, ELAN lighting, depth normalization, static-geometry reuse,
   packed topology, and persistent mapped geometry/uniform streams remove the
@@ -286,8 +286,10 @@ failure, and the newest logs. Do not upload game files, extracted assets, card
 data, or copyrighted music.
 
 See [STATUS.md](STATUS.md) for the evidence ledger,
-[the v2462 public checkpoint](docs/CURRENT_CHECKPOINT_V2462_DIRECT_VULKAN_UNICODE_MUSIC_2026-09-02.md)
+[the v2489 public checkpoint](docs/CURRENT_CHECKPOINT_V2489_VERIFIED_VULKAN_2026-09-03.md)
 for the latest runtime, correctness, updater, and package facts,
+[the v2462 public checkpoint](docs/CURRENT_CHECKPOINT_V2462_DIRECT_VULKAN_UNICODE_MUSIC_2026-09-02.md)
+for the preceding Direct-default and Unicode-music facts,
 [the v2461 public checkpoint](docs/CURRENT_CHECKPOINT_V2461_RTS_DELAY_SLOT_CORRECTNESS_2026-09-01.md)
 for the preceding return-delay-slot facts,
 [the v2460 public checkpoint](docs/CURRENT_CHECKPOINT_V2460_HISTORICAL_TARGET_CLOSURE_2026-09-01.md)

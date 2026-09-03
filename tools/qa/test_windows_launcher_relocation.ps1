@@ -45,12 +45,9 @@ function Test-Idas3GameFiles {
         [switch]`$FullHash,
         [switch]`$Quiet
     )
-    if (`$FullHash) {
-        [System.IO.File]::AppendAllText('$escapedTrace', "full`n")
-        return `$true
-    }
     [System.IO.File]::AppendAllText('$escapedTrace', "fast`n")
-    return `$false
+    `$calls = @(Get-Content -LiteralPath '$escapedTrace' -ErrorAction SilentlyContinue)
+    return `$calls.Count -ge 2
 }
 "@
     [System.IO.File]::WriteAllText(
@@ -68,7 +65,7 @@ function Test-Idas3GameFiles {
     }
     $calls = @(Get-Content -LiteralPath $tracePath)
     if ($calls.Count -ne 2 -or $calls[0] -ne 'fast' -or
-        $calls[1] -ne 'full') {
+        $calls[1] -ne 'fast') {
         throw "Unexpected integrity retry sequence: $($calls -join ',')"
     }
 

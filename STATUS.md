@@ -1,8 +1,8 @@
 # Status and evidence ledger
 
-Status date: 2026-09-02
-Integration checkpoint: v2462 WIP
-Public checkpoint: v2462 Windows x64 early-demo prerelease
+Status date: 2026-09-03
+Integration checkpoint: v2490 source WIP / v2489 accepted executable
+Public checkpoint: v2489 Windows x64 early-demo prerelease
 
 This file separates demonstrated behavior from hypotheses. Percentages are deliberately avoided: a technically advanced attract-mode path is not the same thing as a playable game.
 
@@ -19,9 +19,24 @@ This file separates demonstrated behavior from hypotheses. Percentages are delib
 | Card | No-card operation works; a disposable 207-byte card passes insert/load/save/eject/removal/reinsert/reload; selected managed cards use a move-safe path under the local `card data` folder. The post-Bunta result path now waits for the required physical-removal status before queuing the saved card for the next prompt | Real user card data is never used for QA; damaged-card and remaining error branches need coverage |
 | Performance | Authentic 60 Hz guest timing with distinct 120 Hz presentation on measured routes; GPU projection, ELAN lighting, depth normalization, mapped geometry/uniform streams, static topology summaries, and Direct Vulkan display are active. A v2448 2560x1080 Akagi run held 120.0 FPS minimum/average across 21 moving-race samples, produced 240 distinct frames per two-second sample, and added zero repeats; v2441 also reduced the controlled warmed static-reuse frame from 0.696 ms to 0.629 ms median | 120 Hz is experimental; exhaustive content coverage and uncapped presentation are not complete |
 | Host shutdown | Cooperative Vulkan stop request, raster-worker exit handshake, message pumping, join-before-window-destroy order, bounded acquire/fence/startup-upload waits, cooperative QA watchdog, single-instance enforcement, and Direct-session diagnostics pass source/offscreen checks. Fresh v2462 installs default to Direct Vulkan while a saved Direct/Safe choice remains authoritative and Safe remains manually selectable | Repeated live close/restart stress across more GPUs/drivers remains open |
-| Distribution | The v2462 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, defaults fresh installs to Direct Vulkan, persists the selected Direct/Safe path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
+| Distribution | The v2489 BIOS-free, Python-free Windows x64 public early demo accepts only matching user-owned inputs, performs verification/extraction locally, defaults fresh installs to Direct Vulkan, persists the selected Direct/Safe path, and checks GitHub for digest-verified merge updates. The archive has one canonically named top-level folder; the main executable and native runtime have stable product names | Clean-machine coverage is limited and the release remains unfinished |
 
 ## Strongest accepted evidence
+
+- v2489 native executable SHA-256:
+  `558468793CCF52D79D3A1858B267CFBAD53030C158D79E11269075C3D62D088D`.
+  It contains 1,079 statically reachable SH-4 symbols with zero missing,
+  unwired, or unknown frontiers, passes the standalone no-BIOS and native
+  Vulkan GPU-product gates, and was built from 117/117 fresh objects. The
+  owner subsequently completed a roughly 20-minute standalone Direct-Vulkan
+  session without a process crash. v2490 source work is newer and is not
+  represented by this executable.
+- v2489 public ZIP SHA-256:
+  `6AF00678196E9E54AC1C625866D08D2CD9855D0F43866B5DE1EDCBD7DCE0EF93`;
+  audited size is 18,424,321 bytes. Its 17-file exact allowlist contains no
+  game data, BIOS, PIC, extracted assets, cards, music, logs, captures,
+  generated guest-code source, or private paths, and its fresh-install setting
+  selects Direct Vulkan.
 
 - v2462 native executable SHA-256:
   `554621C84D0A6E4EA5BD7E331A3A15AEE8183337DBC5FEC73C26337247769FD8`.

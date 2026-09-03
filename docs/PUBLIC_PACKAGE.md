@@ -25,9 +25,9 @@
 The Git source package documents and tests the engineering work but cannot boot
 the game by itself. The separate Windows prerelease includes the native runtime
 and local setup tools, but still contains no user-owned game inputs. That
-boundary is intentional. The v2462 public ZIP retains `PRODUCT_VERSION.txt`
-and the two updater helpers; it contains 18 audited files in total because one
-byte-identical legacy runtime name is required for the v2457 updater transition.
+boundary is intentional. The v2489 public ZIP retains `PRODUCT_VERSION.txt`
+and the two updater helpers. It no longer needs the byte-identical legacy
+`demo.exe` compatibility copy used during the v2457 naming transition.
 Update packages
 preserve `game files`, `card data`, `custom music`, `logs`, the user settings
 INI, the automatic-update preference, and unrelated destination-only files.

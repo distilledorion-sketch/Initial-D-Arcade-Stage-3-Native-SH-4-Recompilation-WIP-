@@ -2,7 +2,7 @@
 
 Work is ordered by the first unresolved hardware boundary. Each milestone has a concrete acceptance gate.
 
-## Current integration checkpoint — v2462 Direct Vulkan and Unicode music
+## Current integration checkpoint — v2490 source / v2489 accepted runtime
 
 - Direct Vulkan presentation bypasses the Safe path's CPU/GDI display boundary
   when explicitly selected.
@@ -51,6 +51,12 @@ Work is ordered by the first unresolved hardware boundary. Each milestone has a 
 - v2462 adds two exact binary-backed local BRAF tables and Unicode-safe Windows
   custom-music discovery. Its complete offline suite and a 60-second muted
   Safe-presentation boot gate pass with no recognized fault or repeated frame.
+- v2489 is the newest accepted executable. Its standalone no-BIOS and native
+  Vulkan GPU-product gates pass, static analysis reports 1,079 reachable SH-4
+  symbols with zero missing/unwired/unknown frontiers, and the owner completed
+  a roughly 20-minute standalone Direct-Vulkan session without a process
+  crash. Newer v2490 changes remain source-only until a separately controlled
+  build and runtime acceptance.
 
 Checkpoint result: the newest Direct performance and attract runs are
 host-clean, the cinematic widescreen defect is regression-protected, the
@@ -62,7 +68,7 @@ correctness. A live Direct-renderer acceptance run for this exact build is not
 claimed. Full-race,
 cross-driver, car/opponent, campaign, persistence, and visual stress remain.
 
-## Published checkpoint — v2462 public early demo
+## Published checkpoint — v2489 public early demo
 
 - A Windows x64 package now verifies matching user-owned CHD/PIC inputs,
   extracts required data locally, and launches the BIOS-free static-AOT path

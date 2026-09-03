@@ -1,5 +1,30 @@
 # Changelog
 
+## v2489-verified-vulkan-checkpoint — 2026-09-03
+
+- Published the accepted v2489 Windows x64 native runtime. The artifact passes
+  the standalone no-BIOS product gate and a native Vulkan import/product gate
+  that rejects CPU-only builds.
+- Advanced the accepted static closure to 1,079 reachable SH-4 symbols with
+  zero missing, unwired, or unknown frontiers. All 670 reachable SH-4
+  JSR/BSRF sites checked across the generated units write architectural PR.
+- Kept normal Direct Vulkan as the fresh-install default. Safe presentation is
+  available only as a user-selected troubleshooting option; the public
+  launcher does not force it.
+- Integrated a single-launcher mutex, early duplicate-runtime detection, a
+  bounded update prompt, transactional updater cleanup, and a lightweight
+  second integrity pass instead of fully hashing 2,196 extracted assets after
+  a transient metadata failure.
+- Added launcher forwarding for the saved five-level game difficulty setting.
+- The owner completed a roughly 20-minute standalone Direct-Vulkan session on
+  the accepted artifact without a process crash. This is useful evidence, not
+  exhaustive hardware or whole-game acceptance.
+- Audited the 17-file public archive at SHA-256
+  `6AF00678196E9E54AC1C625866D08D2CD9855D0F43866B5DE1EDCBD7DCE0EF93`;
+  it contains no user-owned game data or private development artifacts. A
+  real-package expansion and isolated merge-install acceptance preserved all
+  user-owned folders/settings and started no game process.
+
 ## v2462-direct-vulkan-unicode-music — 2026-09-02
 
 - Made normal Direct Vulkan presentation the factory default for fresh public

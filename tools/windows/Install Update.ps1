@@ -38,7 +38,9 @@ try {
         if (-not [int]::TryParse($idText, [ref]$waitId) -or
             $waitId -le 0 -or $waitId -eq $PID) { continue }
         $process = Get-Process -Id $waitId -ErrorAction SilentlyContinue
-        if ($process) { $process.WaitForExit(60000) | Out-Null }
+        if ($process -and -not $process.WaitForExit(60000)) {
+            throw "Timed out waiting for launcher process $waitId to close; no update files were changed."
+        }
     }
 
     $markerPath = Join-Path $source 'PRODUCT_VERSION.txt'
