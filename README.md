@@ -3,7 +3,7 @@
 <p align="center">
   <img src="docs/media/project-logo.png" alt="Initial D Arcade Stage Ver. 3 — Recompiled" width="900">
 </p>
-
+(https://discord.gg/U3vVMbd4t) JOIN THE DISCORD FOR NEW UPDATES
 An experimental static ahead-of-time recompilation of the **NAOMI 2** release
 of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 
