@@ -1,4 +1,4 @@
-# Initial D Arcade Stage 3 — Native SH-4 Recompilation (WIP)
+# Initial D Arcade Stage 3 — Native SH-4 Recompilation  (THIS VERSION IS OBSOLETE JOIN THE DISCORD FOR THE MUCH BETTER VERSION https://discord.gg/6uANCeZnG)
 
 <p align="center">
   <img src="docs/media/project-logo.png" alt="Initial D Arcade Stage Ver. 3 — Recompiled" width="900">
