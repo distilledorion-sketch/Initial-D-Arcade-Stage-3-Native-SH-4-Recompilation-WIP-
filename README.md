@@ -1,9 +1,9 @@
-# Initial D Arcade Stage 3 — Native SH-4 Recompilation  (THIS VERSION IS OBSOLETE JOIN THE DISCORD FOR THE MUCH BETTER VERSION https://discord.gg/6uANCeZnG)
+# Initial D Arcade Stage 3 — Native SH-4 Recompilation  (THIS VERSION IS OBSOLETE JOIN THE DISCORD FOR THE MUCH BETTER VERSION [https://discord.gg/6uANCeZnG](https://discord.gg/fUZySYrPss))
 
 <p align="center">
   <img src="docs/media/project-logo.png" alt="Initial D Arcade Stage Ver. 3 — Recompiled" width="900">
 </p>
-(https://discord.gg/U3vVMbd4t) JOIN THE DISCORD FOR NEW UPDATES
+([https://discord.gg/U3vVMbd4t](https://discord.gg/fUZySYrPss)) JOIN THE DISCORD FOR NEW UPDATES
 An experimental static ahead-of-time recompilation of the **NAOMI 2** release
 of *Initial D Arcade Stage 3* (GDS-0033) for modern Windows PCs.
 
